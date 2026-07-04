@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import type { ComponentType, SVGProps } from 'react'
 import { NfcIcon, BoltIcon, RadarIcon } from './icons'
+import SectionKicker from './SectionKicker'
 
 interface Step {
   icon: ComponentType<SVGProps<SVGSVGElement>>
@@ -12,21 +13,21 @@ interface Step {
 const steps: Step[] = [
   {
     icon: NfcIcon,
-    kicker: 'Hardware',
-    title: 'Tecnología NFC de precisión',
-    desc: 'Un solo toque. Sin instalar aplicaciones, sin fricción. La tarjeta o el accesorio Connexo abre tu perfil al instante.',
+    kicker: 'El objeto',
+    title: 'Acercas. Y ya está.',
+    desc: 'Ni apps, ni QR borrosos, ni escaneos que fallan. La tarjeta o el accesorio Connexo abre tu perfil con un solo acercamiento.',
   },
   {
     icon: BoltIcon,
-    kicker: 'SaaS',
-    title: 'Despliegue en milisegundos',
-    desc: 'Tu URL dedicada se levanta al momento. Edita, publica y actualiza tu ecosistema en tiempo real desde el panel.',
+    kicker: 'El instante',
+    title: 'Tu mundo, montado al vuelo',
+    desc: 'Tu URL propia se levanta al momento. Cambias precios, fotos o agenda desde el panel y afuera ya está actualizado.',
   },
   {
     icon: RadarIcon,
-    kicker: 'Datos',
-    title: 'Analítica y captura de leads',
-    desc: 'Cada interacción se mide. Captura contactos, mide conversiones y entiende quién se acerca a tu marca.',
+    kicker: 'La huella',
+    title: 'Nadie se va sin dejar rastro',
+    desc: 'Cada acercamiento deja un dato: quién tocó, cuándo y qué buscó. Contactos capturados, no perdidos en una servilleta.',
   },
 ]
 
@@ -35,11 +36,11 @@ export default function Mechanism() {
     <section id="mecanismo" className="relative bg-abyss-950 py-20 sm:py-28">
       <div className="section-pad">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-connexo">
-            El mecanismo
-          </p>
+          <div className="mb-4">
+            <SectionKicker label="bajo el toque" />
+          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
-            De un toque a una venta, en tres pasos.
+            Entre que te acercan la tarjeta y te llega la venta, pasan tres cosas.
           </h2>
         </div>
 

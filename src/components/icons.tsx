@@ -75,6 +75,23 @@ export const SparkIcon = (p: IconProps) => (
   </svg>
 )
 
+// Broadcast/NFC ripple — Connexo's signature section marker (a signal
+// emanating from a single touch point).
+export const SignalIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none" />
+    <path d="M9 8.5a5 5 0 0 1 0 7" />
+    <path d="M12.5 6a9 9 0 0 1 0 12" />
+    <path d="M16 3.5a13 13 0 0 1 0 17" />
+  </svg>
+)
+
+export const HeartIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M12 21C7 17 3.5 13.8 3.5 9.8 3.5 7 5.6 5 8 5c1.6 0 3 .9 4 2.3C13 5.9 14.4 5 16 5c2.4 0 4.5 2 4.5 4.8 0 4-3.5 7.2-8.5 11.2Z" />
+  </svg>
+)
+
 // Connexo wordmark glyph
 export const ConnexoMark = (p: IconProps) => (
   <svg viewBox="0 0 32 32" fill="none" {...p}>

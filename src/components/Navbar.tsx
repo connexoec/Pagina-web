@@ -5,6 +5,7 @@ import { ConnexoMark } from './icons'
 const links = [
   { label: 'Ecosistemas', href: '#ecosistemas' },
   { label: 'Planes', href: '#planes' },
+  { label: 'Causa', href: '#arupo' },
   { label: 'RED CONNEXO', href: '#red', badge: 'Próximamente' },
 ]
 

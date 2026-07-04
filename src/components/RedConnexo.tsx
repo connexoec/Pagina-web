@@ -86,18 +86,19 @@ export default function RedConnexo() {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-3xl text-center"
         >
-          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-connexo/40 bg-connexo/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-connexo">
+          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-connexo/40 bg-connexo/10 px-4 py-1.5 text-sm font-medium lowercase tracking-tight text-connexo">
             <SparkIcon className="h-4 w-4" />
-            Directorio verificado · Próximamente
+            todavía no abre sus puertas
           </span>
 
           <h2 className="font-heading text-3xl leading-tight text-white sm:text-5xl">
-            RED CONNEXO: El directorio de la élite.
+            RED CONNEXO: adentro solo están los que ya se atrevieron.
           </h2>
 
           <p className="mx-auto mt-6 max-w-2xl text-base text-white/60 sm:text-lg">
-            Cada cliente asegura su espacio en nuestro directorio corporativo. Una
-            red interconectada de emprendedores, marcas y empresas verificadas.
+            No es un listado más. Es el mapa vivo de quienes ya cambiaron el papel
+            por un toque: negocios, marcas y personas reales, conectados entre sí.
+            Tu plan aparta tu lugar antes de que abra.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">

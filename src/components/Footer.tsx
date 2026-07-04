@@ -24,6 +24,14 @@ export default function Footer() {
             <p className="max-w-xs text-center text-sm text-white/45 md:text-left">
               Identidad digital NFC e IA. Convierte cada interacción en una venta.
             </p>
+            <a
+              href="https://www.fundacionarupo.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-center text-xs text-white/40 transition-colors hover:text-connexo md:text-left"
+            >
+              El 10% de cada plan es de la Fundación Arupo →
+            </a>
           </div>
 
           {/* Links + contact */}

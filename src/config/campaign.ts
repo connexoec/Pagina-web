@@ -20,10 +20,10 @@ export interface CampaignConfig {
 
 export const campaign: CampaignConfig = {
   enabled: true,
-  eyebrow: 'LANZAMIENTO ECUADOR · CUPOS LIMITADOS',
-  headline: '2 meses de PRO gratis en tu primer perfil.',
+  eyebrow: 'primera tanda · solo los fundadores',
+  headline: 'Los primeros en Ecuador arrancan con 2 meses de PRO.',
   subline:
-    'Activa tu identidad digital NFC ahora y asegura tu lugar en la RED CONNEXO antes del cierre de cupos.',
-  ctaLabel: 'RECLAMAR PROMO',
+    'Activa tu identidad NFC ahora, entra como fundador a la RED CONNEXO y deja tu tarjeta de papel donde debe estar: en el pasado.',
+  ctaLabel: 'QUIERO SER FUNDADOR',
   ctaHref: '#planes',
 }

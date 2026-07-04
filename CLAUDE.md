@@ -1,7 +1,8 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-07-04**.
+> No repetir errores ya resueltos aquí. Última actualización: **2026-07-04**
+> (deploy Vercel + rediseño de voz/tono + sección Fundación Arupo).
 
 ---
 
@@ -66,15 +67,17 @@ ConnexoWeb/
 │  │  ├─ ecosystems.ts        # 8 ecosistemas del carrusel
 │  │  └─ pricing.ts           # planes CONECTA / PRO / ULTRA
 │  └─ components/
-│     ├─ icons.tsx            # iconos SVG inline (sin dependencia externa)
-│     ├─ Navbar.tsx           # 1. Nav glass fija
+│     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, HeartIcon)
+│     ├─ SectionKicker.tsx    # FIRMA de marca: glifo señal NFC + label (ver §9)
+│     ├─ Navbar.tsx           # 1. Nav glass fija (link "Causa" → #arupo)
 │     ├─ Hero.tsx             # 2. Hero
-│     ├─ Mechanism.tsx        # 3. El mecanismo (3 pasos)
+│     ├─ Mechanism.tsx        # 3. Bajo el toque (3 pasos)
 │     ├─ EcosystemsCarousel.tsx # 4. Carrusel 3D Cover Flow (CRÍTICO)
 │     ├─ RedConnexo.tsx       # 5. RED CONNEXO (red de nodos)
-│     ├─ Pricing.tsx          # 6. Escalabilidad (toggle Mensual/Anual)
-│     ├─ CampaignBanner.tsx   # 7. Módulo de campañas (dinámico)
-│     └─ Footer.tsx           # 8. Footer
+│     ├─ Pricing.tsx          # 6. Planes (toggle Mensual/Anual) + chip 10% Arupo
+│     ├─ Arupo.tsx            # 7. Responsabilidad social · Fundación Arupo (§9)
+│     ├─ CampaignBanner.tsx   # 8. Módulo de campañas (dinámico)
+│     └─ Footer.tsx           # 9. Footer (+ enlace 10% Arupo)
 ```
 
 **Principio**: datos separados de la vista (`data/`, `config/`). Para editar
@@ -89,14 +92,15 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
-| 1 | Navbar | ✅ | Glass al hacer scroll, badge "Próximamente" en RED CONNEXO, login borde naranja, menú móvil. |
+| 1 | Navbar | ✅ | Glass al scroll; links Ecosistemas/Planes/**Causa**/RED CONNEXO (badge "Próximamente"); login borde naranja; menú móvil. |
 | 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600), CTA "DESBLOQUEA TU PERFIL" `#ff6600`. |
-| 3 | Mecanismo | ✅ | Grid 3 columnas (Hardware / SaaS / Datos). |
-| 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con framer-motion (ver §6). |
+| 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
+| 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** (ver §6). Imágenes `object-contain` (completas, sin recorte) sobre fondo de marca. |
 | 5 | RED CONNEXO | ✅ | Textura de red de nodos SVG (estática, sin lag). |
-| 6 | Escalabilidad | ✅ | Toggle Mensual/Anual dinámico; PRO destacado con glow. |
-| 7 | Campañas | ✅ | Banner dinámico ON/OFF vía `config/campaign.ts`. |
-| 8 | Footer | ✅ | Logo, legales, soporte `connexoec@gmail.com`. |
+| 6 | Planes | ✅ | Toggle Mensual/Anual; PRO glow (badge "El más pedido"); chip "10% Arupo" → #arupo. |
+| 7 | Fundación Arupo | ✅ | Responsabilidad social: 10% de cada plan. Cifra ancla "10%" + manifiesto + CTA externo a fundacionarupo.org. |
+| 8 | Campañas | ✅ | Banner dinámico ON/OFF vía `config/campaign.ts`. |
+| 9 | Footer | ✅ | Logo, legales, enlace 10% Arupo, soporte `connexoec@gmail.com`. |
 
 ---
 
@@ -174,3 +178,42 @@ placeholder ("Espacio reservado") aparece automáticamente cuando no hay imagen.
 - Iconos: añadir a `components/icons.tsx` (SVG inline, sin librería de iconos).
 - Español (es-EC) para todo el copy visible.
 - Correo de soporte oficial: **connexoec@gmail.com**.
+
+---
+
+## 9. Voz, tono y firma de marca (REGLA — "no genérico")
+
+El cliente rechaza el look/copy típico de landing hecha con IA. Al escribir o
+editar copy y etiquetas, respetar:
+
+- **NADA de "eyebrows" genéricos** tipo `text-xs uppercase tracking-[0.3em]` con
+  una sola palabra funcional ("El mecanismo", "Ecosistemas", "Escalabilidad").
+  Eso es la firma de las landings IA y está **prohibido**.
+- **Marcador de sección = `SectionKicker`** (`components/SectionKicker.tsx`):
+  glifo `SignalIcon` (ondas NFC que emanan de un toque) + label en **minúscula**,
+  con voz propia, no funcional. Es la firma visual recurrente. Ej: "bajo el
+  toque", "elige tu terreno", "tres formas de conectar", "no es marketing, es un
+  trato". Para añadir una sección nueva, usar este mismo marcador.
+- **Copy con actitud ecuatoriana, concreto y con imágenes**, no corporativo
+  neutro. Preferir frases-claim ("El precio que ves es el que pagas.", "Nadie se
+  va sin dejar rastro.") sobre descripciones planas de features.
+- El motivo del **papel vs. toque** ("deja tu tarjeta de papel en el pasado") es
+  un hilo narrativo recurrente — reutilizarlo, no reinventarlo cada vez.
+
+### Responsabilidad social — Fundación Arupo (`components/Arupo.tsx`)
+- Compromiso real: **el 10% de cada plan vendido es de la Fundación Arupo**
+  (inclusión, derechos humanos e innovación social · Ecuador).
+- Enlace oficial: **https://www.fundacionarupo.org/** (siempre `target="_blank"`
+  + `rel="noopener noreferrer"`). Presente en: sección Arupo, chip en Pricing,
+  enlace en Footer y link "Causa" del navbar.
+- Tono: honesto y humano, **no publicitario** — es un compromiso, no un gancho.
+  No inventar cifras/programas específicos de la fundación; mantener general y
+  enlazar para detalle.
+
+### Logo de marca — ⚠️ PENDIENTE
+- El cliente entregará el logo oficial para reemplazar el glifo provisional
+  `ConnexoMark` (SVG en `icons.tsx`) en **Navbar** y **Footer**, y para el
+  **favicon** (`index.html` → hoy `public/favicon.svg`).
+- Al recibirlo: colocar en `public/` (ej. `public/logo.svg` / `logo.png`),
+  cablear en Navbar/Footer (reemplazar `<ConnexoMark/>` por `<img>`) y actualizar
+  `<link rel="icon">` en `index.html`.

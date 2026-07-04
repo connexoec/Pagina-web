@@ -29,7 +29,7 @@ export default function Hero() {
           className="mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-white/70"
         >
           <NfcIcon className="h-4 w-4 text-connexo" />
-          Identidad digital NFC + IA · Hecho en Ecuador
+          Pensado, diseñado y armado en Ecuador
         </motion.div>
 
         <motion.h1
@@ -79,11 +79,11 @@ export default function Hero() {
           animate="show"
           className="mt-14 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-center text-xs uppercase tracking-widest text-white/35"
         >
-          <span>Cero apps</span>
+          <span>Nada que descargar</span>
           <span className="hidden sm:inline">·</span>
-          <span>URL dedicada en milisegundos</span>
+          <span>Tu perfil vive en segundos</span>
           <span className="hidden sm:inline">·</span>
-          <span>Leads en tiempo real</span>
+          <span>Cada toque, un contacto</span>
         </motion.div>
       </div>
     </section>

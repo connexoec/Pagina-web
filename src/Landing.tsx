@@ -7,6 +7,7 @@ import Mechanism from './components/Mechanism'
 const EcosystemsCarousel = lazy(() => import('./components/EcosystemsCarousel'))
 const RedConnexo = lazy(() => import('./components/RedConnexo'))
 const Pricing = lazy(() => import('./components/Pricing'))
+const Arupo = lazy(() => import('./components/Arupo'))
 const CampaignBanner = lazy(() => import('./components/CampaignBanner'))
 const Footer = lazy(() => import('./components/Footer'))
 
@@ -26,6 +27,7 @@ export default function Landing() {
           <EcosystemsCarousel />
           <RedConnexo />
           <Pricing />
+          <Arupo />
           <CampaignBanner />
         </Suspense>
       </main>

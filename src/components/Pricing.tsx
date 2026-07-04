@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { plans } from '../data/pricing'
-import { CheckIcon } from './icons'
+import { CheckIcon, HeartIcon } from './icons'
+import SectionKicker from './SectionKicker'
 
 type Cycle = 'monthly' | 'yearly'
 
@@ -13,11 +14,11 @@ export default function Pricing() {
       <div className="pointer-events-none absolute inset-0 bg-radial-fade opacity-60" />
       <div className="section-pad relative">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-connexo">
-            Escalabilidad
-          </p>
+          <div className="mb-4">
+            <SectionKicker label="tres formas de conectar" />
+          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
-            Precios fijos. Sin sorpresas.
+            El precio que ves es el que pagas.
           </h2>
 
           {/* Cycle toggle */}
@@ -50,6 +51,16 @@ export default function Pricing() {
               ? 'Facturación anual — el mejor precio por mes.'
               : 'Facturación mensual — cancela cuando quieras.'}
           </p>
+
+          {/* Vínculo precio ↔ causa: el 10% es de la Fundación Arupo */}
+          <a
+            href="#arupo"
+            className="mt-6 inline-flex items-center gap-2 rounded-full border border-connexo/30 bg-connexo/[0.07] px-4 py-1.5 text-xs text-white/70 transition-colors hover:border-connexo/60 hover:text-white"
+          >
+            <HeartIcon className="h-3.5 w-3.5 text-connexo" />
+            De cada plan, el <span className="font-semibold text-connexo">10%</span> es
+            de la Fundación Arupo
+          </a>
         </div>
 
         {/* Plan grid */}
@@ -78,7 +89,7 @@ export default function Pricing() {
               >
                 {plan.featured && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-connexo px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-black">
-                    Más elegido
+                    El más pedido
                   </span>
                 )}
 

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ecosystems } from '../data/ecosystems'
 import { ChevronLeft, ChevronRight, LockIcon, ArrowIcon } from './icons'
+import SectionKicker from './SectionKicker'
 
 const COUNT = ecosystems.length
 
@@ -63,14 +64,14 @@ export default function EcosystemsCarousel() {
     <section id="ecosistemas" className="relative bg-abyss-950 py-20 sm:py-28">
       <div className="section-pad">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-connexo">
-            Ecosistemas
-          </p>
+          <div className="mb-4">
+            <SectionKicker label="elige tu terreno" />
+          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
-            Un perfil que se adapta a tu negocio.
+            Ocho maneras de ser tú. Ninguna de papel.
           </h2>
           <p className="mt-4 text-white/55">
-            8 ecosistemas diseñados para convertir. Desliza para explorar.
+            Tu perfil se moldea a lo que haces. Arrastra y ve el tuyo tomar forma.
           </p>
         </div>
       </div>
@@ -138,14 +139,18 @@ export default function EcosystemsCarousel() {
               {eco.reserved || !eco.image ? (
                 <ReservedFace />
               ) : (
-                <img
-                  src={eco.image}
-                  alt={`Perfil ${eco.name}`}
-                  loading="lazy"
-                  decoding="async"
-                  draggable={false}
-                  className="h-full w-full object-cover"
-                />
+                <div className="relative h-full w-full bg-gradient-to-br from-abyss-700 via-abyss-800 to-black">
+                  <div className="pointer-events-none absolute inset-0 bg-grid-nodes [background-size:22px_22px] opacity-20" />
+                  {/* object-contain → la imagen del perfil se ve completa, sin recortes */}
+                  <img
+                    src={eco.image}
+                    alt={`Perfil ${eco.name}`}
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                    className="relative h-full w-full object-contain"
+                  />
+                </div>
               )}
 
               {/* Bottom gradient + label */}
