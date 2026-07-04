@@ -8,3 +8,8 @@ dist-ssr
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Assets fuente sin usar + capturas de dev (no van a producción)
+/Perfiles/
+connexo-dev-screenshot.png
+.vercel
