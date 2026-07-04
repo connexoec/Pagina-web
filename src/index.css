@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-abyss-950 text-white/90 font-sans antialiased;
+    /* Prevent horizontal scroll from off-canvas carousel cards */
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Impact headlines — Tomorrow SemiBold Italic (exclusive) */
+  .font-heading {
+    font-style: italic;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: #ff6600;
+    color: #000;
+  }
+
+  /* Custom scrollbar — abyssal + orange thumb */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #000;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1c1c1c;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ff6600;
+  }
+}
+
+@layer components {
+  /* Dark glass — used by the fixed navbar */
+  .glass {
+    background: rgba(5, 5, 5, 0.6);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Primary conversion button — solid orange, forces the click */
+  .btn-cta {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-connexo px-6 py-3
+      font-sans font-semibold text-black transition-all duration-200
+      hover:bg-connexo-400 hover:shadow-glow active:scale-[0.98]
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-connexo focus-visible:ring-offset-2 focus-visible:ring-offset-black;
+  }
+
+  /* Secondary / outline button — orange border */
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-connexo/70 px-5 py-2.5
+      font-sans font-semibold text-connexo transition-all duration-200
+      hover:bg-connexo hover:text-black active:scale-[0.98]
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-connexo focus-visible:ring-offset-2 focus-visible:ring-offset-black;
+  }
+
+  .section-pad {
+    @apply mx-auto max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
