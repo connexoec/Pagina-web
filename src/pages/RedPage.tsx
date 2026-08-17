@@ -1,7 +1,7 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import Navbar from '../components/Navbar'
-import { members, OPEN_SLOTS, cities } from '../data/directory'
+import { members, OPEN_SLOTS, cities, activeEcosystems } from '../data/directory'
 import { ecosystems } from '../data/ecosystems'
 import { MemberCard, OpenSlotCard } from '../components/DirectoryCard'
 import SectionKicker from '../components/SectionKicker'
@@ -99,14 +99,18 @@ export default function RedPage() {
     return members.filter((m) => {
       if (rubro !== 'todos' && m.ecosystem !== rubro) return false
       if (!terms.length) return true
-      const haystack = normalize(`${m.name} ${m.what} ${m.city} ${m.ecosystem}`)
+      // Los campos opcionales pueden faltar: sin el `?? ''` la palabra
+      // "undefined" entraría al índice y ensuciaría las búsquedas.
+      const haystack = normalize(
+        [m.name, m.what ?? '', m.city ?? '', m.ecosystem ?? ''].join(' '),
+      )
       return terms.every((t) => haystack.includes(t))
     })
   }, [query, rubro])
 
   const isFiltering = query.trim() !== '' || rubro !== 'todos'
   const openSlots = isFiltering ? 0 : OPEN_SLOTS
-  const rubrosActivos = new Set(members.map((m) => m.ecosystem)).size
+  const rubrosActivos = activeEcosystems().size
 
   return (
     <div className="min-h-screen bg-abyss-950 text-white/90">
