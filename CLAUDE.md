@@ -1,15 +1,50 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-07-04**
-> (deploy Vercel + rediseño de voz/tono + sección Fundación Arupo).
+> No repetir errores ya resueltos aquí. Última actualización: **2026-08-17**
+> (logo oficial + auditoría contra el Manual de Capacitación v0.52.1 +
+> 9 plantillas reales + 5 secciones nuevas + capa de animación).
+
+---
+
+## 0. FUENTE DE VERDAD DEL PRODUCTO ⚠️
+
+Lo que la web puede afirmar sale del **Manual de Capacitación de Connexo
+v0.52.1** (4-ago-2026). Antes de escribir cualquier feature nueva en la landing,
+verificar que exista en el manual.
+
+**El manual es CONFIDENCIAL y está en `.gitignore` (`/Documentos/`, `*.docx`).**
+Sus Partes VII–VIII contienen la ruta del panel `/admin`, los roles, los nombres
+de los scripts SQL de Supabase y el flujo de credenciales de la pasarela de pago.
+**Nunca se commitea, nunca se despliega, nunca se cita en el copy público.**
+
+Hechos del producto que la web DEBE respetar:
+- **No existe auto-registro.** La cuenta la crea Connexo (manual §5.1). Todo CTA
+  va a WhatsApp o a la tienda; jamás a un formulario de signup.
+- **No hay IA en el producto.** Cero menciones en el manual. No prometerla.
+- **No hay dominio personalizado.** La URL es `connexoapp.com/usuario` (§16.1).
+- **La plantilla es una sola por cliente**, en cualquier plan (§1.2).
+- **CONECTA no publica precio**: es la puerta de entrada como prueba gratuita, y
+  esa prueba puede correrse con funciones de PRO o de ULTRA.
+- **Las reservas son "parciales" en PRO** y dependen del rubro (§2.1). Decirlo.
+- RED CONNEXO **no está en el manual**: es promesa a futuro. Se mantiene tal cual
+  (decisión del cliente, 2026-08-17) — **no tocar esa sección**.
 
 ---
 
 ## 1. Identidad del proyecto
 
-**Connexo** (Ecuador) — Ecosistema de identidad digital NFC + IA y software de
+**Connexo** (Ecuador) — Ecosistema de identidad digital NFC y software de
 ventas. Este repo es la **Landing Page principal**.
+
+### Datos oficiales (viven en `src/config/site.ts`, no hardcodear)
+| Dato | Valor |
+|------|-------|
+| WhatsApp ventas | `+593 99 430 7367` → `wa.me/593994307367` |
+| Tienda (perfil E-commerce propio) | https://www.connexoapp.com/connexo |
+| App / panel del cliente | https://www.connexoapp.com |
+| Soporte | connexoec@gmail.com |
+| Fundación Arupo | https://www.fundacionarupo.org/ |
 
 ### Stack (fijo — no cambiar sin justificación)
 | Capa | Tecnología | Versión |
@@ -53,31 +88,44 @@ Comandos: `npm run dev` · `npm run build` (typecheck + build) · `npm run previ
 
 ```
 ConnexoWeb/
-├─ index.html                 # fuentes + meta + root
+├─ index.html                 # fuentes + favicon + OG + root
 ├─ public/
-│  ├─ favicon.svg
-│  └─ perfiles/               # assets del carrusel (ver §5)
+│  ├─ connexo-lockup.png      # LOGO oficial: isotipo+palabra, fondo transparente
+│  ├─ connexo-logo.jpg        # Isotipo cuadrado sobre negro (origen del favicon)
+│  ├─ favicon-32/180/512.png  # Derivados del isotipo
+│  └─ perfiles/               # capturas del carrusel (ver §5)
 ├─ src/
 │  ├─ main.tsx                # entry → <Landing/>
 │  ├─ index.css               # base Tailwind + tokens de componentes
 │  ├─ Landing.tsx             # compone secciones; lazy-load bajo el pliegue
 │  ├─ config/
+│  │  ├─ site.ts              # WhatsApp, tienda, app, correo (SSOT de contacto)
 │  │  └─ campaign.ts          # toggle ON/OFF del banner de campaña
 │  ├─ data/
-│  │  ├─ ecosystems.ts        # 8 ecosistemas del carrusel
-│  │  └─ pricing.ts           # planes CONECTA / PRO / ULTRA
+│  │  ├─ ecosystems.ts        # las 9 plantillas reales del carrusel
+│  │  └─ pricing.ts           # planes + tabla comparativa (`comparison`)
 │  └─ components/
-│     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, HeartIcon)
+│     ├─ fx/
+│     │  ├─ Ambient.tsx       # FilmGrain · Aurora · PerspectiveGrid · Spotlight
+│     │  └─ Motion.tsx        # Magnetic · TiltCard · Counter · DecodeText ·
+│     │                       #   BeamDivider · NfcRings · Marquee
+│     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon)
 │     ├─ SectionKicker.tsx    # FIRMA de marca: glifo señal NFC + label (ver §9)
-│     ├─ Navbar.tsx           # 1. Nav glass fija (link "Causa" → #arupo)
-│     ├─ Hero.tsx             # 2. Hero
-│     ├─ Mechanism.tsx        # 3. Bajo el toque (3 pasos)
-│     ├─ EcosystemsCarousel.tsx # 4. Carrusel 3D Cover Flow (CRÍTICO)
-│     ├─ RedConnexo.tsx       # 5. RED CONNEXO (red de nodos)
-│     ├─ Pricing.tsx          # 6. Planes (toggle Mensual/Anual) + chip 10% Arupo
-│     ├─ Arupo.tsx            # 7. Responsabilidad social · Fundación Arupo (§9)
-│     ├─ CampaignBanner.tsx   # 8. Módulo de campañas (dinámico)
-│     └─ Footer.tsx           # 9. Footer (+ enlace 10% Arupo)
+│     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial
+│     ├─ Hero.tsx             #  2. Hero (anillos NFC + decode + marquee)
+│     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
+│     ├─ EcosystemsCarousel.tsx #  4. Carrusel 3D Cover Flow (CRÍTICO, §6)
+│     ├─ Platform.tsx         #  5. PWA · push · 8 idiomas · tour guiado
+│     ├─ Operations.tsx       #  6. Pipeline de pedido con sticky-scroll
+│     ├─ Membership.tsx       #  7. Códigos de miembro y clubes
+│     ├─ Payments.tsx         #  8. Las 4 formas de cobro
+│     ├─ Analytics.tsx        #  9. Analíticas + mapa de calor
+│     ├─ RedConnexo.tsx       # 10. RED CONNEXO (NO TOCAR — §0)
+│     ├─ Pricing.tsx          # 11. Planes + chip 10% Arupo
+│     ├─ PlanMatrix.tsx       #     └─ comparador de 3 planes (dentro de Pricing)
+│     ├─ Arupo.tsx            # 12. Responsabilidad social · Fundación Arupo (§9)
+│     ├─ CampaignBanner.tsx   # 13. Módulo de campañas (dinámico)
+│     └─ Footer.tsx           # 14. Footer (+ WhatsApp, correo, 10% Arupo)
 ```
 
 **Principio**: datos separados de la vista (`data/`, `config/`). Para editar
@@ -92,15 +140,20 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
-| 1 | Navbar | ✅ | Glass al scroll; links Ecosistemas/Planes/**Causa**/RED CONNEXO (badge "Próximamente"); login borde naranja; menú móvil. |
-| 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600), CTA "DESBLOQUEA TU PERFIL" `#ff6600`. |
+| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO; "Iniciar sesión" → app real. |
+| 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; anillos NFC; CTA magnético → WhatsApp; cinta de los 9 rubros. |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
-| 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** (ver §6). Imágenes `object-contain` (completas, sin recorte) sobre fondo de marca. |
-| 5 | RED CONNEXO | ✅ | Textura de red de nodos SVG (estática, sin lag). |
-| 6 | Planes | ✅ | Toggle Mensual/Anual; PRO glow (badge "El más pedido"); chip "10% Arupo" → #arupo. |
-| 7 | Fundación Arupo | ✅ | Responsabilidad social: 10% de cada plan. Cifra ancla "10%" + manifiesto + CTA externo a fundacionarupo.org. |
-| 8 | Campañas | ✅ | Banner dinámico ON/OFF vía `config/campaign.ts`. |
-| 9 | Footer | ✅ | Logo, legales, enlace 10% Arupo, soporte `connexoec@gmail.com`. |
+| 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
+| 5 | Plataforma | ✅ | PWA instalable, avisos con la app cerrada, 8 idiomas, tour guiado. Manual §6, §7, §21. |
+| 6 | Cómo opera | ✅ | Pipeline del pedido con **sticky-scroll** (5 estados). Manual §24.6, §25.5, §30.5. |
+| 7 | Club / códigos | ✅ | Códigos de miembro reales (B-/E-/R-/S-/F-), sellos, VIP. Manual §18. |
+| 8 | Cobros | ✅ | Las 4 formas de pago + facturación con RUC. Manual §23.5, §24.9. |
+| 9 | Analíticas | ✅ | Contadores + mapa de calor 7×12 + conclusiones automáticas. Manual §15. |
+| 10 | RED CONNEXO | ✅ | Textura de red de nodos SVG (estática, sin lag). **NO TOCAR** (§0). |
+| 11 | Planes | ✅ | CONECTA sin precio ("Prueba gratis"); PRO/ULTRA → tienda; toggle Mensual/Anual; chip "10% Arupo"; **comparador `PlanMatrix`**. |
+| 12 | Fundación Arupo | ✅ | Responsabilidad social: 10% de cada plan. Cifra ancla "10%" + manifiesto + CTA externo a fundacionarupo.org. |
+| 13 | Campañas | ✅ | Banner dinámico ON/OFF vía `config/campaign.ts`. |
+| 14 | Footer | ✅ | Logo oficial, legales, 10% Arupo, WhatsApp y `connexoec@gmail.com`. |
 
 ---
 
@@ -109,25 +162,27 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 Las imágenes reales entregadas estaban en `Perfiles/` (raíz) y se normalizaron a
 `public/perfiles/*.png` (minúsculas, sin tildes) para servirlas desde `/perfiles/`.
 
-Mapeo actual (7 imágenes reales → 8 espacios exactos):
+Mapeo actual — **las 9 plantillas del manual**, 7 con captura real:
 
-| Espacio | Imagen | Fuente original |
-|---------|--------|-----------------|
-| 1. Profesional | `profesional.png` | Profesional.PNG |
-| 2. Gastronomía | `gastro.png` | Gastro.PNG |
-| 3. Barber & Beauty | `barber.png` | Barberia.PNG |
-| 4. E-Commerce | `ecommerce.png` | E-Commerce.PNG |
-| 5. Artistas | *(placeholder)* | ⚠️ FALTA `artistas.png` |
-| 6. Corporativo B2B | *(placeholder)* | ⚠️ FALTA `corporativo.png` |
-| 7. Servicios & Citas | `medico.png` | Médico.PNG |
-| 8. Próximamente | *(placeholder reservado)* | — |
+| # | Plantilla (id) | Imagen |
+|---|----------------|--------|
+| 1 | Estándar (`estandar`) | `profesional.png` |
+| 2 | Barbería (`barberia`) | `barber.png` |
+| 3 | Gastronomía (`gastronomia`) | `gastro.png` |
+| 4 | E-Commerce (`ecommerce`) | `ecommerce.png` |
+| 5 | Petcare (`petcare`) | `veterinaria.png` |
+| 6 | Salud (`medico`) | `medico.png` |
+| 7 | Inmobiliaria (`inmobiliaria`) | `inmobiliaria.png` |
+| 8 | Artista (`artista`) | ⚠️ FALTA `artistas.png` |
+| 9 | Sublimados (`sublimados`) | ⚠️ FALTA `sublimados.png` |
 
-También copiadas pero sin usar aún: `inmobiliaria.png`, `veterinaria.png`
-(disponibles si se decide dividir "Servicios & Citas").
+**TODO assets**: subir `artistas.png` y `sublimados.png` a `public/perfiles/`,
+quitar `reserved: true` y añadir `image` en `src/data/ecosystems.ts`. La cara
+placeholder ("Captura en camino") aparece sola mientras no haya imagen.
 
-**TODO assets**: subir `artistas.png` y `corporativo.png` a `public/perfiles/` y
-quitar `reserved: true` + añadir `image` en `src/data/ecosystems.ts`. La tarjeta
-placeholder ("Espacio reservado") aparece automáticamente cuando no hay imagen.
+⚠️ **Las capturas nuevas deben mantener la proporción ≈ 0.512** (pantalla de
+teléfono, p. ej. 500×977). El marco del carrusel usa esa constante (`SHOT_RATIO`)
+para que la imagen entre completa. Ver §7.4.
 
 ---
 
@@ -136,11 +191,28 @@ placeholder ("Espacio reservado") aparece automáticamente cuando no hay imagen.
 ### Carrusel 3D (Cover Flow) — `EcosystemsCarousel.tsx`
 - Índice `active`; para cada tarjeta se calcula `circularOffset` (distancia
   circular más corta) → posición en cascada infinita.
-- Transformaciones por offset: `x` (gap), `scale` (1 centro / 0.82 / 0.66),
-  `rotateY` (`offset * -22deg`), `opacity` (1 / 0.55 / 0.18), `zIndex`.
+- Transformaciones por offset: `x` (gap), `scale` (1 centro / 0.84 / 0.68),
+  `rotateY` (`offset * -24deg`), `opacity` (1 / 0.6 / 0.2), `zIndex`.
 - **Perf**: solo se renderiza ventana de 5 tarjetas (`abs > 2 → null`) +
   `will-change: transform`. Imágenes `loading="lazy"`.
 - Interacción: drag horizontal (framer), flechas, dots, teclado (←/→).
+- **Geometría (no romper)**: el ancho manda (`card`), el alto se DERIVA
+  (`phoneH = card / SHOT_RATIO`). El nombre va en una banda de `LABEL_H` px
+  **debajo** del teléfono, nunca encima de la captura.
+
+### Capa de animación (`components/fx/`)
+**Presupuesto de rendimiento — regla dura**: solo se animan `transform` y
+`opacity` (las únicas que resuelve el compositor en GPU). **Nunca** animar
+`filter`, `blur`, `box-shadow`, `width` ni `height`.
+- `Aurora`: el `blur` es estático; lo que se mueve es el `transform` del blob.
+- `FilmGrain`: ruido SVG horneado como data-URI **una sola vez**. Coste/frame: 0.
+- `Spotlight`: variables CSS con rAF *throttled* y solo en `pointer: fine`.
+- `Marquee`: CSS puro con `animation-play-state: paused` fuera de viewport.
+- `Operations`: `useMotionValueEvent` sobre `scrollYProgress`, con `setState`
+  **solo cuando cambia el índice** — no un render por frame.
+- Todo respeta `prefers-reduced-motion` vía `useReducedMotion()`.
+- ❌ Descartado a propósito: WebGL/Three.js, partículas por canvas y cualquier
+  animación de desenfoque. Pesan y funden batería en gama media.
 
 ### Performance / "cero lag"
 - Secciones bajo el pliegue con `React.lazy` + `Suspense` (code-splitting).
@@ -168,6 +240,15 @@ placeholder ("Espacio reservado") aparece automáticamente cuando no hay imagen.
    carrusel (`tabIndex=0`, elemento alto) y el navegador lo mantiene a la vista,
    dando la impresión de que la página no vuelve arriba. **No es un bug** de la
    app; en carga normal nada auto-enfoca el deck.
+4. **Capturas del carrusel "cortadas"** (reportado 2026-08-17) → la tarjeta tenía
+   proporción 0.757 mientras la captura es 0.512, y encima la etiqueta con el
+   nombre se dibujaba **sobre** la imagen con un degradado (`p-5 pt-16`). Aunque
+   había `object-contain`, el rótulo tapaba la parte baja de la pantalla.
+   → **Solución**: el marco usa la proporción exacta de la captura
+   (`SHOT_RATIO = 0.512`) y el nombre se movió a una banda **debajo** del
+   teléfono. **Regla**: ningún rótulo se dibuja encima de una captura de perfil.
+5. **`<>` con `key` dentro de `<tbody>`** → no compila. Usar
+   `<Fragment key={...}>` importado de `react` (ver `PlanMatrix.tsx`).
 
 ---
 
@@ -177,6 +258,9 @@ placeholder ("Espacio reservado") aparece automáticamente cuando no hay imagen.
   layout cuando sea reutilizable/editable.
 - Iconos: añadir a `components/icons.tsx` (SVG inline, sin librería de iconos).
 - Español (es-EC) para todo el copy visible.
+- **Nunca hardcodear** teléfono, correo ni URLs: importar de `config/site.ts`
+  (`site`, `wa()`, `waMsg`). Todo enlace externo lleva `target="_blank"` +
+  `rel="noopener noreferrer"`.
 - Correo de soporte oficial: **connexoec@gmail.com**.
 
 ---
@@ -210,10 +294,11 @@ editar copy y etiquetas, respetar:
   No inventar cifras/programas específicos de la fundación; mantener general y
   enlazar para detalle.
 
-### Logo de marca — ⚠️ PENDIENTE
-- El cliente entregará el logo oficial para reemplazar el glifo provisional
-  `ConnexoMark` (SVG en `icons.tsx`) en **Navbar** y **Footer**, y para el
-  **favicon** (`index.html` → hoy `public/favicon.svg`).
-- Al recibirlo: colocar en `public/` (ej. `public/logo.svg` / `logo.png`),
-  cablear en Navbar/Footer (reemplazar `<ConnexoMark/>` por `<img>`) y actualizar
-  `<link rel="icon">` en `index.html`.
+### Logo de marca — ✅ RESUELTO (2026-08-17)
+- `public/connexo-lockup.png` (2153×301, **fondo transparente**) → Navbar y
+  Footer, como `<img>` con `width`/`height` para no producir CLS.
+- `public/connexo-logo.jpg` (1080×1080, isotipo naranja sobre negro puro) →
+  origen de `favicon-32/180/512.png` y de la `og:image`.
+- El glifo provisional `ConnexoMark` se **eliminó** de `icons.tsx`.
+- ⚠️ El isotipo solo existe sobre **negro puro**. Si algún día hace falta sobre
+  otro fondo, hay que pedir el SVG o un PNG transparente del isotipo.

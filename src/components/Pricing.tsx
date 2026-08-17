@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { plans } from '../data/pricing'
-import { CheckIcon, HeartIcon } from './icons'
+import { CheckIcon, HeartIcon, WhatsappIcon } from './icons'
 import SectionKicker from './SectionKicker'
+import PlanMatrix from './PlanMatrix'
+import { site, wa, waMsg } from '../config/site'
+import { Magnetic } from './fx/Motion'
 
 type Cycle = 'monthly' | 'yearly'
 
@@ -67,12 +70,7 @@ export default function Pricing() {
         <div className="mt-14 grid items-stretch gap-6 lg:grid-cols-3">
           {plans.map((plan, i) => {
             const price = cycle === 'monthly' ? plan.monthly : plan.yearly
-            const isFree = price === 0
-            const unit = isFree
-              ? '/mes'
-              : cycle === 'monthly'
-                ? '/mes'
-                : '/año'
+            const isTrial = price === null
 
             return (
               <motion.div
@@ -98,20 +96,45 @@ export default function Pricing() {
                 </div>
                 <p className="mb-6 text-sm text-white/50">{plan.tagline}</p>
 
-                <div className="mb-6 flex items-end gap-1">
-                  <span className="font-heading text-5xl text-white">
-                    ${price}
-                  </span>
-                  <span className="mb-1.5 text-sm text-white/50">{unit}</span>
+                <div className="mb-6 flex min-h-[60px] items-end gap-1">
+                  {isTrial ? (
+                    <span className="font-heading text-3xl leading-tight text-connexo">
+                      Prueba gratis
+                    </span>
+                  ) : (
+                    <>
+                      <span className="font-heading text-5xl text-white">
+                        ${price}
+                      </span>
+                      <span className="mb-1.5 text-sm text-white/50">
+                        {cycle === 'monthly' ? '/mes' : '/año'}
+                      </span>
+                    </>
+                  )}
                 </div>
 
+                {/* No hay auto-registro: la cuenta la crea Connexo. */}
+                <Magnetic className="mb-4 w-full">
+                  <a
+                    href={isTrial ? wa(waMsg.trial) : site.store}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-full text-center ${
+                      plan.featured ? 'btn-cta' : 'btn-outline'
+                    }`}
+                  >
+                    {plan.ctaLabel}
+                  </a>
+                </Magnetic>
+
                 <a
-                  href="#login"
-                  className={`mb-7 w-full text-center ${
-                    plan.featured ? 'btn-cta' : 'btn-outline'
-                  }`}
+                  href={wa(waMsg.plan(plan.name))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mb-7 inline-flex items-center justify-center gap-1.5 text-xs text-white/40 transition-colors hover:text-connexo"
                 >
-                  {plan.ctaLabel}
+                  <WhatsappIcon className="h-3.5 w-3.5" />
+                  Prefiero que me expliquen primero
                 </a>
 
                 <ul className="space-y-3">
@@ -130,11 +153,19 @@ export default function Pricing() {
                     </li>
                   ))}
                 </ul>
+
+                {plan.note && (
+                  <p className="mt-6 border-t border-white/[0.06] pt-4 text-xs leading-relaxed text-white/40">
+                    {plan.note}
+                  </p>
+                )}
               </motion.div>
             )
           })}
         </div>
       </div>
+
+      <PlanMatrix />
     </section>
   )
 }

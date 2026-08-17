@@ -2,9 +2,15 @@ import { lazy, Suspense } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Mechanism from './components/Mechanism'
+import { FilmGrain, Spotlight } from './components/fx/Ambient'
 
 // Below-the-fold sections are code-split → smaller initial bundle, faster paint.
 const EcosystemsCarousel = lazy(() => import('./components/EcosystemsCarousel'))
+const Platform = lazy(() => import('./components/Platform'))
+const Operations = lazy(() => import('./components/Operations'))
+const Membership = lazy(() => import('./components/Membership'))
+const Payments = lazy(() => import('./components/Payments'))
+const Analytics = lazy(() => import('./components/Analytics'))
 const RedConnexo = lazy(() => import('./components/RedConnexo'))
 const Pricing = lazy(() => import('./components/Pricing'))
 const Arupo = lazy(() => import('./components/Arupo'))
@@ -19,12 +25,21 @@ function SectionFallback() {
 export default function Landing() {
   return (
     <div className="min-h-screen bg-abyss-950 text-white/90">
+      {/* Capa de atmósfera global — no intercepta clics, no repinta por frame */}
+      <FilmGrain />
+      <Spotlight />
+
       <Navbar />
       <main>
         <Hero />
         <Mechanism />
         <Suspense fallback={<SectionFallback />}>
           <EcosystemsCarousel />
+          <Platform />
+          <Operations />
+          <Membership />
+          <Payments />
+          <Analytics />
           <RedConnexo />
           <Pricing />
           <Arupo />

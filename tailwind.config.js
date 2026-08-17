@@ -55,10 +55,16 @@ export default {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-8px)' },
         },
+        // Cinta infinita — translate3d puro, se resuelve en GPU.
+        marquee: {
+          from: { transform: 'translate3d(0,0,0)' },
+          to: { transform: 'translate3d(-100%,0,0)' },
+        },
       },
       animation: {
         'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
         float: 'float 6s ease-in-out infinite',
+        marquee: 'marquee 32s linear infinite',
       },
     },
   },

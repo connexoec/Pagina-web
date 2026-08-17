@@ -1,13 +1,28 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ConnexoMark } from './icons'
+import { site } from '../config/site'
 
 const links = [
   { label: 'Ecosistemas', href: '#ecosistemas' },
+  { label: 'Cómo opera', href: '#opera' },
   { label: 'Planes', href: '#planes' },
   { label: 'Causa', href: '#arupo' },
   { label: 'RED CONNEXO', href: '#red', badge: 'Próximamente' },
 ]
+
+/** Lockup oficial: isotipo + palabra, PNG con fondo transparente. */
+function Brand({ className = 'h-7' }: { className?: string }) {
+  return (
+    <img
+      src="/connexo-lockup.png"
+      alt="Connexo"
+      width={2153}
+      height={301}
+      decoding="async"
+      className={`${className} w-auto`}
+    />
+  )
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -30,16 +45,12 @@ export default function Navbar() {
       }`}
     >
       <nav className="section-pad flex h-16 items-center justify-between">
-        {/* Brand */}
-        <a href="#top" className="flex items-center gap-2.5">
-          <ConnexoMark className="h-7 w-7" />
-          <span className="font-heading text-lg tracking-tight text-white">
-            CONNEXO
-          </span>
+        <a href="#top" aria-label="Connexo — inicio" className="flex items-center">
+          <Brand className="h-6 sm:h-7" />
         </a>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul className="hidden items-center gap-7 lg:flex">
           {links.map((l) => (
             <li key={l.href}>
               <a
@@ -58,9 +69,14 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right CTA */}
-        <div className="hidden md:block">
-          <a href="#login" className="btn-outline text-sm">
+        {/* Right CTA — el panel real del cliente, no un signup que no existe */}
+        <div className="hidden lg:block">
+          <a
+            href={site.app}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline text-sm"
+          >
             INICIAR SESIÓN
           </a>
         </div>
@@ -70,7 +86,7 @@ export default function Navbar() {
           onClick={() => setOpen((v) => !v)}
           aria-label="Menú"
           aria-expanded={open}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-white md:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-white lg:hidden"
         >
           <div className="space-y-1.5">
             <span
@@ -97,7 +113,7 @@ export default function Navbar() {
         initial={false}
         animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
         transition={{ duration: 0.25 }}
-        className="overflow-hidden glass md:hidden"
+        className="glass overflow-hidden lg:hidden"
       >
         <ul className="section-pad flex flex-col gap-1 py-4">
           {links.map((l) => (
@@ -117,7 +133,13 @@ export default function Navbar() {
             </li>
           ))}
           <li className="pt-2">
-            <a href="#login" onClick={() => setOpen(false)} className="btn-outline w-full text-sm">
+            <a
+              href={site.app}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="btn-outline w-full text-sm"
+            >
               INICIAR SESIÓN
             </a>
           </li>

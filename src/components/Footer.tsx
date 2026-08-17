@@ -1,12 +1,11 @@
-import { ConnexoMark } from './icons'
+import { site, wa, waMsg } from '../config/site'
+import { WhatsappIcon } from './icons'
 
 const legal = [
   { label: 'Términos', href: '#terminos' },
   { label: 'Privacidad', href: '#privacidad' },
   { label: 'Cookies', href: '#cookies' },
 ]
-
-const SUPPORT_EMAIL = 'connexoec@gmail.com'
 
 export default function Footer() {
   return (
@@ -15,17 +14,23 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
           {/* Brand */}
           <div className="flex flex-col items-center gap-3 md:items-start">
-            <a href="#top" className="flex items-center gap-2.5">
-              <ConnexoMark className="h-7 w-7" />
-              <span className="font-heading text-lg tracking-tight text-white">
-                CONNEXO
-              </span>
+            <a href="#top" aria-label="Connexo — inicio" className="flex items-center">
+              <img
+                src="/connexo-lockup.png"
+                alt="Connexo"
+                width={2153}
+                height={301}
+                loading="lazy"
+                decoding="async"
+                className="h-7 w-auto"
+              />
             </a>
             <p className="max-w-xs text-center text-sm text-white/45 md:text-left">
-              Identidad digital NFC e IA. Convierte cada interacción en una venta.
+              Perfiles digitales NFC hechos en Ecuador. Un toque abre tu negocio
+              entero: catálogo, agenda, clientes y pedidos.
             </p>
             <a
-              href="https://www.fundacionarupo.org/"
+              href={site.arupo}
               target="_blank"
               rel="noopener noreferrer"
               className="text-center text-xs text-white/40 transition-colors hover:text-connexo md:text-left"
@@ -34,7 +39,7 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Links + contact */}
+          {/* Links + contacto */}
           <div className="flex flex-col items-center gap-5 md:items-end">
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
               {legal.map((l) => (
@@ -47,12 +52,24 @@ export default function Footer() {
                 </a>
               ))}
             </nav>
-            <a
-              href={`mailto:${SUPPORT_EMAIL}`}
-              className="text-sm font-medium text-connexo hover:underline"
-            >
-              {SUPPORT_EMAIL}
-            </a>
+
+            <div className="flex flex-col items-center gap-2 md:items-end">
+              <a
+                href={wa(waMsg.general)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-connexo hover:underline"
+              >
+                <WhatsappIcon className="h-4 w-4" />
+                {site.phoneDisplay}
+              </a>
+              <a
+                href={`mailto:${site.email}`}
+                className="text-sm text-white/55 transition-colors hover:text-connexo"
+              >
+                {site.email}
+              </a>
+            </div>
           </div>
         </div>
 

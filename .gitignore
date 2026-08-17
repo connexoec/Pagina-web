@@ -13,3 +13,9 @@ yarn-error.log*
 /Perfiles/
 connexo-dev-screenshot.png
 .vercel
+
+# CONFIDENCIAL — material interno de Connexo. NUNCA al repositorio.
+# El manual de capacitación contiene rutas del panel /admin, roles, nombres de
+# scripts SQL de Supabase y el flujo de credenciales de pasarela de pago.
+/Documentos/
+*.docx
