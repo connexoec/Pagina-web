@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { motion, useMotionValueEvent, useScroll } from 'framer-motion'
+import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion'
 import { BoxIcon, CheckIcon, LockIcon } from './icons'
 import SectionKicker from './SectionKicker'
 
@@ -24,15 +24,23 @@ const STAGES = [
   },
   {
     key: 'En camino',
-    title: 'El reparto también se sigue desde el mismo código.',
+    title: 'El reparto se sigue con el mismo código.',
     desc: 'Si el pedido es a domicilio, entra el estado de envío. Un solo código para todo el recorrido.',
   },
   {
     key: 'Entregado',
     title: 'Se cierra, y queda en tus números.',
-    desc: 'El pedido entra al panel de ventas: total vendido, cantidad, ticket promedio. Y se descarga en PDF cuando lo necesites.',
+    desc: 'El pedido entra al panel de ventas: total vendido, cantidad y ticket promedio. Y se descarga en PDF cuando lo necesites.',
   },
 ]
+
+/**
+ * Cuánto scroll dura cada estado, en vh.
+ * Con `sticky` el panel queda quieto mientras el contenedor pasa por detrás, así
+ * que este número es literalmente "cuánto hay que rodar para que cambie un
+ * paso". Demasiado alto = pantallas enteras sin que ocurra nada.
+ */
+const VH_PER_STAGE = 55
 
 export default function Operations() {
   const ref = useRef<HTMLDivElement>(null)
@@ -43,13 +51,14 @@ export default function Operations() {
     offset: ['start start', 'end end'],
   })
 
-  // Solo se actualiza el estado cuando cambia el índice, no en cada frame.
+  // El estado solo cambia cuando cambia el índice, no en cada frame.
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    const next = Math.min(STAGES.length - 1, Math.floor(v * STAGES.length))
+    const next = Math.min(STAGES.length - 1, Math.max(0, Math.floor(v * STAGES.length)))
     setStep((prev) => (prev === next ? prev : next))
   })
 
-  const stage = STAGES[step]
+  // La barra sigue al scroll de forma continua: no da saltos entre pasos.
+  const barScale = useTransform(scrollYProgress, [0, 1], [1 / STAGES.length, 1])
 
   return (
     <section id="opera" className="relative bg-abyss-950">
@@ -66,18 +75,27 @@ export default function Operations() {
       </div>
 
       {/* Contenedor alto: el scroll dentro de él mueve el pipeline */}
-      <div ref={ref} className="relative" style={{ height: `${STAGES.length * 72}vh` }}>
-        <div className="sticky top-0 flex min-h-screen items-center">
+      <div
+        ref={ref}
+        className="relative"
+        style={{ height: `${STAGES.length * VH_PER_STAGE}vh` }}
+      >
+        {/* `svh` en vez de `vh`: en móvil la barra del navegador cambia el alto
+            del viewport al scrollear y con `vh` el panel da tirones. */}
+        <div className="sticky top-0 flex min-h-[100svh] items-center py-16">
           <div className="section-pad w-full">
-            <div className="grid items-center gap-10 lg:grid-cols-2">
+            {/* Rejilla acotada: con `max-w-7xl` + `grid-cols-2` las dos mitades
+                quedaban a ~250px una de otra en escritorio. La columna del
+                teléfono es fija y el texto ocupa el resto, pegados. */}
+            <div className="mx-auto grid max-w-5xl items-center gap-8 lg:grid-cols-[minmax(0,330px)_minmax(0,1fr)] lg:gap-14">
               {/* Rastreador — lo que ve el cliente final */}
-              <div className="relative mx-auto w-full max-w-sm">
+              <div className="relative mx-auto w-full max-w-[330px]">
                 {/* inset corto a propósito: un halo más ancho desbordaría el
                     viewport en teléfono, y aquí no se puede usar
-                    `overflow-hidden` porque rompería el sticky del pipeline. */}
+                    `overflow-hidden` porque rompería el sticky. */}
                 <div className="pointer-events-none absolute -inset-3 rounded-full bg-connexo/10 blur-3xl" />
 
-                <div className="relative rounded-3xl border border-white/[0.08] bg-abyss-800 p-6 shadow-card">
+                <div className="relative rounded-3xl border border-white/[0.08] bg-abyss-800 p-5 shadow-card sm:p-6">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/40">
                       <BoxIcon className="h-4 w-4 text-connexo" />
@@ -88,7 +106,7 @@ export default function Operations() {
                     </span>
                   </div>
 
-                  <ul className="mt-6 space-y-1">
+                  <ul className="mt-5">
                     {STAGES.map((s, i) => {
                       const done = i < step
                       const current = i === step
@@ -100,7 +118,7 @@ export default function Operations() {
                                 ? 'border-connexo bg-connexo text-black'
                                 : current
                                   ? 'border-connexo bg-connexo/15 text-connexo'
-                                  : 'border-white/12 bg-white/[0.03] text-white/25'
+                                  : 'border-white/[0.12] bg-white/[0.03] text-white/25'
                             }`}
                           >
                             {done ? (
@@ -124,48 +142,59 @@ export default function Operations() {
                             {s.key}
                           </span>
 
-                          {current && (
-                            <motion.span
-                              layoutId="stage-pulse"
-                              className="ml-auto h-2 w-2 rounded-full bg-connexo"
-                              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            />
-                          )}
+                          {/* Punto sin `layoutId`: una animación de layout entre
+                              filas daba saltos al scrollear rápido. */}
+                          <span
+                            className={`ml-auto h-2 w-2 rounded-full bg-connexo transition-opacity duration-300 ${
+                              current ? 'opacity-100' : 'opacity-0'
+                            }`}
+                          />
                         </li>
                       )
                     })}
                   </ul>
 
-                  {/* Barra de avance: transform puro (scaleX) */}
-                  <div className="mt-5 h-1 overflow-hidden rounded-full bg-white/[0.07]">
+                  <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/[0.07]">
                     <motion.div
-                      className="h-full origin-left rounded-full bg-connexo"
-                      animate={{ scaleX: (step + 1) / STAGES.length }}
-                      transition={{ type: 'spring', stiffness: 180, damping: 26 }}
-                      style={{ width: '100%' }}
+                      className="h-full w-full origin-left rounded-full bg-connexo"
+                      style={{ scaleX: barScale }}
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Texto del paso activo */}
-              <div className="relative min-h-[220px]">
-                <motion.div
-                  key={stage.key}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <span className="inline-flex items-center gap-2 rounded-full border border-connexo/35 bg-connexo/10 px-3 py-1 text-xs font-semibold text-connexo">
-                    {String(step + 1).padStart(2, '0')} · {stage.key}
-                  </span>
-                  <h3 className="mt-5 font-heading text-2xl leading-tight text-white sm:text-3xl">
-                    {stage.title}
-                  </h3>
-                  <p className="mt-4 max-w-md text-base leading-relaxed text-white/60">
-                    {stage.desc}
-                  </p>
-                </motion.div>
+              {/* Texto del paso activo.
+                  Los cinco bloques están montados y solo cambia su opacidad. Con
+                  `key` se remontaba en cada paso y la animación de entrada se
+                  reproducía otra vez: al scrollear rápido, parpadeaba. */}
+              <div className="relative min-h-[230px] sm:min-h-[210px]">
+                {STAGES.map((s, i) => {
+                  const active = i === step
+                  return (
+                    <motion.div
+                      key={s.key}
+                      className="absolute inset-x-0 top-0"
+                      aria-hidden={!active}
+                      initial={false}
+                      animate={{
+                        opacity: active ? 1 : 0,
+                        y: active ? 0 : 14,
+                      }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ pointerEvents: active ? 'auto' : 'none' }}
+                    >
+                      <span className="inline-flex items-center gap-2 rounded-full border border-connexo/35 bg-connexo/10 px-3 py-1 text-xs font-semibold text-connexo">
+                        {String(i + 1).padStart(2, '0')} · {s.key}
+                      </span>
+                      <h3 className="mt-4 font-heading text-2xl leading-tight text-white sm:text-3xl">
+                        {s.title}
+                      </h3>
+                      <p className="mt-3 max-w-md text-base leading-relaxed text-white/60">
+                        {s.desc}
+                      </p>
+                    </motion.div>
+                  )
+                })}
               </div>
             </div>
           </div>

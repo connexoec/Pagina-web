@@ -267,6 +267,22 @@ para que la imagen entre completa. Ver §7.4.
    ⚠️ **Nunca poner `overflow-hidden` en una sección que contenga
    `position: sticky`** — lo rompe. Por eso `Operations.tsx` no lo lleva y su
    halo usa `-inset-3` en vez de `-inset-8`.
+7. **`Operations.tsx`: scroll con tirones y columnas separadas** (reportado
+   2026-08-17). Cuatro causas, todas corregidas:
+   - **Parpadeo**: el bloque de texto usaba `key={stage.key}`, así que React lo
+     remontaba en cada paso y repetía la animación de entrada. → Los cinco
+     bloques quedan montados y solo se cruza su `opacity`.
+   - **Saltos**: el punto del paso activo usaba `layoutId`; una animación de
+     layout entre filas da tirones al scrollear rápido. → `opacity` y ya.
+   - **Scroll muerto**: 72vh por paso = 360vh de rodar para 5 estados. →
+     `VH_PER_STAGE = 55`. Es la perilla para regular el largo de la sección.
+   - **Móvil**: `min-h-screen` usa `vh`, que cambia cuando aparece o se esconde
+     la barra del navegador. → `min-h-[100svh]`.
+   - **Escritorio, "muy separados"**: `max-w-7xl` + `lg:grid-cols-2` dejaba las
+     dos mitades a ~250px una de otra. → `max-w-5xl` +
+     `lg:grid-cols-[minmax(0,330px)_minmax(0,1fr)]`.
+   - Además la barra de avance sigue al scroll **de forma continua**
+     (`useTransform`), en vez de saltar entre pasos discretos.
 
 ---
 
