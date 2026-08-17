@@ -5,6 +5,7 @@ import { members, OPEN_SLOTS, cities, activeEcosystems } from '../data/directory
 import { ecosystems } from '../data/ecosystems'
 import { MemberCard, OpenSlotCard } from '../components/DirectoryCard'
 import SectionKicker from '../components/SectionKicker'
+import NgoAlliance from '../components/NgoAlliance'
 import { Counter } from '../components/fx/Motion'
 import { ArrowIcon, SearchIcon } from '../components/icons'
 import { wa, waMsg } from '../config/site'
@@ -178,6 +179,10 @@ export default function RedPage() {
             </div>
           </div>
         </section>
+
+        {/* Convenios con organizaciones — va antes del directorio a propósito:
+            explica por qué hay negocios aquí que llegaron por una ONG. */}
+        <NgoAlliance />
 
         {/* Directorio */}
         <section className="relative bg-abyss-950 py-16 sm:py-20">

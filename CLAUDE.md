@@ -267,8 +267,18 @@ para que la imagen entre completa. Ver §7.4.
    ⚠️ **Nunca poner `overflow-hidden` en una sección que contenga
    `position: sticky`** — lo rompe. Por eso `Operations.tsx` no lo lleva y su
    halo usa `-inset-3` en vez de `-inset-8`.
-7. **`Operations.tsx`: scroll con tirones y columnas separadas** (reportado
-   2026-08-17). Cuatro causas, todas corregidas:
+7. 🔴 **`overflow-x: hidden` en `html`/`body` ROMPE `position: sticky`.**
+   El error más caro del proyecto, y fue una regresión introducida al arreglar
+   el menú móvil (error 6). Poner `overflow-x: hidden` obliga a que el eje
+   contrario compute a `auto`, lo que convierte al elemento en **contenedor de
+   scroll**; a partir de ahí todos sus descendientes `sticky` dejan de fijarse.
+   Por eso el pipeline de `Operations.tsx` se veía roto en PC **y** en móvil.
+   → **Usar siempre `overflow-x: clip`**, que recorta igual pero NO crea
+   contenedor de scroll. Está en `index.css` con su comentario.
+   **Nunca volver a poner `hidden` ahí.** Verificación rápida tras compilar:
+   `overflow-x:clip` debe aparecer 2 veces en el CSS y `overflow-x:hidden` 0.
+8. **`Operations.tsx`: scroll con tirones y columnas separadas** (reportado
+   2026-08-17). Además del punto 7, el propio componente tenía cuatro fallos:
    - **Parpadeo**: el bloque de texto usaba `key={stage.key}`, así que React lo
      remontaba en cada paso y repetía la animación de entrada. → Los cinco
      bloques quedan montados y solo se cruza su `opacity`.
@@ -279,10 +289,22 @@ para que la imagen entre completa. Ver §7.4.
    - **Móvil**: `min-h-screen` usa `vh`, que cambia cuando aparece o se esconde
      la barra del navegador. → `min-h-[100svh]`.
    - **Escritorio, "muy separados"**: `max-w-7xl` + `lg:grid-cols-2` dejaba las
-     dos mitades a ~250px una de otra. → `max-w-5xl` +
-     `lg:grid-cols-[minmax(0,330px)_minmax(0,1fr)]`.
-   - Además la barra de avance sigue al scroll **de forma continua**
-     (`useTransform`), en vez de saltar entre pasos discretos.
+     dos mitades a ~250px una de otra. → rejilla acotada con columna fija.
+
+   **Arquitectura final (la que funciona)** — no volver al esquema anterior:
+   - **Nada de un contenedor de `N vh` con un hijo `sticky` de `100vh`.** Ese
+     esquema se rompe si el contenido supera el alto de la pantalla y obliga a
+     cuadrar alturas mágicas. Ahora el `sticky` va sobre un elemento de **alto
+     natural** (`sticky top-28`) y la altura del recorrido la da la columna del
+     relato: 5 bloques de `min-h-[58vh]`.
+   - El paso activo se detecta con **`useInView` por bloque**
+     (`margin: '-45% 0px -45% 0px'` = solo el centro de la pantalla), no con
+     aritmética sobre `scrollYProgress`. Funciona igual en cualquier pantalla.
+   - `onEnter` va envuelto en `useCallback`: si cambiara en cada render, el
+     efecto de cada bloque se redispararía sin parar.
+   - **Dos rastreadores distintos**: `FullTracker` (tarjeta vertical, solo
+     `lg:`) y `CompactTracker` (tira horizontal de ~90px fijada bajo la barra,
+     solo móvil). La tarjeta vertical en teléfono se comía media pantalla.
 
 ---
 
@@ -362,8 +384,22 @@ miembros para "llenar" la grilla: un directorio con negocios falsos engaña al
 visitante que hace clic y quema la marca. Mientras la red sea chica se muestran
 **espacios libres** (`OpenSlotCard`) — la escasez juega a favor, la mentira no.
 
-Hoy hay **1 miembro real**: el propio perfil de Connexo
-(`connexoapp.com/connexo`). El resto son espacios libres.
+Hoy hay **20 miembros reales**. `city` y `what` siguen incompletos en varios:
+se rellenan cuando el negocio los confirme, no antes.
+
+⚠️ Los perfiles de `connexoapp.com` son una **SPA**: al pedirlos devuelven un
+cascarón vacío titulado "Connexo". **No se pueden extraer rubro, ciudad ni
+descripción automáticamente** — hay que pedírselos al negocio. Y como el
+servidor responde 200 a cualquier ruta por su regla de reescritura, un usuario
+mal escrito **no da error**: los enlaces se comprueban a ojo, uno por uno.
+
+### Convenios con organizaciones (`components/NgoAlliance.tsx`)
+Va **antes** del directorio en `/red`. Explica que las organizaciones aliadas
+activan perfiles Connexo a los emprendedores que acompañan, y ancla el
+compromiso del 10% con la Fundación Arupo.
+- Las organizaciones que se listan salen de `directory.ts` con `ngo: true`.
+- `OPEN_AGREEMENTS` dibuja cupos abiertos. **Nunca inventar una alianza**: una
+  ONG falsa en una página pública es un problema serio, no un adorno.
 
 ### Decisiones de diseño
 - Búsqueda **sin acentos y con palabras en cualquier orden** (`normalize()` con
