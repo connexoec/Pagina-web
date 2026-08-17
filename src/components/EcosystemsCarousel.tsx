@@ -74,7 +74,15 @@ export default function EcosystemsCarousel() {
   const activeEco = ecosystems[active]
 
   return (
-    <section id="ecosistemas" className="relative bg-abyss-950 py-20 sm:py-28">
+    /* overflow-hidden: las tarjetas laterales del cover flow se salen a
+       propósito del ancho del viewport. Se recortan AQUÍ, en la sección, para
+       que el documento no crezca a lo ancho (ver nota en index.css).
+       Ojo: esta sección no contiene ningún `position: sticky` — si algún día
+       se añade uno, `overflow-hidden` lo rompería. */
+    <section
+      id="ecosistemas"
+      className="relative overflow-hidden bg-abyss-950 py-20 sm:py-28"
+    >
       <div className="section-pad">
         <div className="mx-auto max-w-2xl text-center">
           <div className="mb-4">

@@ -183,6 +183,13 @@ export const BoxIcon = (p: IconProps) => (
   </svg>
 )
 
+export const SearchIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m16.5 16.5 4 4" />
+  </svg>
+)
+
 export const UsersIcon = (p: IconProps) => (
   <svg {...base} {...p}>
     <circle cx="9" cy="8" r="3.2" />

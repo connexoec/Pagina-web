@@ -72,7 +72,10 @@ export default function Operations() {
             <div className="grid items-center gap-10 lg:grid-cols-2">
               {/* Rastreador — lo que ve el cliente final */}
               <div className="relative mx-auto w-full max-w-sm">
-                <div className="pointer-events-none absolute -inset-8 rounded-full bg-connexo/10 blur-3xl" />
+                {/* inset corto a propósito: un halo más ancho desbordaría el
+                    viewport en teléfono, y aquí no se puede usar
+                    `overflow-hidden` porque rompería el sticky del pipeline. */}
+                <div className="pointer-events-none absolute -inset-3 rounded-full bg-connexo/10 blur-3xl" />
 
                 <div className="relative rounded-3xl border border-white/[0.08] bg-abyss-800 p-6 shadow-card">
                   <div className="flex items-center justify-between">

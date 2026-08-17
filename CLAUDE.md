@@ -27,8 +27,8 @@ Hechos del producto que la web DEBE respetar:
 - **CONECTA no publica precio**: es la puerta de entrada como prueba gratuita, y
   esa prueba puede correrse con funciones de PRO o de ULTRA.
 - **Las reservas son "parciales" en PRO** y dependen del rubro (§2.1). Decirlo.
-- RED CONNEXO **no está en el manual**: es promesa a futuro. Se mantiene tal cual
-  (decisión del cliente, 2026-08-17) — **no tocar esa sección**.
+- RED CONNEXO **no está en el manual**: es producto propio de la web. Desde
+  2026-08-17 es un **directorio público de emprendedores** (ver §10).
 
 ---
 
@@ -103,6 +103,7 @@ ConnexoWeb/
 │  │  └─ campaign.ts          # toggle ON/OFF del banner de campaña
 │  ├─ data/
 │  │  ├─ ecosystems.ts        # las 9 plantillas reales del carrusel
+│  │  ├─ directory.ts         # miembros de la RED CONNEXO (§10)
 │  │  └─ pricing.ts           # planes + tabla comparativa (`comparison`)
 │  └─ components/
 │     ├─ fx/
@@ -120,7 +121,8 @@ ConnexoWeb/
 │     ├─ Membership.tsx       #  7. Códigos de miembro y clubes
 │     ├─ Payments.tsx         #  8. Las 4 formas de cobro
 │     ├─ Analytics.tsx        #  9. Analíticas + mapa de calor
-│     ├─ RedConnexo.tsx       # 10. RED CONNEXO (NO TOCAR — §0)
+│     ├─ RedConnexo.tsx       # 10. RED CONNEXO · directorio público (§10)
+│     ├─ DirectoryCard.tsx    #     └─ MemberCard + OpenSlotCard
 │     ├─ Pricing.tsx          # 11. Planes + chip 10% Arupo
 │     ├─ PlanMatrix.tsx       #     └─ comparador de 3 planes (dentro de Pricing)
 │     ├─ Arupo.tsx            # 12. Responsabilidad social · Fundación Arupo (§9)
@@ -149,7 +151,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 | 7 | Club / códigos | ✅ | Códigos de miembro reales (B-/E-/R-/S-/F-), sellos, VIP. Manual §18. |
 | 8 | Cobros | ✅ | Las 4 formas de pago + facturación con RUC. Manual §23.5, §24.9. |
 | 9 | Analíticas | ✅ | Contadores + mapa de calor 7×12 + conclusiones automáticas. Manual §15. |
-| 10 | RED CONNEXO | ✅ | Textura de red de nodos SVG (estática, sin lag). **NO TOCAR** (§0). |
+| 10 | RED CONNEXO | ✅ | **Directorio público** (§10): buscador sin acentos, filtros por rubro con conteo, grilla de fichas + espacios libres, barrido de radar. |
 | 11 | Planes | ✅ | CONECTA sin precio ("Prueba gratis"); PRO/ULTRA → tienda; toggle Mensual/Anual; chip "10% Arupo"; **comparador `PlanMatrix`**. |
 | 12 | Fundación Arupo | ✅ | Responsabilidad social: 10% de cada plan. Cifra ancla "10%" + manifiesto + CTA externo a fundacionarupo.org. |
 | 13 | Campañas | ✅ | Banner dinámico ON/OFF vía `config/campaign.ts`. |
@@ -249,6 +251,18 @@ para que la imagen entre completa. Ver §7.4.
    teléfono. **Regla**: ningún rótulo se dibuja encima de una captura de perfil.
 5. **`<>` con `key` dentro de `<tbody>`** → no compila. Usar
    `<Fragment key={...}>` importado de `react` (ver `PlanMatrix.tsx`).
+6. **Móvil: "el menú se sale de la página"** (reportado 2026-08-17) → no era el
+   menú. Las tarjetas laterales del carrusel desbordaban a lo ancho y
+   `overflow-x: hidden` estaba **solo en `body`**; varios navegadores móviles
+   igual dejan desplazar el viewport, el documento queda más ancho que la
+   pantalla y la barra fija (100vw) se ve corrida respecto al contenido.
+   → **Solución en tres capas**: (a) `overflow-x: hidden` + `width: 100%`
+   también en `html`; (b) `overflow-hidden` en la sección del carrusel, que es
+   donde nace el desborde; (c) el menú móvil con `max-w-full` y
+   `max-h-[calc(100vh-4rem)] overflow-y-auto`.
+   ⚠️ **Nunca poner `overflow-hidden` en una sección que contenga
+   `position: sticky`** — lo rompe. Por eso `Operations.tsx` no lo lleva y su
+   halo usa `-inset-3` en vez de `-inset-8`.
 
 ---
 
@@ -302,3 +316,40 @@ editar copy y etiquetas, respetar:
 - El glifo provisional `ConnexoMark` se **eliminó** de `icons.tsx`.
 - ⚠️ El isotipo solo existe sobre **negro puro**. Si algún día hace falta sobre
   otro fondo, hay que pedir el SVG o un PNG transparente del isotipo.
+
+---
+
+## 10. RED CONNEXO — Directorio de emprendedores
+
+Desde 2026-08-17 la sección `#red` es un **directorio público**: cualquiera entra,
+busca, ve qué hace cada negocio y salta a su perfil real en `connexoapp.com`.
+
+### Cómo sumar un negocio (el flujo entero)
+1. Verificar que su perfil abra de verdad en `connexoapp.com/<usuario>`.
+2. Añadir el objeto en **`src/data/directory.ts`** (`members`), con `ecosystem`
+   igual a un `id` de `data/ecosystems.ts` — de ahí salen los filtros.
+3. Foto opcional en `public/red/<id>.jpg` apuntada en `image`. **Sin foto no
+   pasa nada**: la ficha dibuja su identidad sola (rejilla de nodos + inicial).
+4. Bajar `OPEN_SLOTS` si ya no hacen falta tantos espacios libres.
+
+### ⚠️ REGLA INNEGOCIABLE
+**Solo negocios reales, con perfil publicado y verificable.** Nunca inventar
+miembros para "llenar" la grilla: un directorio con negocios falsos engaña al
+visitante que hace clic y quema la marca. Mientras la red sea chica se muestran
+**espacios libres** (`OpenSlotCard`) — la escasez juega a favor, la mentira no.
+
+Hoy hay **1 miembro real**: el propio perfil de Connexo
+(`connexoapp.com/connexo`). El resto son espacios libres.
+
+### Decisiones de diseño
+- Búsqueda **sin acentos y con palabras en cualquier orden** (`normalize()` con
+  `NFD` + `\p{M}`), igual que el buscador de catálogo del producto (manual §17.3).
+- Chips de rubro **con conteo**; los rubros sin miembros salen deshabilitados —
+  se ve la forma de la red sin fingir que está llena.
+- Al filtrar **no se dibujan espacios libres**: mezclarlos con resultados de
+  búsqueda confunde.
+- **Sin colores por rubro**: la marca es negro + `#ff6600` y punto (§2). Los
+  rubros se distinguen por etiqueta, no por color.
+- `RadarSweep` es un `conic-gradient` girando con `rotate` — GPU pura, y se
+  desactiva con `prefers-reduced-motion`.
+- Los códigos `CX-XXXX` son cosméticos y deterministas (hash del `id`).

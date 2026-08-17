@@ -10,12 +10,22 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* El ancho del documento NUNCA supera el del viewport. Si solo se pone en
+       <body>, algunos navegadores móviles igual permiten desplazar el viewport
+       en horizontal: el documento queda más ancho que la pantalla y la barra
+       fija (que mide 100vw) se ve corrida respecto al contenido. Ese era el
+       bug del menú móvil "que se salía de la página". */
+    overflow-x: hidden;
+    width: 100%;
   }
 
   body {
     @apply bg-abyss-950 text-white/90 font-sans antialiased;
-    /* Prevent horizontal scroll from off-canvas carousel cards */
+    /* Segunda barrera: contiene las tarjetas del carrusel fuera de vista. */
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
     text-rendering: optimizeLegibility;
   }
 

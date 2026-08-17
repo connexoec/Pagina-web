@@ -7,7 +7,7 @@ const links = [
   { label: 'Cómo opera', href: '#opera' },
   { label: 'Planes', href: '#planes' },
   { label: 'Causa', href: '#arupo' },
-  { label: 'RED CONNEXO', href: '#red', badge: 'Próximamente' },
+  { label: 'RED CONNEXO', href: '#red', badge: 'Directorio' },
 ]
 
 /** Lockup oficial: isotipo + palabra, PNG con fondo transparente. */
@@ -108,14 +108,15 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — nunca más ancho que la pantalla, y si algún día crece
+          de más, hace scroll dentro de sí mismo en vez de salirse. */}
       <motion.div
         initial={false}
         animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
         transition={{ duration: 0.25 }}
-        className="glass overflow-hidden lg:hidden"
+        className="glass w-full max-w-full overflow-hidden lg:hidden"
       >
-        <ul className="section-pad flex flex-col gap-1 py-4">
+        <ul className="section-pad flex max-h-[calc(100vh-4rem)] flex-col gap-1 overflow-y-auto py-4">
           {links.map((l) => (
             <li key={l.href}>
               <a
