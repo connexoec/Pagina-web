@@ -1,7 +1,9 @@
 import { site, wa, waMsg } from '../config/site'
 import { WhatsappIcon } from './icons'
+import { Link } from '../router'
 
 const legal = [
+  { label: 'RED CONNEXO', href: '/red' },
   { label: 'Términos', href: '#terminos' },
   { label: 'Privacidad', href: '#privacidad' },
   { label: 'Cookies', href: '#cookies' },
@@ -14,7 +16,7 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
           {/* Brand */}
           <div className="flex flex-col items-center gap-3 md:items-start">
-            <a href="#top" aria-label="Connexo — inicio" className="flex items-center">
+            <Link href="/" aria-label="Connexo — inicio" className="flex items-center">
               <img
                 src="/connexo-lockup.png"
                 alt="Connexo"
@@ -24,7 +26,7 @@ export default function Footer() {
                 decoding="async"
                 className="h-7 w-auto"
               />
-            </a>
+            </Link>
             <p className="max-w-xs text-center text-sm text-white/45 md:text-left">
               Perfiles digitales NFC hechos en Ecuador. Un toque abre tu negocio
               entero: catálogo, agenda, clientes y pedidos.
@@ -43,13 +45,13 @@ export default function Footer() {
           <div className="flex flex-col items-center gap-5 md:items-end">
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
               {legal.map((l) => (
-                <a
+                <Link
                   key={l.href}
                   href={l.href}
                   className="text-sm text-white/55 transition-colors hover:text-connexo"
                 >
                   {l.label}
-                </a>
+                </Link>
               ))}
             </nav>
 

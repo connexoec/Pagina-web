@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { site } from '../config/site'
+import { Link } from '../router'
 
+// Rutas absolutas a propósito: el navbar también se monta en /red, donde un
+// `#planes` suelto apuntaría a una sección que ahí no existe.
 const links = [
-  { label: 'Ecosistemas', href: '#ecosistemas' },
-  { label: 'Cómo opera', href: '#opera' },
-  { label: 'Planes', href: '#planes' },
-  { label: 'Causa', href: '#arupo' },
-  { label: 'RED CONNEXO', href: '#red', badge: 'Directorio' },
+  { label: 'Ecosistemas', href: '/#ecosistemas' },
+  { label: 'Cómo opera', href: '/#opera' },
+  { label: 'Planes', href: '/#planes' },
+  { label: 'Causa', href: '/#arupo' },
+  { label: 'RED CONNEXO', href: '/red', badge: 'Directorio' },
 ]
 
 /** Lockup oficial: isotipo + palabra, PNG con fondo transparente. */
@@ -45,15 +48,15 @@ export default function Navbar() {
       }`}
     >
       <nav className="section-pad flex h-16 items-center justify-between">
-        <a href="#top" aria-label="Connexo — inicio" className="flex items-center">
+        <Link href="/" aria-label="Connexo — inicio" className="flex items-center">
           <Brand className="h-6 sm:h-7" />
-        </a>
+        </Link>
 
         {/* Desktop links */}
         <ul className="hidden items-center gap-7 lg:flex">
           {links.map((l) => (
             <li key={l.href}>
-              <a
+              <Link
                 href={l.href}
                 className="group relative inline-flex items-center gap-1.5 text-sm font-medium text-white/70 transition-colors hover:text-white"
               >
@@ -64,7 +67,7 @@ export default function Navbar() {
                   </span>
                 )}
                 <span className="absolute -bottom-1 left-0 h-px w-0 bg-connexo transition-all duration-300 group-hover:w-full" />
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -119,7 +122,7 @@ export default function Navbar() {
         <ul className="section-pad flex max-h-[calc(100vh-4rem)] flex-col gap-1 overflow-y-auto py-4">
           {links.map((l) => (
             <li key={l.href}>
-              <a
+              <Link
                 href={l.href}
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2 py-2 text-white/80"
@@ -130,7 +133,7 @@ export default function Navbar() {
                     {l.badge}
                   </span>
                 )}
-              </a>
+              </Link>
             </li>
           ))}
           <li className="pt-2">

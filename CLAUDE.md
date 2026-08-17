@@ -95,9 +95,13 @@ ConnexoWeb/
 │  ├─ favicon-32/180/512.png  # Derivados del isotipo
 │  └─ perfiles/               # capturas del carrusel (ver §5)
 ├─ src/
-│  ├─ main.tsx                # entry → <Landing/>
+│  ├─ main.tsx                # entry → <App/>
+│  ├─ App.tsx                 # rutas + capa de atmósfera global
+│  ├─ router.tsx              # enrutador mínimo sin dependencias (§11)
 │  ├─ index.css               # base Tailwind + tokens de componentes
-│  ├─ Landing.tsx             # compone secciones; lazy-load bajo el pliegue
+│  ├─ Landing.tsx             # página "/" — secciones, lazy bajo el pliegue
+│  ├─ pages/
+│  │  └─ RedPage.tsx          # página "/red" — directorio RED CONNEXO (§10)
 │  ├─ config/
 │  │  ├─ site.ts              # WhatsApp, tienda, app, correo (SSOT de contacto)
 │  │  └─ campaign.ts          # toggle ON/OFF del banner de campaña
@@ -121,8 +125,8 @@ ConnexoWeb/
 │     ├─ Membership.tsx       #  7. Códigos de miembro y clubes
 │     ├─ Payments.tsx         #  8. Las 4 formas de cobro
 │     ├─ Analytics.tsx        #  9. Analíticas + mapa de calor
-│     ├─ RedConnexo.tsx       # 10. RED CONNEXO · directorio público (§10)
-│     ├─ DirectoryCard.tsx    #     └─ MemberCard + OpenSlotCard
+│     ├─ RedTeaser.tsx        # 10. Banda que invita a /red (NO es el directorio)
+│     ├─ DirectoryCard.tsx    #     MemberCard + OpenSlotCard (los usa RedPage)
 │     ├─ Pricing.tsx          # 11. Planes + chip 10% Arupo
 │     ├─ PlanMatrix.tsx       #     └─ comparador de 3 planes (dentro de Pricing)
 │     ├─ Arupo.tsx            # 12. Responsabilidad social · Fundación Arupo (§9)
@@ -151,7 +155,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 | 7 | Club / códigos | ✅ | Códigos de miembro reales (B-/E-/R-/S-/F-), sellos, VIP. Manual §18. |
 | 8 | Cobros | ✅ | Las 4 formas de pago + facturación con RUC. Manual §23.5, §24.9. |
 | 9 | Analíticas | ✅ | Contadores + mapa de calor 7×12 + conclusiones automáticas. Manual §15. |
-| 10 | RED CONNEXO | ✅ | **Directorio público** (§10): buscador sin acentos, filtros por rubro con conteo, grilla de fichas + espacios libres, barrido de radar. |
+| 10 | RED CONNEXO | ✅ | En la portada solo va `RedTeaser` (banda + CTA). **El directorio vive en su propia página `/red`** (§10). |
 | 11 | Planes | ✅ | CONECTA sin precio ("Prueba gratis"); PRO/ULTRA → tienda; toggle Mensual/Anual; chip "10% Arupo"; **comparador `PlanMatrix`**. |
 | 12 | Fundación Arupo | ✅ | Responsabilidad social: 10% de cada plan. Cifra ancla "10%" + manifiesto + CTA externo a fundacionarupo.org. |
 | 13 | Campañas | ✅ | Banner dinámico ON/OFF vía `config/campaign.ts`. |
@@ -321,8 +325,12 @@ editar copy y etiquetas, respetar:
 
 ## 10. RED CONNEXO — Directorio de emprendedores
 
-Desde 2026-08-17 la sección `#red` es un **directorio público**: cualquiera entra,
-busca, ve qué hace cada negocio y salta a su perfil real en `connexoapp.com`.
+**Es una página propia: `/red`** (`pages/RedPage.tsx`), no una sección de la
+portada. Cualquiera entra, busca, ve qué hace cada negocio y salta a su perfil
+real en `connexoapp.com`.
+
+En la portada queda únicamente `components/RedTeaser.tsx`: una banda con el
+claim y el botón "ENTRAR AL DIRECTORIO". **No duplicar ahí el directorio.**
 
 ### Cómo sumar un negocio (el flujo entero)
 1. Verificar que su perfil abra de verdad en `connexoapp.com/<usuario>`.
@@ -353,3 +361,35 @@ Hoy hay **1 miembro real**: el propio perfil de Connexo
 - `RadarSweep` es un `conic-gradient` girando con `rotate` — GPU pura, y se
   desactiva con `prefers-reduced-motion`.
 - Los códigos `CX-XXXX` son cosméticos y deterministas (hash del `id`).
+
+---
+
+## 11. Enrutado (`src/router.tsx`)
+
+Enrutador propio de ~100 líneas sobre la History API. **Sin dependencias**: meter
+react-router para dos rutas serían ~20 kB para resolver un `switch`. Si algún día
+hay muchas rutas con parámetros, ahí sí toca cambiarlo.
+
+| Ruta | Componente |
+|------|-----------|
+| `/` | `Landing.tsx` |
+| `/red` | `pages/RedPage.tsx` (lazy — su código no viaja con la portada) |
+| cualquier otra | cae en `Landing.tsx` |
+
+### Reglas al escribir enlaces
+- **Enlace interno → `<Link href="…">` de `router.tsx`**, nunca `<a>`.
+- **Anclas del navbar y del footer van absolutas** (`/#planes`, no `#planes`):
+  esos componentes también se montan en `/red`, donde un `#planes` suelto
+  apuntaría a una sección que ahí no existe.
+- Enlaces externos (`http…`, `mailto:`, `tel:`) siguen siendo `<a>` normales.
+  `Link` los deja pasar al navegador sin interceptar, igual que los clics con
+  Ctrl/⌘/rueda — abrir en pestaña nueva tiene que seguir funcionando.
+
+### Detalles que ya costaron
+- `scrollToHash()` **reintenta unos frames**: al llegar a `/#planes` desde `/red`,
+  las secciones son `React.lazy` y el elemento aún no existe cuando se procesa
+  el clic.
+- `FilmGrain` y `Spotlight` viven en `App.tsx`, **por encima de las rutas**. Si
+  se montan dentro de cada página, el grano parpadea en cada navegación.
+- Los deep links (`/red` escrito a mano, recarga, enlace compartido) dependen de
+  la regla `rewrites` de `vercel.json`. **No borrarla.**
