@@ -222,7 +222,13 @@ export default function Operations() {
           <CompactTracker step={step} />
         </div>
 
-        <div className="mt-6 grid gap-14 lg:mt-16 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:items-start">
+        {/* ⚠️ Sin `items-start`: en CSS Grid esa alineación deja al item con el
+            alto de su contenido, así que la columna del rastreador medía lo
+            mismo que la tarjeta y el `sticky` de adentro se quedaba sin
+            recorrido — se despegaba al primer scroll. Con el `stretch` por
+            defecto la columna alcanza el alto de la fila y el rastreador
+            acompaña los cinco pasos. */}
+        <div className="mt-6 grid gap-14 lg:mt-16 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
           {/* Rastreador completo, fijado al costado — solo escritorio.
               `sticky` sobre un elemento de alto natural: no hay contenedor de
               100vh que pueda quedar más alto que la pantalla. */}

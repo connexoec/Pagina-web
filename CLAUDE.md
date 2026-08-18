@@ -1,7 +1,9 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-08-17**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-08-18**
+> (sticky del pipeline arreglado en PC + huevo de pascua yautja en el logo).
+> Hito previo: **2026-08-17**
 > (logo oficial + auditoría contra el Manual de Capacitación v0.52.1 +
 > 9 plantillas reales + 5 secciones nuevas + capa de animación).
 
@@ -91,6 +93,7 @@ ConnexoWeb/
 ├─ index.html                 # fuentes + favicon + OG + root
 ├─ public/
 │  ├─ connexo-lockup.png      # LOGO oficial: isotipo+palabra, fondo transparente
+│  ├─ connexo-yautja.png      # "CONNEXO" en alfabeto yautja (huevo de pascua, §9)
 │  ├─ connexo-logo.jpg        # Isotipo cuadrado sobre negro (origen del favicon)
 │  ├─ favicon-32/180/512.png  # Derivados del isotipo
 │  └─ perfiles/               # capturas del carrusel (ver §5)
@@ -146,7 +149,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
-| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO; "Iniciar sesión" → app real. |
+| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO; "Iniciar sesión" → app real. Clic en el logo = huevo de pascua yautja (§9). |
 | 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; anillos NFC; CTA magnético → WhatsApp; cinta de los 9 rubros. |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
 | 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
@@ -306,6 +309,21 @@ para que la imagen entre completa. Ver §7.4.
      `lg:`) y `CompactTracker` (tira horizontal de ~90px fijada bajo la barra,
      solo móvil). La tarjeta vertical en teléfono se comía media pantalla.
 
+9. 🔴 **`items-start` en una rejilla CSS mata el `sticky` de su columna.**
+   (Reportado 2026-08-18: "el scroll en PC está muy mal, en teléfono está
+   perfecto"). La rejilla de `Operations.tsx` llevaba `lg:items-start`. Con
+   `align-items: start` el item de la rejilla queda del **alto de su
+   contenido**, no del alto de la fila; y como el `sticky` solo puede recorrer
+   el bloque contenedor, el rastreador tenía ~0 px de recorrido: se despegaba
+   al primer scroll y quedaban ~250vh de texto con la columna izquierda vacía.
+   En teléfono no se notaba porque el `CompactTracker` cuelga de un `div` que sí
+   ocupa toda la sección.
+   → **Regla**: la columna que lleva un `sticky` NUNCA se alinea con
+   `items-start` / `self-start`; necesita el `stretch` por defecto para heredar
+   el alto de la fila. Aplica igual a flexbox (`items-start` ahí hace lo mismo).
+   Sigue valiendo el punto 7: el `sticky` en sí va sobre un elemento de alto
+   natural, dentro de esa columna estirada.
+
 ---
 
 ## 8. Convenciones de código
@@ -358,6 +376,26 @@ editar copy y etiquetas, respetar:
 - El glifo provisional `ConnexoMark` se **eliminó** de `icons.tsx`.
 - ⚠️ El isotipo solo existe sobre **negro puro**. Si algún día hace falta sobre
   otro fondo, hay que pedir el SVG o un PNG transparente del isotipo.
+
+### Huevo de pascua: el logo habla yautja (2026-08-18)
+Un clic en el logo de la barra decodifica la palabra al alfabeto yautja durante
+`YAUTJA_MS = 2600` ms y vuelve solo. Vive en `Brand` dentro de `Navbar.tsx`.
+- Asset: `public/connexo-yautja.png` (640×142, 11 kB). Se generó desde
+  `public/red/Connexo Yautja.png` recortando el marco transparente sobrante
+  (954×371 → contenido 753×167), reescalando y **recoloreando de `#f9421c` al
+  naranja de marca `#ff6600`** (§2: la paleta es negro + `#ff6600`, sin
+  excepciones). El original queda donde estaba, sin tocar.
+- El lockup nunca sale del flujo — es el que reserva el espacio, así que el
+  cambio **no mueve la barra** (cero CLS). Los glifos van absolutos, centrados
+  **por flexbox y nunca por `translate`**: el `transform` en línea de Framer
+  pisa a `-translate-x-1/2` de Tailwind y el logo se iría de sitio.
+- Van a `150%` del alto del lockup: con eso las dos imágenes miden casi lo mismo
+  de ancho y el cambio se lee como un reemplazo, no como un salto.
+- Solo se anima `opacity` y `transform` (§6). El barrido naranja es un gradiente
+  que se desplaza con `x`, no un `blur`. Con `prefers-reduced-motion` queda un
+  fundido limpio, sin parpadeo ni barrido.
+- El clic sigue navegando a `/` como cualquier logo. En `/` el router no hace
+  nada (misma ruta, sin ancla), así que el efecto se ve completo.
 
 ---
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { site } from '../config/site'
 import { Link } from '../router'
 
@@ -13,17 +13,106 @@ const links = [
   { label: 'RED CONNEXO', href: '/red', badge: 'Directorio' },
 ]
 
-/** Lockup oficial: isotipo + palabra, PNG con fondo transparente. */
+/** Cuánto se queda la palabra escrita en yautja antes de volver a leerse. */
+const YAUTJA_MS = 2600
+
+/**
+ * Logo oficial (isotipo + palabra) con un huevo de pascua: al hacer clic, las
+ * letras se decodifican al alfabeto yautja unos segundos y vuelven solas.
+ *
+ * Reglas que respeta:
+ * - El lockup nunca sale del flujo: es el que reserva el espacio, así que el
+ *   cambio no mueve un pixel de la barra (cero CLS).
+ * - Los glifos van absolutos y centrados por flexbox, no por `translate`: si el
+ *   centrado viniera de una clase Tailwind, el `transform` en línea de Framer
+ *   la pisaría y el logo se iría de sitio.
+ * - Solo se animan `opacity` y `transform` (§6 del CLAUDE.md).
+ */
 function Brand({ className = 'h-7' }: { className?: string }) {
+  const [yautja, setYautja] = useState(false)
+  const timer = useRef<number | undefined>(undefined)
+  const reduce = useReducedMotion()
+
+  useEffect(() => () => window.clearTimeout(timer.current), [])
+
+  // Vuelve a arrancar el reloj si insisten con el clic.
+  const decode = useCallback(() => {
+    setYautja(true)
+    window.clearTimeout(timer.current)
+    timer.current = window.setTimeout(() => setYautja(false), YAUTJA_MS)
+  }, [])
+
   return (
-    <img
-      src="/connexo-lockup.png"
-      alt="Connexo"
-      width={2153}
-      height={301}
-      decoding="async"
-      className={`${className} w-auto`}
-    />
+    <Link
+      href="/"
+      aria-label="Connexo — inicio"
+      onClick={decode}
+      className="relative flex items-center"
+    >
+      <motion.img
+        src="/connexo-lockup.png"
+        alt="Connexo"
+        width={2153}
+        height={301}
+        decoding="async"
+        className={`${className} w-auto`}
+        animate={{ opacity: yautja ? 0 : 1, scale: yautja ? 0.97 : 1 }}
+        transition={{ duration: reduce ? 0.15 : 0.26, ease: 'easeOut' }}
+      />
+
+      {/* Glifos yautja — misma anchura óptica que el lockup (150% de alto) */}
+      <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <AnimatePresence>
+          {yautja && (
+            <motion.img
+              key="yautja"
+              src="/connexo-yautja.png"
+              alt=""
+              aria-hidden="true"
+              width={640}
+              height={142}
+              decoding="async"
+              className="h-[150%] w-auto max-w-none"
+              initial={
+                reduce
+                  ? { opacity: 0 }
+                  : { opacity: 0, scaleX: 1.14, scaleY: 0.82 }
+              }
+              animate={
+                reduce
+                  ? { opacity: 1 }
+                  : { opacity: [0, 1, 0.3, 1], scaleX: 1, scaleY: 1 }
+              }
+              exit={{
+                opacity: 0,
+                scaleX: 0.94,
+                transition: { duration: 0.22, ease: 'easeIn' },
+              }}
+              transition={
+                reduce
+                  ? { duration: 0.15 }
+                  : {
+                      duration: 0.45,
+                      times: [0, 0.35, 0.55, 1],
+                      ease: [0.22, 1, 0.36, 1],
+                    }
+              }
+            />
+          )}
+        </AnimatePresence>
+      </span>
+
+      {/* Barrido de señal: cruza el logo una vez, solo con `transform` */}
+      {yautja && !reduce && (
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 -left-4 w-5 bg-gradient-to-r from-transparent via-connexo/70 to-transparent"
+          initial={{ x: 0, opacity: 0.9 }}
+          animate={{ x: '1000%', opacity: 0 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+        />
+      )}
+    </Link>
   )
 }
 
@@ -48,9 +137,7 @@ export default function Navbar() {
       }`}
     >
       <nav className="section-pad flex h-16 items-center justify-between">
-        <Link href="/" aria-label="Connexo — inicio" className="flex items-center">
-          <Brand className="h-6 sm:h-7" />
-        </Link>
+        <Brand className="h-6 sm:h-7" />
 
         {/* Desktop links */}
         <ul className="hidden items-center gap-7 lg:flex">
