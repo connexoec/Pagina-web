@@ -60,11 +60,49 @@ export default {
           from: { transform: 'translate3d(0,0,0)' },
           to: { transform: 'translate3d(-100%,0,0)' },
         },
+
+        // ── Glitch del logo (ver §9 del CLAUDE.md) ────────────────────────
+        // Dos capas complementarias sobre el MISMO ciclo de 12s: la palabra
+        // "CONNEXO" y la misma palabra en yautja. Con `step-end` cada cambio
+        // es un corte seco, no un fundido — es lo que lo hace glitch y no
+        // crossfade. En los tramos donde las dos valen 1 se ven encimadas
+        // (frame sucio) y donde las dos valen 0 queda un parpadeo en negro.
+        // Reparto: ~7.2s Connexo · ~3.9s yautja · el resto son los tirones.
+        'glitch-word': {
+          '0%, 52%': { opacity: '1' },
+          '52.5%': { opacity: '0' },
+          '53.5%': { opacity: '1' },
+          '54%': { opacity: '0' },
+          '55%': { opacity: '1' },
+          '55.5%, 88%': { opacity: '0' },
+          '88.5%': { opacity: '1' },
+          '89%': { opacity: '0' },
+          '90%': { opacity: '1' },
+          '90.5%': { opacity: '0' },
+          '91.5%, 100%': { opacity: '1' },
+        },
+        'glitch-yautja': {
+          '0%, 52%': { opacity: '0', transform: 'translate3d(0,0,0)' },
+          '52.5%': { opacity: '1', transform: 'translate3d(-2.5%,0,0)' },
+          '53.5%': { opacity: '1', transform: 'translate3d(1.5%,0,0)' },
+          '54%': { opacity: '0', transform: 'translate3d(0,0,0)' },
+          '55%, 88%': { opacity: '1', transform: 'translate3d(0,0,0)' },
+          '88.5%': { opacity: '0', transform: 'translate3d(2%,0,0)' },
+          '89%': { opacity: '1', transform: 'translate3d(-1.5%,0,0)' },
+          '90%': { opacity: '0', transform: 'translate3d(0,0,0)' },
+          '90.5%': { opacity: '1', transform: 'translate3d(1%,0,0)' },
+          '91%, 100%': { opacity: '0', transform: 'translate3d(0,0,0)' },
+        },
       },
       animation: {
         'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
         float: 'float 6s ease-in-out infinite',
         marquee: 'marquee 32s linear infinite',
+        // `step-end`: cortes secos entre keyframes. Las dos comparten duración
+        // y arrancan juntas (se montan en el mismo paint), así que no se
+        // desfasan nunca.
+        'glitch-word': 'glitch-word 12s step-end infinite',
+        'glitch-yautja': 'glitch-yautja 12s step-end infinite',
       },
     },
   },

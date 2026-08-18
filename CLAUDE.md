@@ -2,7 +2,7 @@
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
 > No repetir errores ya resueltos aquí. Última actualización: **2026-08-18**
-> (sticky del pipeline arreglado en PC + huevo de pascua yautja en el logo).
+> (sticky del pipeline arreglado en PC + glitch yautja permanente en el logo).
 > Hito previo: **2026-08-17**
 > (logo oficial + auditoría contra el Manual de Capacitación v0.52.1 +
 > 9 plantillas reales + 5 secciones nuevas + capa de animación).
@@ -93,7 +93,7 @@ ConnexoWeb/
 ├─ index.html                 # fuentes + favicon + OG + root
 ├─ public/
 │  ├─ connexo-lockup.png      # LOGO oficial: isotipo+palabra, fondo transparente
-│  ├─ connexo-yautja.png      # "CONNEXO" en alfabeto yautja (huevo de pascua, §9)
+│  ├─ connexo-yautja.png      # "CONNEXO" en alfabeto yautja (glitch del logo, §9)
 │  ├─ connexo-logo.jpg        # Isotipo cuadrado sobre negro (origen del favicon)
 │  ├─ favicon-32/180/512.png  # Derivados del isotipo
 │  └─ perfiles/               # capturas del carrusel (ver §5)
@@ -149,7 +149,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
-| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO; "Iniciar sesión" → app real. Clic en el logo = huevo de pascua yautja (§9). |
+| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO; "Iniciar sesión" → app real. El logo glitchea en bucle a alfabeto yautja (§9). |
 | 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; anillos NFC; CTA magnético → WhatsApp; cinta de los 9 rubros. |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
 | 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
@@ -377,25 +377,38 @@ editar copy y etiquetas, respetar:
 - ⚠️ El isotipo solo existe sobre **negro puro**. Si algún día hace falta sobre
   otro fondo, hay que pedir el SVG o un PNG transparente del isotipo.
 
-### Huevo de pascua: el logo habla yautja (2026-08-18)
-Un clic en el logo de la barra decodifica la palabra al alfabeto yautja durante
-`YAUTJA_MS = 2600` ms y vuelve solo. Vive en `Brand` dentro de `Navbar.tsx`.
+### El logo con glitch yautja (2026-08-18)
+El logo de la barra **glitchea solo, en bucle**: cada ciclo de **12 s** la
+palabra se desarma y se lee ~3.9 s en alfabeto yautja, con frames sucios de por
+medio, y vuelve. Vive en `Brand` (`Navbar.tsx`) + los keyframes `glitch-word` /
+`glitch-yautja` de `tailwind.config.js`. No hay clic, ni estado, ni temporizador.
 - Asset: `public/connexo-yautja.png` (640×142, 11 kB). Se generó desde
   `public/red/Connexo Yautja.png` recortando el marco transparente sobrante
   (954×371 → contenido 753×167), reescalando y **recoloreando de `#f9421c` al
   naranja de marca `#ff6600`** (§2: la paleta es negro + `#ff6600`, sin
   excepciones). El original queda donde estaba, sin tocar.
+- ⚠️ **CSS puro, nunca JS.** Es lo único del sitio que anima **para siempre y
+  siempre en pantalla** (la barra es `fixed`). Con `setTimeout` + estado de
+  React serían renders cada pocos ms hasta que cierren la pestaña; en CSS lo
+  resuelve el compositor y el navegador además lo congela solo cuando la
+  pestaña está oculta. Mismo criterio que el `Marquee` (§6).
+- **`step-end`, no `linear`**: cada keyframe es un corte seco. Con fundido esto
+  sería un crossfade bonito, no un glitch.
+- Las dos capas son **complementarias sobre el mismo ciclo**: donde las dos
+  valen 1 se ven encimadas (frame sucio) y donde las dos valen 0 queda un
+  parpadeo en negro. Ahí está el efecto — si se tocan los porcentajes, tocarlos
+  **en pareja**. Ambas arrancan juntas porque se montan en el mismo paint.
 - El lockup nunca sale del flujo — es el que reserva el espacio, así que el
-  cambio **no mueve la barra** (cero CLS). Los glifos van absolutos, centrados
-  **por flexbox y nunca por `translate`**: el `transform` en línea de Framer
-  pisa a `-translate-x-1/2` de Tailwind y el logo se iría de sitio.
+  glitch **no mueve la barra** (cero CLS). Los glifos van absolutos, centrados
+  **por flexbox y nunca por `translate`**: el `transform` de la animación
+  pisaría cualquier `-translate-x-1/2` de Tailwind.
 - Van a `150%` del alto del lockup: con eso las dos imágenes miden casi lo mismo
   de ancho y el cambio se lee como un reemplazo, no como un salto.
-- Solo se anima `opacity` y `transform` (§6). El barrido naranja es un gradiente
-  que se desplaza con `x`, no un `blur`. Con `prefers-reduced-motion` queda un
-  fundido limpio, sin parpadeo ni barrido.
-- El clic sigue navegando a `/` como cualquier logo. En `/` el router no hace
-  nada (misma ruta, sin ancla), así que el efecto se ve completo.
+- El tirón lateral (`translate3d`) va **solo en los glifos**: el lockup de marca
+  no se deforma nunca.
+- `prefers-reduced-motion` no necesita código: la regla global de `index.css`
+  colapsa la duración y el keyframe `100%` es "Connexo visible / yautja oculto",
+  así que queda el logo quieto y limpio.
 
 ---
 

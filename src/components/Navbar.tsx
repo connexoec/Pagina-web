@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { site } from '../config/site'
 import { Link } from '../router'
 
@@ -13,105 +13,52 @@ const links = [
   { label: 'RED CONNEXO', href: '/red', badge: 'Directorio' },
 ]
 
-/** Cuánto se queda la palabra escrita en yautja antes de volver a leerse. */
-const YAUTJA_MS = 2600
-
 /**
- * Logo oficial (isotipo + palabra) con un huevo de pascua: al hacer clic, las
- * letras se decodifican al alfabeto yautja unos segundos y vuelven solas.
+ * Logo oficial (isotipo + palabra) con glitch permanente: cada ciclo de 12 s la
+ * palabra se desarma y se lee unos segundos en alfabeto yautja, con unos
+ * cuantos frames sucios de por medio, y vuelve sola. No hay clic ni estado: son
+ * dos capas superpuestas con animaciones CSS complementarias
+ * (`glitch-word` / `glitch-yautja`, definidas en `tailwind.config.js`).
  *
  * Reglas que respeta:
+ * - **CSS puro, como el `Marquee`.** Está fijo en pantalla todo el rato: una
+ *   animación de `opacity`/`transform` la resuelve el compositor y no cuesta
+ *   un solo frame de main thread. Con JS (temporizadores o Framer) serían
+ *   renders de React cada pocos milisegundos, para siempre.
  * - El lockup nunca sale del flujo: es el que reserva el espacio, así que el
- *   cambio no mueve un pixel de la barra (cero CLS).
- * - Los glifos van absolutos y centrados por flexbox, no por `translate`: si el
- *   centrado viniera de una clase Tailwind, el `transform` en línea de Framer
- *   la pisaría y el logo se iría de sitio.
- * - Solo se animan `opacity` y `transform` (§6 del CLAUDE.md).
+ *   glitch no mueve un pixel de la barra (cero CLS).
+ * - Los glifos van absolutos y centrados por flexbox, no por `translate`: el
+ *   `transform` de la animación pisaría cualquier `-translate-x-1/2`.
+ * - Solo se anima `opacity` y `transform` (§6 del CLAUDE.md). El tirón lateral
+ *   va solo en los glifos: el lockup de marca nunca se deforma.
+ * - Con `prefers-reduced-motion` la regla global de `index.css` colapsa la
+ *   duración, y como el keyframe 100% es "Connexo visible / yautja oculto",
+ *   queda el logo quieto y limpio. No hace falta nada más.
  */
 function Brand({ className = 'h-7' }: { className?: string }) {
-  const [yautja, setYautja] = useState(false)
-  const timer = useRef<number | undefined>(undefined)
-  const reduce = useReducedMotion()
-
-  useEffect(() => () => window.clearTimeout(timer.current), [])
-
-  // Vuelve a arrancar el reloj si insisten con el clic.
-  const decode = useCallback(() => {
-    setYautja(true)
-    window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(() => setYautja(false), YAUTJA_MS)
-  }, [])
-
   return (
-    <Link
-      href="/"
-      aria-label="Connexo — inicio"
-      onClick={decode}
-      className="relative flex items-center"
-    >
-      <motion.img
+    <Link href="/" aria-label="Connexo — inicio" className="relative flex items-center">
+      <img
         src="/connexo-lockup.png"
         alt="Connexo"
         width={2153}
         height={301}
         decoding="async"
-        className={`${className} w-auto`}
-        animate={{ opacity: yautja ? 0 : 1, scale: yautja ? 0.97 : 1 }}
-        transition={{ duration: reduce ? 0.15 : 0.26, ease: 'easeOut' }}
+        className={`${className} w-auto animate-glitch-word`}
       />
 
       {/* Glifos yautja — misma anchura óptica que el lockup (150% de alto) */}
       <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <AnimatePresence>
-          {yautja && (
-            <motion.img
-              key="yautja"
-              src="/connexo-yautja.png"
-              alt=""
-              aria-hidden="true"
-              width={640}
-              height={142}
-              decoding="async"
-              className="h-[150%] w-auto max-w-none"
-              initial={
-                reduce
-                  ? { opacity: 0 }
-                  : { opacity: 0, scaleX: 1.14, scaleY: 0.82 }
-              }
-              animate={
-                reduce
-                  ? { opacity: 1 }
-                  : { opacity: [0, 1, 0.3, 1], scaleX: 1, scaleY: 1 }
-              }
-              exit={{
-                opacity: 0,
-                scaleX: 0.94,
-                transition: { duration: 0.22, ease: 'easeIn' },
-              }}
-              transition={
-                reduce
-                  ? { duration: 0.15 }
-                  : {
-                      duration: 0.45,
-                      times: [0, 0.35, 0.55, 1],
-                      ease: [0.22, 1, 0.36, 1],
-                    }
-              }
-            />
-          )}
-        </AnimatePresence>
-      </span>
-
-      {/* Barrido de señal: cruza el logo una vez, solo con `transform` */}
-      {yautja && !reduce && (
-        <motion.span
+        <img
+          src="/connexo-yautja.png"
+          alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 -left-4 w-5 bg-gradient-to-r from-transparent via-connexo/70 to-transparent"
-          initial={{ x: 0, opacity: 0.9 }}
-          animate={{ x: '1000%', opacity: 0 }}
-          transition={{ duration: 0.55, ease: 'easeOut' }}
+          width={640}
+          height={142}
+          decoding="async"
+          className="h-[150%] w-auto max-w-none animate-glitch-yautja opacity-0"
         />
-      )}
+      </span>
     </Link>
   )
 }
