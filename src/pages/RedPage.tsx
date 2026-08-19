@@ -4,7 +4,6 @@ import Navbar from '../components/Navbar'
 import { members, OPEN_SLOTS, cities, activeEcosystems } from '../data/directory'
 import { ecosystems } from '../data/ecosystems'
 import { MemberCard, OpenSlotCard } from '../components/DirectoryCard'
-import SectionKicker from '../components/SectionKicker'
 import NgoAlliance from '../components/NgoAlliance'
 import { Counter } from '../components/fx/Motion'
 import { ArrowIcon, SearchIcon } from '../components/icons'
@@ -137,9 +136,6 @@ export default function RedPage() {
             </Link>
 
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-4 flex justify-center">
-                <SectionKicker label="el mapa de los que ya se atrevieron" />
-              </div>
 
               <h1 className="font-heading text-4xl leading-[1.05] text-white sm:text-5xl lg:text-6xl">
                 RED CONNEXO

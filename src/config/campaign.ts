@@ -6,8 +6,6 @@
 export interface CampaignConfig {
   /** Master switch — false hides the banner entirely (no layout shift). */
   enabled: boolean
-  /** Small eyebrow / kicker above the headline. */
-  eyebrow: string
   /** Main promotional claim (rendered with impact font). */
   headline: string
   /** Supporting one-liner. */
@@ -20,7 +18,6 @@ export interface CampaignConfig {
 
 export const campaign: CampaignConfig = {
   enabled: true,
-  eyebrow: 'primera tanda · solo los fundadores',
   headline: 'Los primeros en Ecuador arrancan con 2 meses de PRO.',
   subline:
     'Activa tu identidad NFC ahora, entra como fundador a la RED CONNEXO y deja tu tarjeta de papel donde debe estar: en el pasado.',

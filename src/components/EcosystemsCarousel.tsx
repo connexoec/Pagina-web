@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ecosystems } from '../data/ecosystems'
 import { ChevronLeft, ChevronRight, LockIcon, WhatsappIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import { wa, waMsg } from '../config/site'
 
 const COUNT = ecosystems.length
@@ -85,9 +84,6 @@ export default function EcosystemsCarousel() {
     >
       <div className="section-pad">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4">
-            <SectionKicker label="elige tu terreno" />
-          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             Nueve maneras de ser tú. Ninguna de papel.
           </h2>

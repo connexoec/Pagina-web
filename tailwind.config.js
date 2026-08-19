@@ -93,6 +93,39 @@ export default {
           '90.5%': { opacity: '1', transform: 'translate3d(1%,0,0)' },
           '91%, 100%': { opacity: '0', transform: 'translate3d(0,0,0)' },
         },
+
+        // ── Escena del horizonte terrestre (Hero · EarthHorizon.tsx) ───────
+        // TODO es GPU-safe: solo `opacity`, `transform` (scale) y
+        // `stroke-dashoffset` (barato en trazos finos). Diseñadas para que el
+        // frame 100% sea un estado ESTÁTICO decente: con prefers-reduced-motion
+        // el navegador colapsa la duración y aterriza ahí (la red queda dibujada
+        // y quieta, sin parpadeo). Mismo criterio que el glitch del logo (§9).
+
+        // Conexión entre nodos: reposo = trazada y visible; cada ciclo se
+        // re-dibuja (expansión). 0% == 100% para que el bucle no salte.
+        'net-draw': {
+          '0%, 38%': { strokeDashoffset: '0', opacity: '0.55' },
+          '46%': { opacity: '0' },
+          '50%': { strokeDashoffset: '1', opacity: '0' },
+          '72%': { opacity: '0.7' },
+          '94%, 100%': { strokeDashoffset: '0', opacity: '0.55' },
+        },
+        // Latido del halo de cada nodo.
+        'node-pulse': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.4' },
+        },
+        // Anillo de señal NFC emanando de un nodo hub.
+        'nfc-ping': {
+          '0%': { transform: 'scale(0.4)', opacity: '0' },
+          '12%': { opacity: '0.55' },
+          '100%': { transform: 'scale(3.6)', opacity: '0' },
+        },
+        // Respiro de la línea de atmósfera sobre el limbo del planeta.
+        'rim-shimmer': {
+          '0%, 100%': { opacity: '0.9' },
+          '50%': { opacity: '0.5' },
+        },
       },
       animation: {
         'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
@@ -103,6 +136,11 @@ export default {
         // desfasan nunca.
         'glitch-word': 'glitch-word 12s step-end infinite',
         'glitch-yautja': 'glitch-yautja 12s step-end infinite',
+        // Escena del horizonte terrestre (el delay por-elemento va inline).
+        'net-draw': 'net-draw 7s ease-in-out infinite',
+        'node-pulse': 'node-pulse 3.2s ease-in-out infinite',
+        'nfc-ping': 'nfc-ping 3.6s ease-out infinite',
+        'rim-shimmer': 'rim-shimmer 6s ease-in-out infinite',
       },
     },
   },

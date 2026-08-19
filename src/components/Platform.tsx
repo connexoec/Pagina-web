@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import type { ComponentType, SVGProps } from 'react'
 import { PhoneIcon, GlobeIcon, BellIcon, SparkIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import { TiltCard, Counter, BeamDivider } from './fx/Motion'
 
 interface Card {
@@ -46,9 +45,6 @@ export default function Platform() {
 
       <div className="section-pad relative">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4">
-            <SectionKicker label="vive en tu bolsillo" />
-          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             No es un sitio web que revisas. Es la app que llevas encima.
           </h2>

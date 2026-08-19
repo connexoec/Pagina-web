@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { ChartIcon, GridIcon, DownloadIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import { Counter } from './fx/Motion'
 
 // Fuente: manual cap. 15. Mapa de calor real: 7 días × franjas de 2 horas,
@@ -30,9 +29,6 @@ export default function Analytics() {
     <section id="analiticas" className="relative bg-abyss-950 py-20 sm:py-28">
       <div className="section-pad">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4">
-            <SectionKicker label="deja de adivinar" />
-          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             Sabes a qué hora entra la gente. Y a qué hora deberías publicar.
           </h2>

@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { ArrowIcon } from './icons'
-import SectionKicker from './SectionKicker'
 
 const ARUPO_URL = 'https://www.fundacionarupo.org/'
 
@@ -42,9 +41,6 @@ export default function Arupo() {
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.6 }}
           >
-            <div className="mb-5">
-              <SectionKicker label="no es marketing, es un trato" />
-            </div>
 
             <h2 className="font-heading text-3xl leading-tight text-white sm:text-4xl">
               Diez de cada cien dólares no son nuestros.{' '}

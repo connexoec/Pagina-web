@@ -1,9 +1,14 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-08-18**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-08-19**
+> (Hero renovado: escena del horizonte terrestre al amanecer con red de nodos
+> + pings NFC, en vez del punto que parpadeaba; fuera la cinta de rubros del
+> Hero; y **se eliminaron TODOS los `SectionKicker`** —los subtítulos con voz—
+> por decisión del cliente, incluida la eyebrow del banner de campaña).
+> Hito previo: **2026-08-18**
 > (sticky del pipeline arreglado en PC + glitch yautja permanente en el logo).
-> Hito previo: **2026-08-17**
+> Hito -2: **2026-08-17**
 > (logo oficial + auditoría contra el Manual de Capacitación v0.52.1 +
 > 9 plantillas reales + 5 secciones nuevas + capa de animación).
 
@@ -115,12 +120,13 @@ ConnexoWeb/
 │  └─ components/
 │     ├─ fx/
 │     │  ├─ Ambient.tsx       # FilmGrain · Aurora · PerspectiveGrid · Spotlight
+│     │  ├─ EarthHorizon.tsx  # Escena del Hero: Tierra al amanecer + red de
+│     │  │                    #   nodos + pings NFC (CSS puro, ver §12)
 │     │  └─ Motion.tsx        # Magnetic · TiltCard · Counter · DecodeText ·
-│     │                       #   BeamDivider · NfcRings · Marquee
+│     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
 │     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon)
-│     ├─ SectionKicker.tsx    # FIRMA de marca: glifo señal NFC + label (ver §9)
 │     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial
-│     ├─ Hero.tsx             #  2. Hero (anillos NFC + decode + marquee)
+│     ├─ Hero.tsx             #  2. Hero (EarthHorizon + decode headline)
 │     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
 │     ├─ EcosystemsCarousel.tsx #  4. Carrusel 3D Cover Flow (CRÍTICO, §6)
 │     ├─ Platform.tsx         #  5. PWA · push · 8 idiomas · tour guiado
@@ -150,7 +156,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
 | 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO; "Iniciar sesión" → app real. El logo glitchea en bucle a alfabeto yautja (§9). |
-| 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; anillos NFC; CTA magnético → WhatsApp; cinta de los 9 rubros. |
+| 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; **escena `EarthHorizon`** de fondo (Tierra al amanecer + red de nodos que se conectan + pings NFC, §12); CTA magnético → WhatsApp. **Sin `NfcRings` ni cinta de rubros** (quitados 2026-08-19). |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
 | 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
 | 5 | Plataforma | ✅ | PWA instalable, avisos con la app cerrada, 8 idiomas, tour guiado. Manual §6, §7, §21. |
@@ -347,11 +353,13 @@ editar copy y etiquetas, respetar:
 - **NADA de "eyebrows" genéricos** tipo `text-xs uppercase tracking-[0.3em]` con
   una sola palabra funcional ("El mecanismo", "Ecosistemas", "Escalabilidad").
   Eso es la firma de las landings IA y está **prohibido**.
-- **Marcador de sección = `SectionKicker`** (`components/SectionKicker.tsx`):
-  glifo `SignalIcon` (ondas NFC que emanan de un toque) + label en **minúscula**,
-  con voz propia, no funcional. Es la firma visual recurrente. Ej: "bajo el
-  toque", "elige tu terreno", "tres formas de conectar", "no es marketing, es un
-  trato". Para añadir una sección nueva, usar este mismo marcador.
+- ⚠️ **`SectionKicker` ELIMINADO (2026-08-19).** Existía un marcador de sección
+  (glifo `SignalIcon` + label en minúscula con voz propia: "bajo el toque",
+  "elige tu terreno", etc.). **El cliente pidió quitarlos todos** — se borró el
+  componente y sus 12 usos (incluida la eyebrow del banner de campaña). **No
+  reintroducir subtítulos/kickers sobre los `<h2>`.** Cada sección abre directo
+  con su titular `font-heading`. Si en el futuro se quiere volver a un marcador,
+  es decisión explícita del cliente, no un default.
 - **Copy con actitud ecuatoriana, concreto y con imágenes**, no corporativo
   neutro. Preferir frases-claim ("El precio que ves es el que pagas.", "Nadie se
   va sin dejar rastro.") sobre descripciones planas de features.
@@ -496,3 +504,39 @@ hay muchas rutas con parámetros, ahí sí toca cambiarlo.
   se montan dentro de cada página, el grano parpadea en cada navegación.
 - Los deep links (`/red` escrito a mano, recarga, enlace compartido) dependen de
   la regla `rewrites` de `vercel.json`. **No borrarla.**
+
+---
+
+## 12. Escena del Hero — `EarthHorizon` (2026-08-19)
+
+Reemplaza el punto que parpadeaba (`NfcRings`) por el telón de fondo del Hero:
+**la Tierra vista desde el borde de la órbita, con el amanecer naranja
+cresteando el limbo**, y sobre la superficie oscura una **red de nodos que se
+conectan** (la expansión de Connexo por el planeta). Los nodos "hub" emiten un
+**anillo de señal NFC** — ahí vive la referencia al sistema NFC que pidió el
+cliente. Vive en `components/fx/EarthHorizon.tsx`.
+
+- **CSS puro sobre SVG, nunca JS.** Es una animación permanente y siempre en
+  pantalla (fondo del Hero); mismo criterio que el `Marquee` y el glitch del
+  logo (§6, §9). Los keyframes están en `tailwind.config.js`:
+  `net-draw` (arcos que se dibujan/re-dibujan), `node-pulse` (halo de cada
+  nodo), `nfc-ping` (anillos de los hubs), `rim-shimmer` (la atmósfera respira).
+- **Solo se anima `opacity`, `transform` (scale) y `stroke-dashoffset`** (barato
+  en trazos finos). Cero `filter`/`blur` animado, cero canvas, cero rAF.
+- **Los arcos usan `pathLength={1}` + `strokeDasharray="1 1"`** y animan
+  `stroke-dashoffset` 1→0, así el "trazo" es idéntico sea cual sea el largo real
+  del arco. El delay por-elemento va **inline** (`animationDelay` negativo) para
+  desincronizarlos; el resto (nombre, duración) sale de la clase de Tailwind.
+- **`prefers-reduced-motion` no necesita código**: la regla global de `index.css`
+  colapsa la duración y cada keyframe está diseñado para que el frame **100%**
+  sea un estado estático decente (la red queda dibujada y quieta, los pings
+  invisibles). Igual que el glitch del logo.
+- **Los pings NFC** son `<circle>` con `transform-box: fill-box` +
+  `transform-origin: center` (inline) para que el `scale` gire sobre el centro
+  del propio círculo y no sobre el origen del SVG.
+- Geometría: el limbo es la curva `M0,553 Q600,247 1200,553` (pasa por
+  `(600,400)`); el cuerpo del planeta es esa misma curva cerrada hasta abajo, y
+  los nodos se posan justo debajo de ella. Si se mueven nodos, recalcular la `y`
+  sobre esa curva para que sigan "sobre" el planeta.
+- **Paleta**: solo negro + naranja de la escala `connexo` (§2). Los brillos usan
+  `#ff9a44` (= `connexo-300`), nunca blanco ni otro tono.

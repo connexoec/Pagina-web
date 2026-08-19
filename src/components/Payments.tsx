@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import type { ComponentType, SVGProps } from 'react'
 import { LinkIcon, CardIcon, BankIcon, WhatsappIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import { BeamDivider } from './fx/Motion'
 
 interface Method {
@@ -44,9 +43,6 @@ export default function Payments() {
 
       <div className="section-pad relative">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4">
-            <SectionKicker label="que el dinero no espere" />
-          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             Cuatro maneras de cobrar. Prendes las que uses y apagas el resto.
           </h2>

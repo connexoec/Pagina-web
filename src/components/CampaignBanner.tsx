@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { campaign } from '../config/campaign'
-import { SparkIcon, ArrowIcon } from './icons'
+import { ArrowIcon } from './icons'
 
 // Dynamic promo banner. Controlled entirely by `campaign.enabled`.
 // When false → renders nothing, no layout shift, no leftover spacing.
@@ -23,11 +23,7 @@ export default function CampaignBanner() {
 
           <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-connexo/50 bg-black/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-connexo">
-                <SparkIcon className="h-3.5 w-3.5" />
-                {campaign.eyebrow}
-              </span>
-              <h3 className="mt-4 font-heading text-2xl leading-tight text-white sm:text-3xl">
+              <h3 className="font-heading text-2xl leading-tight text-white sm:text-3xl">
                 {campaign.headline}
               </h3>
               <p className="mt-2 text-sm text-white/65 sm:text-base">

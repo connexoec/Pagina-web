@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { plans } from '../data/pricing'
 import { CheckIcon, HeartIcon, WhatsappIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import PlanMatrix from './PlanMatrix'
 import { site, wa, waMsg } from '../config/site'
 import { Magnetic } from './fx/Motion'
@@ -17,9 +16,6 @@ export default function Pricing() {
       <div className="pointer-events-none absolute inset-0 bg-radial-fade opacity-60" />
       <div className="section-pad relative">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4">
-            <SectionKicker label="tres formas de conectar" />
-          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             El precio que ves es el que pagas.
           </h2>

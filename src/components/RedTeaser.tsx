@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { members } from '../data/directory'
 import { ArrowIcon, SignalIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import { Link } from '../router'
 
 /**
@@ -28,9 +27,6 @@ export default function RedTeaser() {
           transition={{ duration: 0.55 }}
           className="mx-auto max-w-3xl text-center"
         >
-          <div className="mb-4 flex justify-center">
-            <SectionKicker label="el mapa de los que ya se atrevieron" />
-          </div>
 
           <h2 className="font-heading text-3xl leading-tight text-white sm:text-4xl">
             RED CONNEXO: el directorio de quienes ya cambiaron el papel por un

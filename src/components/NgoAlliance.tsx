@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { ngoMembers } from '../data/directory'
 import { ArrowIcon, CheckIcon, HeartIcon, SignalIcon, UsersIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import { Counter, TiltCard } from './fx/Motion'
 import { site, wa, waMsg } from '../config/site'
 
@@ -50,9 +49,6 @@ export default function NgoAlliance() {
 
       <div className="section-pad relative">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-4 flex justify-center">
-            <SectionKicker label="la red también se abre hacia afuera" />
-          </div>
 
           <h2 className="font-heading text-2xl leading-tight text-white sm:text-4xl">
             Hay negocios que llegan aquí porque una organización les abrió la

@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { ArrowIcon, NfcIcon, WhatsappIcon } from './icons'
 import { wa, waMsg } from '../config/site'
-import { ecosystems } from '../data/ecosystems'
-import { Aurora, PerspectiveGrid } from './fx/Ambient'
-import { DecodeText, Magnetic, Marquee, NfcRings } from './fx/Motion'
+import { Aurora } from './fx/Ambient'
+import { DecodeText, Magnetic } from './fx/Motion'
+import EarthHorizon from './fx/EarthHorizon'
 
 const fade = {
   hidden: { opacity: 0, y: 24 },
@@ -20,13 +20,14 @@ export default function Hero() {
       id="top"
       className="relative overflow-hidden bg-abyss-950 pt-28 pb-16 sm:pt-36 sm:pb-20"
     >
-      {/* Atmósfera: bloom radial + auroras a la deriva + rejilla en fuga */}
+      {/* Atmósfera: bloom radial + auroras a la deriva */}
       <div className="pointer-events-none absolute inset-0 bg-radial-fade" />
       <Aurora />
-      <PerspectiveGrid />
 
-      {/* Anillos de señal emanando del punto de toque, detrás del titular */}
-      <NfcRings className="pointer-events-none absolute left-1/2 top-[18%] h-[560px] w-[560px] -translate-x-1/2 opacity-40 sm:opacity-55" />
+      {/* La Tierra desde el horizonte al amanecer, con la red de nodos que se
+          conectan (expansión) y los pings NFC de los hubs. Reemplaza el punto
+          que parpadeaba. Va al fondo del hero, detrás del contenido. */}
+      <EarthHorizon />
 
       <div className="section-pad relative">
         <motion.div
@@ -113,17 +114,6 @@ export default function Hero() {
           <span>Cada toque, un contacto</span>
         </motion.div>
       </div>
-
-      {/* Cinta de rubros — el catálogo entero pasando de largo */}
-      <motion.div
-        variants={fade}
-        custom={6}
-        initial="hidden"
-        animate="show"
-        className="relative mt-14"
-      >
-        <Marquee items={ecosystems.map((e) => e.name)} duration={38} />
-      </motion.div>
     </section>
   )
 }

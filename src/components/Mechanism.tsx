@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import type { ComponentType, SVGProps } from 'react'
 import { NfcIcon, BoltIcon, RadarIcon } from './icons'
-import SectionKicker from './SectionKicker'
 
 interface Step {
   icon: ComponentType<SVGProps<SVGSVGElement>>
@@ -36,9 +35,6 @@ export default function Mechanism() {
     <section id="mecanismo" className="relative bg-abyss-950 py-20 sm:py-28">
       <div className="section-pad">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4">
-            <SectionKicker label="bajo el toque" />
-          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             Entre que te acercan la tarjeta y te llega la venta, pasan tres cosas.
           </h2>

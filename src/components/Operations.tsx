@@ -1,7 +1,6 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { BoxIcon, CheckIcon, LockIcon } from './icons'
-import SectionKicker from './SectionKicker'
 
 // Fuente: manual cap. 24.6 (pedido gastronómico), 25.5 (e-commerce) y 30.5
 // (mayorista). El cliente sigue el pipeline en vivo con su código de rastreo.
@@ -208,9 +207,6 @@ export default function Operations() {
     <section id="opera" className="relative bg-abyss-950 py-20 sm:py-28">
       <div className="section-pad">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4">
-            <SectionKicker label="no es una página, es tu operación" />
-          </div>
           <h2 className="font-heading text-3xl text-white sm:text-4xl">
             El pedido no se pierde en un chat. Camina solo, y tu cliente lo ve
             caminar.

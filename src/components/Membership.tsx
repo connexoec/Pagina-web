@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { CardIcon, StampIcon, UsersIcon, CheckIcon } from './icons'
-import SectionKicker from './SectionKicker'
 import { TiltCard } from './fx/Motion'
 
 // Fuente: manual cap. 18. Cada plantilla tiene su propio formato de código.
@@ -28,9 +27,6 @@ export default function Membership() {
         <div className="grid items-center gap-14 lg:grid-cols-2">
           {/* Copy */}
           <div>
-            <div className="mb-4">
-              <SectionKicker label="para que vuelvan, no para que pasen" />
-            </div>
             <h2 className="font-heading text-3xl leading-tight text-white sm:text-4xl">
               Un código corto es todo lo que separa a un cliente de un cliente que
               regresa.
