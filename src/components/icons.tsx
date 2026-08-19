@@ -198,3 +198,28 @@ export const UsersIcon = (p: IconProps) => (
     <path d="M17.5 14.4A6 6 0 0 1 21 20" />
   </svg>
 )
+
+// Equis — cierre de paneles/diálogos.
+export const CloseIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="m6 6 12 12M18 6 6 18" />
+  </svg>
+)
+
+// Ojo — dispara el "Modo Visual Total" (accesibilidad, §Navbar).
+export const EyeIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+)
+
+// Figura de persona — símbolo universal de accesibilidad. Abre el panel.
+export const AccessibilityIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="4.2" r="1.6" />
+    <path d="M4.5 8.2c2.4 1 4.8 1.5 7.5 1.5s5.1-.5 7.5-1.5" />
+    <path d="M12 8.5v6" />
+    <path d="m8.5 21 3.5-6.5 3.5 6.5" />
+  </svg>
+)

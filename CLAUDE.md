@@ -1,7 +1,13 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-08-19 (b)**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-08-19 (c)**
+> (**Sistema de Accesibilidad** portado del módulo de la Fundación Arupo: 2
+> botones en el Navbar —"Modo Visual Total" (ojo) + panel de 7 controles— con
+> estado global persistente y modos CSS `a11y-*`. Ver §13. Se **omitió a
+> propósito el toggle de tema claro/oscuro** del documento original: la marca es
+> negro puro + `#ff6600` sin tema claro, así que no aplica.)
+> Hito 2026-08-19 (b):
 > (Hero simplificado por accesibilidad: fondo = **faro NFC** —el icono
 > contactless parpadeando con ondas, muy tenue— en `fx/NfcBeacon.tsx`; se
 > descartó la escena del globo terrestre. Copy nuevo: slogan de Connexo
@@ -114,6 +120,9 @@ ConnexoWeb/
 │  ├─ Landing.tsx             # página "/" — secciones, lazy bajo el pliegue
 │  ├─ pages/
 │  │  └─ RedPage.tsx          # página "/red" — directorio RED CONNEXO (§10)
+│  ├─ context/
+│  │  └─ AccessibilityContext.tsx # Motor de accesibilidad (§13): estado global
+│  │                          #   + persistencia localStorage + clases en <html>
 │  ├─ config/
 │  │  ├─ site.ts              # WhatsApp, tienda, app, correo (SSOT de contacto)
 │  │  └─ campaign.ts          # toggle ON/OFF del banner de campaña
@@ -128,8 +137,10 @@ ConnexoWeb/
 │     │  │                    #   (CSS puro, muy tenue, ver §12)
 │     │  └─ Motion.tsx        # Magnetic · TiltCard · Counter · DecodeText ·
 │     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
-│     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon)
-│     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial
+│     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon,
+│     │                       #   EyeIcon, AccessibilityIcon, CloseIcon)
+│     ├─ AccessibilityPanel.tsx # Panel modal de 7 controles (§13); lo abre el Navbar
+│     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial + botones a11y
 │     ├─ Hero.tsx             #  2. Hero (NfcBeacon + decode headline + slogan)
 │     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
 │     ├─ EcosystemsCarousel.tsx #  4. Carrusel 3D Cover Flow (CRÍTICO, §6)
@@ -159,7 +170,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
-| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO. El logo glitchea en bucle a alfabeto yautja (§9). **Sin botón "INICIAR SESIÓN"** (quitado 2026-08-19: no hay dónde iniciar sesión desde la landing). |
+| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO. El logo glitchea en bucle a alfabeto yautja (§9). **Sin botón "INICIAR SESIÓN"** (quitado 2026-08-19: no hay dónde iniciar sesión desde la landing). **2 botones de accesibilidad** (ojo → Modo Visual Total; figura → abre panel), visibles en móvil y escritorio (§13). |
 | 2 | Hero | ✅ | H1 (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; **fondo `NfcBeacon`** (icono NFC parpadeando con ondas, tenue, §12); subtítulo = **slogan de Connexo** ("…compartir quién eres" + "Conecta·Comparte·Crece"); CTA magnético → WhatsApp + botón **RED CONNEXO** → `/red`. **Sin** badge de Ecuador, línea de prueba gratis ni trust strip (quitados 2026-08-19). |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
 | 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
@@ -542,3 +553,63 @@ punto de toque) a gran escala, centrado detrás del titular, **parpadeando**, co
   (inline) para que el `scale` gire sobre su propio centro; el delay va inline
   (`animationDelay` negativo) para escalonarlas.
 - **Paleta**: solo negro + `#ff6600` (§2), sin tintes.
+
+---
+
+## 13. Sistema de Accesibilidad (2026-08-19 c)
+
+Portado del **módulo de la Fundación Arupo** (`SISTEMA-ACCESIBILIDAD.pdf`) y
+adaptado a Connexo. Da a cualquier visitante controles de accesibilidad reales
+en **todo el ecosistema** (portada y `/red`): el Navbar es compartido y el
+provider envuelve toda la app.
+
+### Piezas
+| Pieza | Archivo | Rol |
+|-------|---------|-----|
+| `AccessibilityProvider` / `useAccessibility` | `context/AccessibilityContext.tsx` | Estado global + persistencia (`localStorage['accessibility-settings']`) + aplicación de clases al `<html>`. |
+| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 7 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
+| Botones disparadores | `components/Navbar.tsx` (`A11yButtons`) | "Modo Visual Total" (ojo) + "Abrir panel" (figura). Visibles en móvil y escritorio. |
+| Clases `a11y-*` | `src/index.css` | El CSS real de cada modo + `:focus-visible` global. |
+
+### Modelo de estado (`A11ySettings`)
+`fontSize` (1·1.25·1.5) · `lineSpacing` (1·1.5·2) · `highContrast` · `grayscale`
+· `highlightInteractions` · `reducedMotion` · `visualAccessibilityMode`.
+
+- **Concepto clave**: el estado NO aplica estilos inline salvo `fontSize` /
+  `lineHeight`. Todo lo demás es CSS puro activado por una clase en el `<html>`
+  (`a11y-high-contrast`, `a11y-grayscale`, `a11y-highlight`, `a11y-reduced-motion`,
+  `a11y-visual-total`). Copiar el CSS + el contexto basta para portarlo.
+- **Precedencia**: con `visualAccessibilityMode` activo se ignoran el
+  `fontSize`/`lineSpacing` del usuario y se fuerza `24px / 1.5`.
+- El `useEffect` del contexto hace merge con los defaults al leer localStorage:
+  un JSON viejo al que le falte una clave no queda `undefined`. Guardas
+  `typeof window` para portabilidad (SSR).
+
+### Decisiones de adaptación a Connexo (importante — NO revertir sin motivo)
+- 🔴 **El toggle de tema claro/oscuro del PDF se OMITIÓ a propósito.** La marca
+  es negro puro + `#ff6600` **sin tema claro** (§2). Un sol/luna sería o un botón
+  sin efecto o inventar una paleta clara que viola la SSOT. Si algún día se
+  quiere, es decisión explícita del cliente + construir la paleta clara entera.
+- **Sitio siempre oscuro** → `a11y-high-contrast` se implementó directo como
+  **negro/blanco puro** (no las dos variantes claro/oscuro del original).
+- **`a11y-highlight` usa el naranja de marca `#ff6600`** (el original usaba ámbar
+  `#edb729`): el modo suave debe seguir sintiéndose Connexo. El Modo Visual Total
+  sí mantiene amarillo `#ff0` sobre negro — ahí manda la función (contraste WCAG
+  máximo), no la marca.
+- **`.glass` se neutraliza a mano** en `a11y-high-contrast` / `a11y-visual-total`:
+  el navbar usa `backdrop-filter` (no la utilidad `backdrop-blur-*`), así que el
+  CSS del modo lo pone `#000` + `backdrop-filter: none`.
+- **`svg:not(.a11y-icon)`** se pasa a grises en Visual Total. Los iconos de los
+  **controles de accesibilidad** llevan la clase **`a11y-icon`** (en el Navbar y
+  el panel) para seguir legibles. Regla: cualquier SVG que NO deba grisarse en
+  Visual Total lleva `a11y-icon`.
+- Las reglas `a11y-*` usan `!important` a propósito (deben ganar a cualquier
+  estilo). Son **opt-in**: al apagarlas, el sitio vuelve intacto (verificado —
+  `<html>` queda solo con `dark`, estilos inline limpios).
+
+### Reglas al tocar esto
+- Iconos nuevos → `components/icons.tsx` (§8). Se añadieron `EyeIcon`,
+  `AccessibilityIcon`, `CloseIcon`.
+- El panel es un `role="dialog"` accesible: no romper la trampa de foco, el ESC,
+  ni los `aria-pressed` de los toggles.
+- Solo se anima `transform`/`opacity` en el panel (Framer) — coherente con §6.

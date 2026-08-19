@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from '../router'
+import { useAccessibility } from '../context/AccessibilityContext'
+import AccessibilityPanel from './AccessibilityPanel'
+import { AccessibilityIcon, EyeIcon } from './icons'
 
 // Rutas absolutas a propósito: el navbar también se monta en /red, donde un
 // `#planes` suelto apuntaría a una sección que ahí no existe.
@@ -62,9 +65,46 @@ function Brand({ className = 'h-7' }: { className?: string }) {
   )
 }
 
+/**
+ * Botones de accesibilidad — siempre visibles (móvil y escritorio), porque el
+ * acceso a la accesibilidad no puede depender de abrir el menú. El de "Modo
+ * Visual Total" es un atajo directo; el otro abre el panel de 7 controles.
+ * El motor vive en `context/AccessibilityContext`, agnóstico del componente.
+ */
+function A11yButtons({ onOpenPanel }: { onOpenPanel: () => void }) {
+  const { settings, updateSetting } = useAccessibility()
+  const totalOn = settings.visualAccessibilityMode
+
+  return (
+    <div className="flex items-center gap-0.5">
+      <button
+        onClick={() => updateSetting('visualAccessibilityMode', !totalOn)}
+        aria-pressed={totalOn}
+        aria-label={totalOn ? 'Desactivar modo visual total' : 'Activar modo visual total'}
+        title="Modo Accesibilidad Visual Total"
+        className={`rounded-full p-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-connexo ${
+          totalOn ? 'bg-connexo text-black' : 'text-white/70 hover:bg-white/10 hover:text-white'
+        }`}
+      >
+        <EyeIcon className="a11y-icon h-[22px] w-[22px]" />
+      </button>
+      <button
+        onClick={onOpenPanel}
+        aria-label="Abrir panel de accesibilidad"
+        aria-haspopup="dialog"
+        title="Opciones de accesibilidad"
+        className="rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-connexo"
+      >
+        <AccessibilityIcon className="a11y-icon h-[22px] w-[22px]" />
+      </button>
+    </div>
+  )
+}
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [isA11yOpen, setIsA11yOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -74,6 +114,7 @@ export default function Navbar() {
   }, [])
 
   return (
+    <>
     <motion.header
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -85,6 +126,8 @@ export default function Navbar() {
       <nav className="section-pad flex h-16 items-center justify-between">
         <Brand className="h-6 sm:h-7" />
 
+        {/* Cluster derecho: links (desktop) + accesibilidad (siempre) + menú (móvil) */}
+        <div className="flex items-center gap-4 lg:gap-6">
         {/* Desktop links */}
         <ul className="hidden items-center gap-7 lg:flex">
           {links.map((l) => (
@@ -104,6 +147,9 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+
+        {/* Accesibilidad — visible en móvil y escritorio */}
+        <A11yButtons onOpenPanel={() => setIsA11yOpen(true)} />
 
         {/* Mobile toggle */}
         <button
@@ -130,6 +176,7 @@ export default function Navbar() {
             />
           </div>
         </button>
+        </div>
       </nav>
 
       {/* Mobile menu — nunca más ancho que la pantalla, y si algún día crece
@@ -160,5 +207,8 @@ export default function Navbar() {
         </ul>
       </motion.div>
     </motion.header>
+
+    <AccessibilityPanel isOpen={isA11yOpen} onClose={() => setIsA11yOpen(false)} />
+    </>
   )
 }
