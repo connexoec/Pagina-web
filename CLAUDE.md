@@ -1,11 +1,15 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-08-19**
-> (Hero renovado: escena del horizonte terrestre al amanecer con red de nodos
-> + pings NFC, en vez del punto que parpadeaba; fuera la cinta de rubros del
-> Hero; y **se eliminaron TODOS los `SectionKicker`** —los subtítulos con voz—
-> por decisión del cliente, incluida la eyebrow del banner de campaña).
+> No repetir errores ya resueltos aquí. Última actualización: **2026-08-19 (b)**
+> (Hero simplificado por accesibilidad: fondo = **faro NFC** —el icono
+> contactless parpadeando con ondas, muy tenue— en `fx/NfcBeacon.tsx`; se
+> descartó la escena del globo terrestre. Copy nuevo: slogan de Connexo
+> "…compartir quién eres · Conecta·Comparte·Crece"; el botón secundario ahora
+> va a **RED CONNEXO** (`/red`); fuera el badge "…en Ecuador", la línea de
+> prueba gratis, el trust strip y el botón "INICIAR SESIÓN" del navbar).
+> Hito 2026-08-19 (a): escena de globo terrestre en el Hero (descartada) +
+> **eliminación de TODOS los `SectionKicker`** y la eyebrow del banner.
 > Hito previo: **2026-08-18**
 > (sticky del pipeline arreglado en PC + glitch yautja permanente en el logo).
 > Hito -2: **2026-08-17**
@@ -120,13 +124,13 @@ ConnexoWeb/
 │  └─ components/
 │     ├─ fx/
 │     │  ├─ Ambient.tsx       # FilmGrain · Aurora · PerspectiveGrid · Spotlight
-│     │  ├─ EarthHorizon.tsx  # Escena del Hero: Tierra al amanecer + red de
-│     │  │                    #   nodos + pings NFC (CSS puro, ver §12)
+│     │  ├─ NfcBeacon.tsx     # Fondo del Hero: icono NFC parpadeando con ondas
+│     │  │                    #   (CSS puro, muy tenue, ver §12)
 │     │  └─ Motion.tsx        # Magnetic · TiltCard · Counter · DecodeText ·
 │     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
 │     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon)
 │     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial
-│     ├─ Hero.tsx             #  2. Hero (EarthHorizon + decode headline)
+│     ├─ Hero.tsx             #  2. Hero (NfcBeacon + decode headline + slogan)
 │     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
 │     ├─ EcosystemsCarousel.tsx #  4. Carrusel 3D Cover Flow (CRÍTICO, §6)
 │     ├─ Platform.tsx         #  5. PWA · push · 8 idiomas · tour guiado
@@ -155,8 +159,8 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
-| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO; "Iniciar sesión" → app real. El logo glitchea en bucle a alfabeto yautja (§9). |
-| 2 | Hero | ✅ | H1 exacto (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; **escena `EarthHorizon`** de fondo (Tierra al amanecer + red de nodos que se conectan + pings NFC, §12); CTA magnético → WhatsApp. **Sin `NfcRings` ni cinta de rubros** (quitados 2026-08-19). |
+| 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO. El logo glitchea en bucle a alfabeto yautja (§9). **Sin botón "INICIAR SESIÓN"** (quitado 2026-08-19: no hay dónde iniciar sesión desde la landing). |
+| 2 | Hero | ✅ | H1 (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; **fondo `NfcBeacon`** (icono NFC parpadeando con ondas, tenue, §12); subtítulo = **slogan de Connexo** ("…compartir quién eres" + "Conecta·Comparte·Crece"); CTA magnético → WhatsApp + botón **RED CONNEXO** → `/red`. **Sin** badge de Ecuador, línea de prueba gratis ni trust strip (quitados 2026-08-19). |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
 | 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
 | 5 | Plataforma | ✅ | PWA instalable, avisos con la app cerrada, 8 idiomas, tour guiado. Manual §6, §7, §21. |
@@ -507,36 +511,34 @@ hay muchas rutas con parámetros, ahí sí toca cambiarlo.
 
 ---
 
-## 12. Escena del Hero — `EarthHorizon` (2026-08-19)
+## 12. Fondo del Hero — `NfcBeacon` (2026-08-19)
 
-Reemplaza el punto que parpadeaba (`NfcRings`) por el telón de fondo del Hero:
-**la Tierra vista desde el borde de la órbita, con el amanecer naranja
-cresteando el limbo**, y sobre la superficie oscura una **red de nodos que se
-conectan** (la expansión de Connexo por el planeta). Los nodos "hub" emiten un
-**anillo de señal NFC** — ahí vive la referencia al sistema NFC que pidió el
-cliente. Vive en `components/fx/EarthHorizon.tsx`.
+El fondo del Hero es el **icono de NFC** (símbolo contactless: tres ondas + el
+punto de toque) a gran escala, centrado detrás del titular, **parpadeando**, con
+**ondas que emanan** en bucle. Vive en `components/fx/NfcBeacon.tsx`.
 
-- **CSS puro sobre SVG, nunca JS.** Es una animación permanente y siempre en
-  pantalla (fondo del Hero); mismo criterio que el `Marquee` y el glitch del
-  logo (§6, §9). Los keyframes están en `tailwind.config.js`:
-  `net-draw` (arcos que se dibujan/re-dibujan), `node-pulse` (halo de cada
-  nodo), `nfc-ping` (anillos de los hubs), `rim-shimmer` (la atmósfera respira).
-- **Solo se anima `opacity`, `transform` (scale) y `stroke-dashoffset`** (barato
-  en trazos finos). Cero `filter`/`blur` animado, cero canvas, cero rAF.
-- **Los arcos usan `pathLength={1}` + `strokeDasharray="1 1"`** y animan
-  `stroke-dashoffset` 1→0, así el "trazo" es idéntico sea cual sea el largo real
-  del arco. El delay por-elemento va **inline** (`animationDelay` negativo) para
-  desincronizarlos; el resto (nombre, duración) sale de la clase de Tailwind.
+> Historia: primero fue `NfcRings` (un punto que parpadeaba) → luego una escena
+> de globo terrestre al amanecer (`EarthHorizon`, **descartada**: no cuadraba
+> con la accesibilidad, el planeta casi-negro no se leía) → hoy este faro NFC.
+> Si alguien pide "la Tierra otra vez", es partir de cero: ese componente ya no
+> existe.
+
+- **Muy tenue a propósito.** No debe pelear con las letras blancas del título:
+  el glifo late entre `opacity` 0.22 y 0.07 y las ondas nunca pasan de 0.16.
+  Fondo negro, sin caja: es atmósfera, no contenido (`aria-hidden`).
+- **CSS puro sobre SVG, nunca JS.** Animación permanente y siempre en pantalla;
+  mismo criterio que el `Marquee` y el glitch del logo (§6, §9). Keyframes en
+  `tailwind.config.js`: `nfc-beacon` (parpadeo del glifo) y `nfc-wave` (la onda
+  que crece y se apaga). Solo `opacity` y `transform` (GPU). Cero canvas/rAF.
+- **El glifo es el mismo trazo que `NfcIcon`** (`icons.tsx`), escalado ×15 y
+  centrado sobre un viewBox 400 (`coord' = coord*15 + 20`). El punto de toque
+  queda a la derecha (290,200) y las ondas abren a la izquierda, como el símbolo
+  real. Si se cambia `NfcIcon`, este glifo NO se actualiza solo (está copiado a
+  mano para poder escalarlo); actualizar ambos si hace falta.
 - **`prefers-reduced-motion` no necesita código**: la regla global de `index.css`
-  colapsa la duración y cada keyframe está diseñado para que el frame **100%**
-  sea un estado estático decente (la red queda dibujada y quieta, los pings
-  invisibles). Igual que el glitch del logo.
-- **Los pings NFC** son `<circle>` con `transform-box: fill-box` +
-  `transform-origin: center` (inline) para que el `scale` gire sobre el centro
-  del propio círculo y no sobre el origen del SVG.
-- Geometría: el limbo es la curva `M0,553 Q600,247 1200,553` (pasa por
-  `(600,400)`); el cuerpo del planeta es esa misma curva cerrada hasta abajo, y
-  los nodos se posan justo debajo de ella. Si se mueven nodos, recalcular la `y`
-  sobre esa curva para que sigan "sobre" el planeta.
-- **Paleta**: solo negro + naranja de la escala `connexo` (§2). Los brillos usan
-  `#ff9a44` (= `connexo-300`), nunca blanco ni otro tono.
+  colapsa la duración y cada keyframe aterriza en un frame **100%** decente
+  (glifo quieto y tenue, ondas invisibles). Igual que el glitch del logo.
+- **Ondas**: `<circle>` con `transform-box: fill-box` + `transform-origin: center`
+  (inline) para que el `scale` gire sobre su propio centro; el delay va inline
+  (`animationDelay` negativo) para escalonarlas.
+- **Paleta**: solo negro + `#ff6600` (§2), sin tintes.

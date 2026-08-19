@@ -94,49 +94,23 @@ export default {
           '91%, 100%': { opacity: '0', transform: 'translate3d(0,0,0)' },
         },
 
-        // ── Escena del horizonte terrestre (Hero · EarthHorizon.tsx) ───────
-        // TODO es GPU-safe: solo `opacity`, `transform` (scale) y
-        // `stroke-dashoffset` (barato en trazos finos). Diseñadas para que el
-        // frame 100% sea un estado ESTÁTICO decente: con prefers-reduced-motion
-        // el navegador colapsa la duración y aterriza ahí (la red queda dibujada
-        // y quieta, sin parpadeo). Mismo criterio que el glitch del logo (§9).
+        // ── Faro NFC del Hero (fx/NfcBeacon.tsx) ───────────────────────────
+        // GPU-safe: solo `opacity` y `transform`. Muy tenue a propósito (no debe
+        // pelear con el título). El frame 100% es un estado estático decente:
+        // con prefers-reduced-motion el navegador aterriza ahí (glifo quieto y
+        // tenue, ondas invisibles). Mismo criterio que el glitch del logo (§9).
 
-        // Conexión entre nodos: reposo = trazada y visible; cada ciclo se
-        // re-dibuja (expansión). 0% == 100% para que el bucle no salte.
-        'net-draw': {
-          '0%, 38%': { strokeDashoffset: '0', opacity: '0.55' },
-          '46%': { opacity: '0' },
-          '50%': { strokeDashoffset: '1', opacity: '0' },
-          '72%': { opacity: '0.7' },
-          '94%, 100%': { strokeDashoffset: '0', opacity: '0.55' },
+        // Parpadeo del icono NFC. Reposo (0%/100%) = tenue visible.
+        'nfc-beacon': {
+          '0%, 100%': { opacity: '0.22' },
+          '50%': { opacity: '0.07' },
         },
-        // Latido del halo de cada nodo.
-        'node-pulse': {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.4' },
-        },
-        // Anillo de señal NFC emanando de un nodo hub.
-        'nfc-ping': {
-          '0%': { transform: 'scale(0.4)', opacity: '0' },
-          '12%': { opacity: '0.55' },
-          '100%': { transform: 'scale(3.6)', opacity: '0' },
-        },
-        // Respiro de la línea de atmósfera sobre el limbo del planeta.
-        'rim-shimmer': {
-          '0%, 100%': { opacity: '0.9' },
-          '50%': { opacity: '0.5' },
-        },
-        // Barrido tipo radar/sensor bajando por la superficie del globo.
-        'scan-sweep': {
-          '0%': { transform: 'translateY(-40px)', opacity: '0' },
-          '14%': { opacity: '0.5' },
-          '86%': { opacity: '0.35' },
-          '100%': { transform: 'translateY(300px)', opacity: '0' },
-        },
-        // Titileo de estrellas (varias fases con delay inline).
-        twinkle: {
-          '0%, 100%': { opacity: '0.7' },
-          '50%': { opacity: '0.15' },
+        // Onda que emana del centro y se apaga. 100% opacity 0 (invisible en
+        // reduced-motion, queda solo el glifo).
+        'nfc-wave': {
+          '0%': { transform: 'scale(0.35)', opacity: '0' },
+          '12%': { opacity: '0.16' },
+          '100%': { transform: 'scale(1.6)', opacity: '0' },
         },
       },
       animation: {
@@ -149,12 +123,8 @@ export default {
         'glitch-word': 'glitch-word 12s step-end infinite',
         'glitch-yautja': 'glitch-yautja 12s step-end infinite',
         // Escena del horizonte terrestre (el delay por-elemento va inline).
-        'net-draw': 'net-draw 7s ease-in-out infinite',
-        'node-pulse': 'node-pulse 3.2s ease-in-out infinite',
-        'nfc-ping': 'nfc-ping 3.6s ease-out infinite',
-        'rim-shimmer': 'rim-shimmer 6s ease-in-out infinite',
-        'scan-sweep': 'scan-sweep 7s ease-in-out infinite',
-        twinkle: 'twinkle 4s ease-in-out infinite',
+        'nfc-beacon': 'nfc-beacon 3.4s ease-in-out infinite',
+        'nfc-wave': 'nfc-wave 4.8s ease-out infinite',
       },
     },
   },

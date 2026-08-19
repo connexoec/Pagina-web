@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { site } from '../config/site'
 import { Link } from '../router'
 
 // Rutas absolutas a propósito: el navbar también se monta en /red, donde un
@@ -106,18 +105,6 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right CTA — el panel real del cliente, no un signup que no existe */}
-        <div className="hidden lg:block">
-          <a
-            href={site.app}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-outline text-sm"
-          >
-            INICIAR SESIÓN
-          </a>
-        </div>
-
         {/* Mobile toggle */}
         <button
           onClick={() => setOpen((v) => !v)}
@@ -170,17 +157,6 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
-          <li className="pt-2">
-            <a
-              href={site.app}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="btn-outline w-full text-sm"
-            >
-              INICIAR SESIÓN
-            </a>
-          </li>
         </ul>
       </motion.div>
     </motion.header>
