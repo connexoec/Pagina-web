@@ -113,37 +113,49 @@
   border-radius: 4px;
 }
 
-/* ── Alto contraste (negro/blanco puro sobre el sitio oscuro) ─────────────── */
-.a11y-high-contrast {
+/* ── Alto contraste (blanco sobre negro; el sitio es SIEMPRE oscuro) ────────
+   NO invierte el fondo de cada elemento: hacerlo pinta cajas negras dentro de
+   los <span>/<svg> anidados de botones y enlaces (el `* { background:#000 }`
+   gana a `button { background:#fff }` en los hijos). En su lugar, mismo criterio
+   que el Modo Visual Total: todo transparente sobre el negro de la página, texto
+   y bordes blancos, y los interactivos se distinguen por subrayado + negrita
+   (borde extra en los botones). Nada de `fill/stroke: currentColor` forzado:
+   rellenaría de blanco los iconos de línea (fill:none). */
+.a11y-high-contrast,
+.a11y-high-contrast body {
   background-color: #000 !important;
   color: #fff !important;
 }
 .a11y-high-contrast * {
-  border-color: #fff !important;
-  color: #fff !important;
-  background-color: #000 !important;
+  background-color: transparent !important;
   background-image: none !important;
+  color: #fff !important;
+  border-color: #fff !important;
   box-shadow: none !important;
   text-shadow: none !important;
+  transition: none !important;
+}
+/* Superficies fijas (navbar, panel, menú) necesitan fondo opaco o el contenido
+   se transparenta a través. Ganan al `*` por especificidad. */
+.a11y-high-contrast header,
+.a11y-high-contrast .glass {
+  background-color: #000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 .a11y-high-contrast a,
 .a11y-high-contrast button {
-  background-color: #fff !important;
-  color: #000 !important;
+  text-decoration: underline !important;
+  font-weight: 700 !important;
+}
+.a11y-high-contrast button,
+.a11y-high-contrast [role='button'],
+.a11y-high-contrast .btn-cta,
+.a11y-high-contrast .btn-outline {
   border: 2px solid #fff !important;
 }
-.a11y-high-contrast a:hover,
-.a11y-high-contrast button:hover {
-  background-color: #000 !important;
-  color: #fff !important;
-}
-.a11y-high-contrast svg {
-  fill: currentColor !important;
-  stroke: currentColor !important;
-}
 .a11y-high-contrast img {
-  filter: grayscale(1) !important;
-  opacity: 0.8 !important;
+  filter: grayscale(1) contrast(1.15) !important;
 }
 
 /* ── Escala de grises ─────────────────────────────────────────────────────── */
@@ -225,7 +237,7 @@
 }
 /* El navbar es `glass` (backdrop-filter, no la utilidad backdrop-blur-*): hay
    que neutralizarlo a mano en los modos de máximo contraste. */
-.a11y-high-contrast .glass,
+.a11y-visual-total header,
 .a11y-visual-total .glass {
   background-color: #000 !important;
   backdrop-filter: none !important;
