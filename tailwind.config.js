@@ -126,6 +126,18 @@ export default {
           '0%, 100%': { opacity: '0.9' },
           '50%': { opacity: '0.5' },
         },
+        // Barrido tipo radar/sensor bajando por la superficie del globo.
+        'scan-sweep': {
+          '0%': { transform: 'translateY(-40px)', opacity: '0' },
+          '14%': { opacity: '0.5' },
+          '86%': { opacity: '0.35' },
+          '100%': { transform: 'translateY(300px)', opacity: '0' },
+        },
+        // Titileo de estrellas (varias fases con delay inline).
+        twinkle: {
+          '0%, 100%': { opacity: '0.7' },
+          '50%': { opacity: '0.15' },
+        },
       },
       animation: {
         'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
@@ -141,6 +153,8 @@ export default {
         'node-pulse': 'node-pulse 3.2s ease-in-out infinite',
         'nfc-ping': 'nfc-ping 3.6s ease-out infinite',
         'rim-shimmer': 'rim-shimmer 6s ease-in-out infinite',
+        'scan-sweep': 'scan-sweep 7s ease-in-out infinite',
+        twinkle: 'twinkle 4s ease-in-out infinite',
       },
     },
   },

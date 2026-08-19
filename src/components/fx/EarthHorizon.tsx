@@ -1,55 +1,85 @@
 // ─────────────────────────────────────────────────────────────
 //  HORIZONTE TERRESTRE  ·  el telón de fondo del Hero.
 //
-//  La Tierra vista desde el borde de la órbita, con el amanecer naranja
-//  cresteando el limbo. Sobre la superficie oscura, una red de nodos que se
-//  conectan entre sí (la expansión de Connexo por el planeta) y algunos nodos
-//  "hub" que emiten un anillo de señal NFC.
+//  Un globo holográfico visto desde el borde de la órbita: el amanecer naranja
+//  crestea el limbo, la superficie se dibuja con una malla de meridianos y
+//  paralelos, un barrido tipo sensor la recorre, y sobre ella una red de nodos
+//  que se conectan (la expansión de Connexo por el planeta). Los nodos "hub"
+//  emiten un anillo de señal NFC.
 //
 //  REGLA DE ORO (ver fx/Ambient.tsx): todo es CSS puro sobre SVG y solo anima
-//  `opacity`, `transform` (scale) y `stroke-dashoffset`. Nada de canvas, nada
-//  de rAF por frame, nada de `filter`/`blur` animado. Los keyframes viven en
-//  `tailwind.config.js` (`net-draw`, `node-pulse`, `nfc-ping`, `rim-shimmer`)
-//  y `prefers-reduced-motion` los congela solo (§9 del CLAUDE.md): el frame
-//  100% deja la red dibujada y quieta.
+//  `opacity`, `transform` y `stroke-dashoffset`. Nada de canvas, nada de rAF,
+//  nada de `filter`/`blur` animado (el "glow" se finge apilando trazos). Los
+//  keyframes viven en `tailwind.config.js`. `prefers-reduced-motion` los congela
+//  solo: cada frame 100% es un estado estático decente (ver §12 del CLAUDE.md).
 // ─────────────────────────────────────────────────────────────
 
-// El limbo del planeta es esta curva cuadrática (M0,553 Q600,247 1200,553);
-// pasa por (600,400) en el centro. Los nodos se posan justo debajo de ella,
-// sobre la cara oscura, como luces de ciudad cerca del amanecer.
-const LIMB = 'M0,553 Q600,247 1200,553'
+const W = 1200
+const H = 700
+
+// El limbo del planeta: sube de los bordes (y=525) a la cresta (y=430).
+// Control de la cuadrática: cy = 2*peak - edge.
+const LIMB_EDGE = 525
+const LIMB_PEAK = 430
+const LIMB_CY = 2 * LIMB_PEAK - LIMB_EDGE // 335
+const LIMB = `M0,${LIMB_EDGE} Q600,${LIMB_CY} ${W},${LIMB_EDGE}`
+
+// Cuerpo del planeta = el limbo cerrado hasta abajo. Sirve de máscara para que
+// la malla no se salga al espacio.
+const BODY = `${LIMB} L${W},${H} L0,${H} Z`
+
+// Paralelos: arcos anidados bajo el limbo, con menos curvatura hacia abajo.
+const LATITUDES = Array.from({ length: 6 }, (_, i) => {
+  const edge = 555 + i * 30
+  const rise = 88 - i * 12
+  const cy = edge - 2 * rise
+  return `M0,${edge} Q600,${cy} ${W},${edge}`
+})
+
+// Meridianos: abanico desde el "polo" (600,300) hacia el borde inferior.
+const LONGITUDES = Array.from({ length: 7 }, (_, i) => {
+  const bx = 600 + (i - 3) * 235
+  return `M600,300 Q${bx},470 ${bx},${H}`
+})
+
+// Estrellas en el espacio, por encima del limbo.
+const STARS = [
+  [90, 120, 1.1], [190, 240, 0.8], [300, 90, 1.3], [420, 200, 0.9],
+  [520, 130, 1], [980, 110, 1.2], [1080, 220, 0.9], [1150, 90, 1.1],
+  [700, 90, 0.8], [860, 180, 1], [560, 260, 0.8], [140, 330, 0.9],
+  [1040, 320, 0.8], [250, 170, 0.7], [640, 200, 0.7], [930, 260, 0.9],
+  [40, 210, 0.8], [1180, 300, 0.8], [380, 300, 0.7], [770, 250, 0.8],
+] as const
 
 type Node = { x: number; y: number; r: number; hub?: boolean }
 
-// Nodos sobre el limbo + algunos más adentro de la superficie (más abajo).
+// Nodos sobre la superficie, más densos cerca del amanecer (x 700-1050).
 const NODES: Node[] = [
-  { x: 140, y: 500, r: 2.6 }, // 0
-  { x: 300, y: 448, r: 3 }, // 1
-  { x: 470, y: 418, r: 3.4 }, // 2
-  { x: 600, y: 412, r: 4, hub: true }, // 3
-  { x: 740, y: 419, r: 3.6, hub: true }, // 4
-  { x: 880, y: 444, r: 3.2, hub: true }, // 5
-  { x: 1030, y: 490, r: 3 }, // 6
-  { x: 1170, y: 548, r: 2.6 }, // 7
-  { x: 230, y: 560, r: 2.2 }, // 8
-  { x: 560, y: 478, r: 2.6 }, // 9
-  { x: 820, y: 516, r: 2.6 }, // 10
-  { x: 980, y: 556, r: 2.2 }, // 11
+  { x: 180, y: 545, r: 2.4 }, // 0
+  { x: 330, y: 560, r: 2.6 }, // 1
+  { x: 470, y: 585, r: 2.4 }, // 2
+  { x: 610, y: 560, r: 3.2, hub: true }, // 3
+  { x: 720, y: 540, r: 2.8 }, // 4
+  { x: 830, y: 520, r: 3.4, hub: true }, // 5  (junto al sol)
+  { x: 940, y: 545, r: 2.8 }, // 6
+  { x: 1040, y: 585, r: 2.6, hub: true }, // 7
+  { x: 250, y: 640, r: 2.2 }, // 8
+  { x: 560, y: 650, r: 2.4 }, // 9
+  { x: 760, y: 635, r: 2.4 }, // 10
+  { x: 900, y: 665, r: 2.2 }, // 11
 ]
 
-// Qué nodo se une con cuál. El arco se dibuja combándose hacia arriba, como un
-// enlace que salta por encima del borde del globo.
 const LINKS: [number, number][] = [
   [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7],
-  [8, 1], [9, 3], [9, 4], [10, 5], [11, 6], [2, 9], [10, 4],
+  [8, 1], [9, 3], [10, 5], [11, 7], [3, 9], [5, 10], [4, 10],
 ]
 
-/** Arco cuadrático entre dos nodos, con el punto de control levantado. */
+/** Arco cuadrático entre dos nodos, con el control levantado. */
 function arc(a: Node, b: Node): string {
   const mx = (a.x + b.x) / 2
   const my = (a.y + b.y) / 2
   const dist = Math.hypot(b.x - a.x, b.y - a.y)
-  const lift = Math.max(38, dist * 0.34)
+  const lift = Math.max(34, dist * 0.32)
   return `M${a.x},${a.y} Q${mx},${my - lift} ${b.x},${b.y}`
 }
 
@@ -57,59 +87,99 @@ export default function EarthHorizon({ className = '' }: { className?: string })
   return (
     <div
       aria-hidden
-      className={`pointer-events-none absolute inset-x-0 bottom-0 h-[62%] overflow-hidden ${className}`}
+      className={`pointer-events-none absolute inset-x-0 bottom-0 h-[72%] overflow-hidden ${className}`}
     >
       <svg
-        viewBox="0 0 1200 700"
+        viewBox={`0 0 ${W} ${H}`}
         preserveAspectRatio="xMidYMax slice"
         className="h-full w-full"
       >
         <defs>
-          {/* Amanecer: foco cálido cresteando el horizonte. */}
+          {/* Bloom del amanecer sobre el horizonte. */}
           <radialGradient id="eh-sun" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ff6600" stopOpacity="0.55" />
-            <stop offset="34%" stopColor="#ff6600" stopOpacity="0.26" />
-            <stop offset="70%" stopColor="#ff6600" stopOpacity="0.06" />
+            <stop offset="0%" stopColor="#ff9a44" stopOpacity="0.55" />
+            <stop offset="30%" stopColor="#ff6600" stopOpacity="0.3" />
+            <stop offset="66%" stopColor="#ff6600" stopOpacity="0.08" />
             <stop offset="100%" stopColor="#ff6600" stopOpacity="0" />
           </radialGradient>
-          {/* Núcleo del sol, más concentrado. */}
+          {/* Núcleo caliente del sol. */}
           <radialGradient id="eh-core" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ff9a44" stopOpacity="0.7" />
-            <stop offset="55%" stopColor="#ff6600" stopOpacity="0.25" />
+            <stop offset="0%" stopColor="#ffbd85" stopOpacity="0.95" />
+            <stop offset="45%" stopColor="#ff9a44" stopOpacity="0.5" />
             <stop offset="100%" stopColor="#ff6600" stopOpacity="0" />
           </radialGradient>
-          {/* Cuerpo del planeta: casi negro, apenas templado cerca del limbo. */}
+          {/* Atmósfera: halo tenue por encima del limbo. */}
+          <radialGradient id="eh-atmo" cx="50%" cy="72%" r="60%">
+            <stop offset="0%" stopColor="#ff6600" stopOpacity="0.34" />
+            <stop offset="55%" stopColor="#ff6600" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#ff6600" stopOpacity="0" />
+          </radialGradient>
+          {/* Cuerpo del planeta: casi negro, apenas templado arriba. */}
           <linearGradient id="eh-planet" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#180a02" />
-            <stop offset="34%" stopColor="#080300" />
+            <stop offset="0%" stopColor="#20100a" />
+            <stop offset="30%" stopColor="#0a0402" />
             <stop offset="100%" stopColor="#000000" />
           </linearGradient>
-          {/* Línea de atmósfera sobre el limbo. */}
+          {/* Línea de atmósfera nítida sobre el limbo. */}
           <linearGradient id="eh-rim" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#ff6600" stopOpacity="0.15" />
-            <stop offset="50%" stopColor="#ff9a44" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#ff6600" stopOpacity="0.15" />
+            <stop offset="0%" stopColor="#ff6600" stopOpacity="0.12" />
+            <stop offset="50%" stopColor="#ffbd85" stopOpacity="1" />
+            <stop offset="100%" stopColor="#ff6600" stopOpacity="0.12" />
           </linearGradient>
-          {/* Halo suave de cada nodo. */}
+          {/* Halo de cada nodo. */}
           <radialGradient id="eh-node" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ff9a44" stopOpacity="0.9" />
-            <stop offset="60%" stopColor="#ff6600" stopOpacity="0.25" />
+            <stop offset="0%" stopColor="#ffbd85" stopOpacity="0.95" />
+            <stop offset="55%" stopColor="#ff6600" stopOpacity="0.28" />
             <stop offset="100%" stopColor="#ff6600" stopOpacity="0" />
           </radialGradient>
+          <clipPath id="eh-clip">
+            <path d={BODY} />
+          </clipPath>
         </defs>
 
-        {/* Amanecer detrás del limbo */}
-        <ellipse cx="720" cy="540" rx="620" ry="360" fill="url(#eh-sun)" />
-        <ellipse cx="720" cy="530" rx="240" ry="130" fill="url(#eh-core)" />
+        {/* — Espacio — */}
+        {STARS.map(([x, y, r], i) => (
+          <circle
+            key={`s${i}`}
+            cx={x}
+            cy={y}
+            r={r}
+            fill="#ffbd85"
+            className={i % 3 === 0 ? 'animate-twinkle' : ''}
+            style={i % 3 === 0 ? { animationDelay: `${-(i * 0.5).toFixed(2)}s` } : undefined}
+            opacity={0.7}
+          />
+        ))}
 
-        {/* Cuerpo del planeta (mismo limbo, cerrado hasta abajo) */}
-        <path
-          d={`${LIMB} L1200,700 L0,700 Z`}
-          fill="url(#eh-planet)"
-        />
+        {/* Bloom atmosférico y amanecer por detrás del planeta */}
+        <ellipse cx="600" cy={LIMB_PEAK} rx="760" ry="230" fill="url(#eh-atmo)" />
+        <ellipse cx="830" cy="470" rx="520" ry="300" fill="url(#eh-sun)" />
 
-        {/* Atmósfera: un trazo ancho tenue + la línea nítida que respira */}
-        <path d={LIMB} fill="none" stroke="#ff6600" strokeOpacity="0.12" strokeWidth="10" />
+        {/* Cuerpo del planeta (tapa la mitad inferior de los glows) */}
+        <path d={BODY} fill="url(#eh-planet)" />
+
+        {/* Malla del globo, recortada a la superficie */}
+        <g clipPath="url(#eh-clip)">
+          {LATITUDES.map((d, i) => (
+            <path key={`lat${i}`} d={d} fill="none" stroke="#ff6600" strokeOpacity="0.16" strokeWidth="1" />
+          ))}
+          {LONGITUDES.map((d, i) => (
+            <path key={`lon${i}`} d={d} fill="none" stroke="#ff6600" strokeOpacity="0.14" strokeWidth="1" />
+          ))}
+          {/* Barrido tipo sensor */}
+          <path
+            d={`M0,470 Q600,320 ${W},470`}
+            fill="none"
+            stroke="#ff9a44"
+            strokeWidth="2"
+            strokeOpacity="0.9"
+            className="animate-scan-sweep"
+          />
+        </g>
+
+        {/* Atmósfera del limbo: glow apilado + línea nítida que respira */}
+        <path d={LIMB} fill="none" stroke="#ff6600" strokeOpacity="0.06" strokeWidth="22" strokeLinecap="round" />
+        <path d={LIMB} fill="none" stroke="#ff6600" strokeOpacity="0.12" strokeWidth="10" strokeLinecap="round" />
         <path
           d={LIMB}
           fill="none"
@@ -119,6 +189,10 @@ export default function EarthHorizon({ className = '' }: { className?: string })
           className="animate-rim-shimmer"
         />
 
+        {/* El sol cresteando el horizonte (encima del cuerpo) */}
+        <ellipse cx="830" cy="452" rx="210" ry="90" fill="url(#eh-core)" />
+        <circle cx="830" cy="470" r="30" fill="url(#eh-core)" />
+
         {/* Red de conexiones (se dibujan y re-dibujan en bucle) */}
         <g>
           {LINKS.map(([ai, bi], i) => (
@@ -126,7 +200,7 @@ export default function EarthHorizon({ className = '' }: { className?: string })
               key={`l${i}`}
               d={arc(NODES[ai], NODES[bi])}
               fill="none"
-              stroke="#ff6600"
+              stroke="#ff9a44"
               strokeWidth="1.2"
               strokeLinecap="round"
               pathLength={1}
@@ -137,7 +211,7 @@ export default function EarthHorizon({ className = '' }: { className?: string })
           ))}
         </g>
 
-        {/* Nodos: halo latente + núcleo sólido; los hub emiten anillos NFC */}
+        {/* Nodos: halo latente + núcleo; los hub emiten anillos NFC */}
         <g>
           {NODES.map((n, i) => (
             <g key={`n${i}`}>
@@ -146,30 +220,22 @@ export default function EarthHorizon({ className = '' }: { className?: string })
                   <circle
                     cx={n.x}
                     cy={n.y}
-                    r="14"
+                    r="13"
                     fill="none"
                     stroke="#ff6600"
                     strokeWidth="1.4"
                     className="animate-nfc-ping"
-                    style={{
-                      transformBox: 'fill-box',
-                      transformOrigin: 'center',
-                      animationDelay: `${-(i * 1.1).toFixed(2)}s`,
-                    }}
+                    style={{ transformBox: 'fill-box', transformOrigin: 'center', animationDelay: `${-(i * 1.1).toFixed(2)}s` }}
                   />
                   <circle
                     cx={n.x}
                     cy={n.y}
-                    r="14"
+                    r="13"
                     fill="none"
                     stroke="#ff6600"
                     strokeWidth="1.2"
                     className="animate-nfc-ping"
-                    style={{
-                      transformBox: 'fill-box',
-                      transformOrigin: 'center',
-                      animationDelay: `${-(i * 1.1 + 1.8).toFixed(2)}s`,
-                    }}
+                    style={{ transformBox: 'fill-box', transformOrigin: 'center', animationDelay: `${-(i * 1.1 + 1.8).toFixed(2)}s` }}
                   />
                 </>
               )}
@@ -181,7 +247,7 @@ export default function EarthHorizon({ className = '' }: { className?: string })
                 className="animate-node-pulse"
                 style={{ animationDelay: `${-(i * 0.37).toFixed(2)}s` }}
               />
-              <circle cx={n.x} cy={n.y} r={n.r} fill="#ff9a44" />
+              <circle cx={n.x} cy={n.y} r={n.r} fill="#ffbd85" />
             </g>
           ))}
         </g>
