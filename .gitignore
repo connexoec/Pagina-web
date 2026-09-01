@@ -2,6 +2,12 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Variables de entorno (webhooks de Discord, claves de Supabase). NUNCA al repo.
+# El archivo versionado es `.env.example` (solo placeholders).
+.env
+.env.*
+!.env.example
 .DS_Store
 .vscode/*
 !.vscode/extensions.json

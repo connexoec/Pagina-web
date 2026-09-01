@@ -5,10 +5,14 @@ import { FilmGrain, Spotlight } from './components/fx/Ambient'
 
 // La RED CONNEXO es una página aparte: su código no viaja con la portada.
 const RedPage = lazy(() => import('./pages/RedPage'))
+// "Trabaja con nosotros" — también lazy: su código (2 formularios) no viaja
+// con la portada.
+const TrabajaPage = lazy(() => import('./pages/TrabajaPage'))
 
 const TITLES: Record<string, string> = {
   '/': 'Connexo · Tu identidad digital como motor de ventas',
   '/red': 'RED CONNEXO · El directorio de emprendedores de Connexo',
+  '/trabaja': 'Trabaja con nosotros · Connexo',
 }
 
 function Routes() {
@@ -23,6 +27,14 @@ function Routes() {
     return (
       <Suspense fallback={<div className="min-h-screen bg-abyss-950" aria-hidden />}>
         <RedPage />
+      </Suspense>
+    )
+  }
+
+  if (path === '/trabaja') {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-abyss-950" aria-hidden />}>
+        <TrabajaPage />
       </Suspense>
     )
   }

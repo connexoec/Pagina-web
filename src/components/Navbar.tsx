@@ -13,6 +13,7 @@ const links = [
   { label: 'Planes', href: '/#planes' },
   { label: 'Causa', href: '/#arupo' },
   { label: 'RED CONNEXO', href: '/red', badge: 'Directorio' },
+  { label: 'Trabaja con nosotros', href: '/trabaja', badge: 'Únete' },
 ]
 
 /**

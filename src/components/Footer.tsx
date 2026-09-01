@@ -4,6 +4,7 @@ import { Link } from '../router'
 
 const legal = [
   { label: 'RED CONNEXO', href: '/red' },
+  { label: 'Trabaja con nosotros', href: '/trabaja' },
   { label: 'Términos', href: '#terminos' },
   { label: 'Privacidad', href: '#privacidad' },
   { label: 'Cookies', href: '#cookies' },

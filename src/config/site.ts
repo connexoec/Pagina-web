@@ -38,4 +38,9 @@ export const waMsg = {
   red: 'Hola Connexo, quiero que mi negocio esté en la RED CONNEXO. ¿Cómo entro?',
   ngo: 'Hola Connexo, represento a una organización y quiero conocer el convenio para activar perfiles a nuestros emprendedores.',
   general: 'Hola Connexo, quiero información sobre los perfiles digitales.',
+  // "Trabaja con nosotros" (/trabaja): respaldo por si el envío a Discord falla.
+  seller:
+    'Hola Connexo, quiero postularme como vendedor/distribuidor. ¿Me cuentan cómo trabajar con ustedes?',
+  volunteer:
+    'Hola Connexo, quiero sumarme como voluntario/a. ¿Me cuentan cómo participar?',
 } as const

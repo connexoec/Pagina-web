@@ -206,6 +206,31 @@ export const CloseIcon = (p: IconProps) => (
   </svg>
 )
 
+// Maletín — pestaña de Vendedor/Distribuidor en "Trabaja con nosotros".
+export const BriefcaseIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <rect x="3" y="7" width="18" height="13" rx="2.5" />
+    <path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7" />
+    <path d="M3 12.5h18" />
+    <path d="M12 12v1.5" />
+  </svg>
+)
+
+// Avión de papel — botón de envío de los formularios.
+export const SendIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M21 3 10.5 13.5" />
+    <path d="M21 3 14.5 21l-4-8-8-4L21 3Z" />
+  </svg>
+)
+
+// Aro de carga — estado "enviando" de los formularios (usar con animate-spin).
+export const SpinnerIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M12 3a9 9 0 1 0 9 9" />
+  </svg>
+)
+
 // Ojo — dispara el "Modo Visual Total" (accesibilidad, §Navbar).
 export const EyeIcon = (p: IconProps) => (
   <svg {...base} {...p}>

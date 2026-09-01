@@ -1,7 +1,15 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-08-19 (c)**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-09-01**
+> (**Página "Trabaja con nosotros" (`/trabaja`)** con dos formularios en un
+> conmutador de pestañas: (1) **Vendedor/Distribuidor** (Connexo Sellers) —flujo
+> de 2 pasos que agenda una **entrevista con código** y **bloquea el cupo**— y
+> (2) **Voluntariado** —fiel al Google Form de la Fundación/CONNEXO, enfocado en
+> accesibilidad—. Ambos envían a **Discord por webhook** con respaldo a WhatsApp.
+> Ver §14. El bloqueo de cupos usa **Supabase** si hay env (real entre todos) o
+> `localStorage` como respaldo por dispositivo.)
+> Hito previo: **2026-08-19 (c)**
 > (**Sistema de Accesibilidad** portado del módulo de la Fundación Arupo: 2
 > botones en el Navbar —"Modo Visual Total" (ojo) + panel de 7 controles— con
 > estado global persistente y modos CSS `a11y-*`. Ver §13. Se **omitió a
@@ -500,6 +508,7 @@ hay muchas rutas con parámetros, ahí sí toca cambiarlo.
 |------|-----------|
 | `/` | `Landing.tsx` |
 | `/red` | `pages/RedPage.tsx` (lazy — su código no viaja con la portada) |
+| `/trabaja` | `pages/TrabajaPage.tsx` (lazy — dos formularios, §14) |
 | cualquier otra | cae en `Landing.tsx` |
 
 ### Reglas al escribir enlaces
@@ -613,3 +622,77 @@ provider envuelve toda la app.
 - El panel es un `role="dialog"` accesible: no romper la trampa de foco, el ESC,
   ni los `aria-pressed` de los toggles.
 - Solo se anima `transform`/`opacity` en el panel (Framer) — coherente con §6.
+
+---
+
+## 14. Trabaja con nosotros — página `/trabaja` (2026-09-01)
+
+Página propia (`pages/TrabajaPage.tsx`, lazy) con un **conmutador de 2 pestañas**
+(píldora que se desliza con `layoutId`): **Vendedor/Distribuidor** y
+**Voluntariado**. Cada pestaña = pitch a la izquierda + formulario a la derecha,
+con cruce de opacidad entre pestañas (`AnimatePresence mode="wait"`). Enlazada
+en el Navbar (badge "Únete") y el Footer.
+
+### Piezas
+| Pieza | Archivo | Rol |
+|-------|---------|-----|
+| Página + pestañas + pitches | `pages/TrabajaPage.tsx` | Layout, conmutador, `SellerPitch`/`VolunteerPitch`. |
+| Formulario de vendedor | `components/careers/SellerForm.tsx` | 2 pasos: datos → **agendar entrevista** → código. |
+| Formulario de voluntario | `components/careers/VolunteerForm.tsx` | Fiel al Google Form (19 preguntas, accesibilidad). |
+| Agendador | `components/careers/InterviewScheduler.tsx` | Días hábiles × horas de oficina; cupos ocupados tachados. |
+| Primitivas | `components/careers/FormKit.tsx` | `Field`, `TextInput`, `TextArea`, `ChipGroup`, `Honeypot`. |
+| Estados de envío | `components/careers/FormFeedback.tsx` | `SubmitButton`, `SuccessCard`, `ErrorNotice`. |
+| Envío a Discord | `config/discord.ts` | POST a webhook con embed; nunca lanza (respaldo). |
+| Bloqueo de cupos | `config/slots.ts` | Supabase (REST vía `fetch`) o `localStorage`. |
+| Contenido/opciones | `data/careers.ts` | Perks, opciones de ambos formularios, constantes de agenda. |
+
+### Decisiones (NO revertir sin motivo)
+- 🔴 **Esto NO es auto-registro del producto** (SSOT §0 sigue vigente: la cuenta
+  Connexo la crea Connexo). Son formularios de **reclutamiento** (vender / ser
+  voluntario). El copy no debe implicar signup del producto.
+- 🔴 **No publicar cifras internas del plan de comisiones/sueldos** (viven en el
+  proyecto Connexo Sellers y el manual confidencial). El pitch de vendedor
+  **teasea** ("comisión por plan", "sueldo base por metas", "arma tu red") sin
+  números; el detalle se conversa en la entrevista. "Solo lo necesario para
+  generar dudas" (pedido del cliente).
+- **Envío = Discord por webhook** (pedido del cliente). Dos webhooks (uno por
+  formulario) en env vars `VITE_DISCORD_WEBHOOK_SELLERS` /
+  `_VOLUNTEERS`. Se hace `fetch` POST con embed desde el navegador (Discord
+  responde CORS). Si no hay webhook o falla → **respaldo a WhatsApp** con todo lo
+  llenado ya prellenado (nunca se pierde el lead). Las URLs son "secretas a
+  medias" (van al bundle): si abusan, se regenera el webhook.
+- **Entrevista con código + bloqueo de cupo** (pedido del cliente: "si agenda tal
+  día y hora, ya nadie más puede"). El bloqueo real entre visitantes **necesita
+  servidor** → `config/slots.ts` conmuta solo:
+  - **Supabase** si hay `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`: tabla
+    `interview_slots` con `slot_id` (= `"YYYY-MM-DD_HH"`) como **PRIMARY KEY**;
+    dos reservas del mismo cupo → la 2.ª recibe **409** y se marca ocupado. El
+    SQL + políticas RLS (select y insert para anon; sin update/delete) están al
+    pie de `slots.ts`. Sin SDK: REST con `fetch` (repo sin dependencias nuevas).
+  - **`localStorage`** si no hay Supabase: **solo bloquea en ese dispositivo**
+    (interino/demo). La UI del agendador lo avisa.
+- **El código de entrevista** (`ENT-XXXXXX`, alfabeto sin 0/O/1/I para dictarlo)
+  se genera en cliente con `crypto.getRandomValues`. El cupo se **reserva antes**
+  de avisar a Discord; si Discord falla pero hay Supabase, la reserva ya quedó
+  registrada en la tabla (el equipo la ve) → se muestra éxito igual. En modo
+  local sin Discord, confirmar muestra el respaldo a WhatsApp (no hay dónde
+  registrar). Verificado en dev.
+- **Formulario de voluntariado**: es el Google Form real "Formulario de
+  Voluntariado – CONNEXO" (perfil + disponibilidad + **necesidades de
+  accesibilidad**). Se fusionó el "Email" autogenerado con "Correo electrónico"
+  (uno solo). El campo "¿Qué tipo de discapacidad?" es **condicional** (aparece
+  al elegir "Sí"). No inventar campos: si cambia el form, actualizar `data/careers.ts`.
+
+### Reglas al tocar esto
+- Iconos nuevos → `components/icons.tsx` (§8). Se añadieron `BriefcaseIcon`,
+  `SendIcon`, `SpinnerIcon`.
+- Contacto/mensajes de WhatsApp de respaldo → `config/site.ts` (`waMsg.seller`,
+  `waMsg.volunteer`). No hardcodear (§8).
+- Solo `transform`/`opacity` en lo animado (§6). El `Honeypot` (trampa anti-spam
+  invisible) va fuera del flujo; si trae texto, se descarta el envío en silencio.
+- **Env vars**: plantilla en `.env.example`; `.env` está en `.gitignore` (nunca
+  se commitea). En producción van en Vercel + Redeploy.
+- ⚠️ **Verificación en el preview**: el pane a veces pinta negro y **mapea mal las
+  coordenadas** del clic con esta página (navbar `fixed` + animaciones CSS
+  permanentes). El DOM es correcto. Para verificar interacciones, conviene manejar
+  por `.click()`/estado y leer el DOM, no depender del screenshot/clic por pixel.
