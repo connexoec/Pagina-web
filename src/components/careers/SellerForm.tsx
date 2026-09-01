@@ -202,16 +202,18 @@ export default function SellerForm() {
         <span className={step === 2 ? 'font-semibold text-connexo' : ''}>2 · Agenda</span>
       </div>
 
-      <AnimatePresence mode="wait">
+      {/* key={step} remonta y anima la entrada al cambiar de paso. Sin
+          `AnimatePresence mode="wait"`: con los AnimatePresence anidados el
+          "wait" podía colgar la salida y dejar el paso anterior montado (§14). */}
+      <motion.div
+        key={step}
+        initial={{ opacity: 0, x: 12 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.25 }}
+        className="space-y-5"
+      >
         {step === 1 ? (
-          <motion.div
-            key="step1"
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.25 }}
-            className="space-y-5"
-          >
+          <div className="space-y-5">
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Nombre completo" htmlFor="s-name" required error={errors.name}>
                 <TextInput
@@ -278,16 +280,9 @@ export default function SellerForm() {
               CONTINUAR A LA AGENDA
               <ArrowIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </button>
-          </motion.div>
+          </div>
         ) : (
-          <motion.div
-            key="step2"
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.25 }}
-            className="space-y-5"
-          >
+          <div className="space-y-5">
             <div className="rounded-xl border border-white/[0.08] bg-black/30 p-4 text-sm">
               <p className="text-white/50">
                 <span className="text-white">{name || 'Tú'}</span>
@@ -331,9 +326,9 @@ export default function SellerForm() {
             </AnimatePresence>
 
             <SubmitButton status={status} label="CONFIRMAR ENTREVISTA" />
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
+      </motion.div>
 
       <p className="text-center text-xs text-white/35">
         Al enviar aceptas que Connexo te contacte por los datos que dejaste. Sin spam.

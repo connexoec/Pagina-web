@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import { Link } from '../router'
 import { TiltCard } from '../components/fx/Motion'
@@ -223,18 +223,22 @@ export default function TrabajaPage() {
           </div>
         </section>
 
-        {/* Contenido de la pestaña activa */}
+        {/* Contenido de la pestaña activa.
+            NO se usa `AnimatePresence mode="wait"` aquí: cada formulario tiene su
+            PROPIO AnimatePresence anidado (pasos, campos condicionales), y al
+            exigir el "wait" del contenedor esos exits anidados podían colgar la
+            salida y dejar la pestaña anterior montada. En su lugar, `key={tab}`
+            remonta el contenido y la animación de entrada da el cruce, sin exit
+            que esperar. */}
         <section className="relative bg-abyss-950 py-14 sm:py-20">
           <div className="section-pad">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={tab}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: reduced ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="grid gap-10 lg:grid-cols-[1fr_minmax(0,520px)] lg:gap-14"
-              >
+            <motion.div
+              key={tab}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reduced ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="grid gap-10 lg:grid-cols-[1fr_minmax(0,520px)] lg:gap-14"
+            >
                 {/* Izquierda: pitch */}
                 <div>{tab === 'sellers' ? <SellerPitch /> : <VolunteerPitch />}</div>
 
@@ -252,8 +256,7 @@ export default function TrabajaPage() {
                     {tab === 'sellers' ? <SellerForm /> : <VolunteerForm />}
                   </div>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+            </motion.div>
           </div>
         </section>
       </main>
