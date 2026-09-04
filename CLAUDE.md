@@ -540,12 +540,18 @@ hay muchas rutas con parámetros, ahí sí toca cambiarlo.
 
 ## 12. Fondo del Hero — `GraphField` (2026-09-03)
 
-El fondo del Hero es un **grafo de conocimiento** al estilo **graphify**: cúmulos
-de nodos —cada uno con un **hub central** ("nodo dios") del que salen radios— más
-unos pocos **enlaces largos** que cosen los cúmulos entre sí. La red **deriva
-lento** (respira). Es lo que se ve al mapear archivos conectados. Vive en
-`components/fx/GraphField.tsx`. Sigue siendo fondo **solo del Hero** (las demás
-secciones tienen su propio negro opaco, decisión del cliente 2026-09-03).
+El fondo del Hero es un **grafo de conocimiento** al estilo **graphify**: un
+**NÚCLEO denso** de hubs entrelazados en el centro, rodeado de cúmulos **"diente
+de león"** (un hub con muchos radios finos que estallan en 360°), cosidos al
+núcleo por **enlaces largos**. La red **deriva lento** (respira). Es lo que se ve
+al mapear archivos conectados. Vive en `components/fx/GraphField.tsx`. Sigue
+siendo fondo **solo del Hero** (las demás secciones tienen su propio negro opaco,
+decisión del cliente 2026-09-03).
+
+> ⚠️ **La primera versión (2026-09-03 a) quedó muy geométrica y rala** (7
+> estrellas ordenadas) → el cliente dijo "no se parece a graphify". Se rehízo a
+> núcleo denso + dientes de león (~300 nodos). **No volver al esquema de
+> estrellas separadas.**
 
 > Historia: `NfcRings` (punto parpadeante) → globo terrestre al amanecer
 > (`EarthHorizon`, **descartado**) → faro NFC (`NfcBeacon`, **eliminado**
@@ -554,10 +560,15 @@ secciones tienen su propio negro opaco, decisión del cliente 2026-09-03).
 > componentes ya no existen (con ellos se borraron los keyframes `nfc-*`).
 
 - **Muy tenue a propósito.** No debe pelear con el titular: enlaces a
-  `strokeOpacity` 0.08–0.13, nodos hoja a `fillOpacity` 0.26 y hubs a 0.42
-  (estos parpadean suave con `pulse-glow`). Una **máscara radial** lo desvanece
-  hacia los bordes (denso al centro, aire en las orillas). Fondo negro, sin caja:
-  atmósfera, no contenido (`aria-hidden`).
+  `strokeOpacity` 0.07–0.12, nodos hoja a `fillOpacity` 0.24 y hubs a 0.42
+  (estos parpadean suave con `pulse-glow`). Fondo negro, sin caja: atmósfera, no
+  contenido (`aria-hidden`).
+- 🔴 **El borde NO se corta seco contra la sección de abajo** (queja del cliente
+  2026-09-03). La máscara va en **espacio del contenedor (pantalla), no del SVG**,
+  y son **DOS capas intersecadas** (`mask-composite: intersect` + el fallback
+  webkit `source-in`): un óvalo radial que apaga las esquinas + un **fundido
+  vertical** que lo deja en 0 mucho antes del borde inferior. Así da igual cómo
+  recorte el `slice`: el grafo se disuelve en negro antes de la costura.
 - **CSS puro sobre SVG, nunca JS para animar.** Animación permanente y siempre en
   pantalla; mismo criterio que el `Marquee` y el glitch del logo (§6, §9).
   Keyframes en `tailwind.config.js`: `graph-a/b/c` (tres derivas con direcciones
