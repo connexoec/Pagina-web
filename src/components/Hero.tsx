@@ -3,7 +3,7 @@ import { ArrowIcon } from './icons'
 import { wa, waMsg } from '../config/site'
 import { Aurora } from './fx/Ambient'
 import { DecodeText, Magnetic } from './fx/Motion'
-import NfcBeacon from './fx/NfcBeacon'
+import GraphField from './fx/GraphField'
 import { Link } from '../router'
 
 const fade = {
@@ -25,9 +25,10 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-0 bg-radial-fade" />
       <Aurora />
 
-      {/* Faro NFC de fondo: el icono contactless parpadeando con ondas, muy
-          tenue para no pelear con el título. Detrás del contenido. */}
-      <NfcBeacon />
+      {/* Grafo de conocimiento de fondo (estética "graphify"): cúmulos de nodos
+          conectados que derivan lento. Muy tenue para no pelear con el título.
+          Detrás del contenido. Reemplazó al faro NFC. */}
+      <GraphField />
 
       <div className="section-pad relative">
         <motion.h1

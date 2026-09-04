@@ -1,7 +1,14 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-09-01**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-09-03**
+> (**Fondo del Hero cambiado: faro NFC → grafo de conocimiento "graphify"**.
+> El `NfcBeacon` se eliminó y en su lugar `fx/GraphField.tsx` dibuja una red de
+> nodos conectados —cúmulos con hub central + enlaces largos— que deriva lento,
+> muy tenue, sobre el mismo negro. CSS puro sobre SVG (keyframes `graph-a/b/c`),
+> layout determinista con PRNG, solo negro + `#ff6600`. Sigue siendo fondo solo
+> del Hero. Ver §12.)
+> Hito previo: **2026-09-01**
 > (**Página "Trabaja con nosotros" (`/trabaja`)** con dos formularios en un
 > conmutador de pestañas: (1) **Vendedor/Distribuidor** (Connexo Sellers) —flujo
 > de 2 pasos que agenda una **entrevista con código** y **bloquea el cupo**— y
@@ -141,8 +148,8 @@ ConnexoWeb/
 │  └─ components/
 │     ├─ fx/
 │     │  ├─ Ambient.tsx       # FilmGrain · Aurora · PerspectiveGrid · Spotlight
-│     │  ├─ NfcBeacon.tsx     # Fondo del Hero: icono NFC parpadeando con ondas
-│     │  │                    #   (CSS puro, muy tenue, ver §12)
+│     │  ├─ GraphField.tsx    # Fondo del Hero: grafo de conocimiento "graphify"
+│     │  │                    #   (cúmulos de nodos que derivan, CSS puro, §12)
 │     │  └─ Motion.tsx        # Magnetic · TiltCard · Counter · DecodeText ·
 │     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
 │     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon,
@@ -179,7 +186,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 | # | Sección | Estado | Notas |
 |---|---------|--------|-------|
 | 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO. El logo glitchea en bucle a alfabeto yautja (§9). **Sin botón "INICIAR SESIÓN"** (quitado 2026-08-19: no hay dónde iniciar sesión desde la landing). **2 botones de accesibilidad** (ojo → Modo Visual Total; figura → abre panel), visibles en móvil y escritorio (§13). |
-| 2 | Hero | ✅ | H1 (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; **fondo `NfcBeacon`** (icono NFC parpadeando con ondas, tenue, §12); subtítulo = **slogan de Connexo** ("…compartir quién eres" + "Conecta·Comparte·Crece"); CTA magnético → WhatsApp + botón **RED CONNEXO** → `/red`. **Sin** badge de Ecuador, línea de prueba gratis ni trust strip (quitados 2026-08-19). |
+| 2 | Hero | ✅ | H1 (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; **fondo `GraphField`** (grafo de conocimiento "graphify": cúmulos de nodos que derivan, tenue, §12); subtítulo = **slogan de Connexo** ("…compartir quién eres" + "Conecta·Comparte·Crece"); CTA magnético → WhatsApp + botón **RED CONNEXO** → `/red`. **Sin** badge de Ecuador, línea de prueba gratis ni trust strip (quitados 2026-08-19). |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
 | 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
 | 5 | Plataforma | ✅ | PWA instalable, avisos con la app cerrada, 8 idiomas, tour guiado. Manual §6, §7, §21. |
@@ -531,37 +538,48 @@ hay muchas rutas con parámetros, ahí sí toca cambiarlo.
 
 ---
 
-## 12. Fondo del Hero — `NfcBeacon` (2026-08-19)
+## 12. Fondo del Hero — `GraphField` (2026-09-03)
 
-El fondo del Hero es el **icono de NFC** (símbolo contactless: tres ondas + el
-punto de toque) a gran escala, centrado detrás del titular, **parpadeando**, con
-**ondas que emanan** en bucle. Vive en `components/fx/NfcBeacon.tsx`.
+El fondo del Hero es un **grafo de conocimiento** al estilo **graphify**: cúmulos
+de nodos —cada uno con un **hub central** ("nodo dios") del que salen radios— más
+unos pocos **enlaces largos** que cosen los cúmulos entre sí. La red **deriva
+lento** (respira). Es lo que se ve al mapear archivos conectados. Vive en
+`components/fx/GraphField.tsx`. Sigue siendo fondo **solo del Hero** (las demás
+secciones tienen su propio negro opaco, decisión del cliente 2026-09-03).
 
-> Historia: primero fue `NfcRings` (un punto que parpadeaba) → luego una escena
-> de globo terrestre al amanecer (`EarthHorizon`, **descartada**: no cuadraba
-> con la accesibilidad, el planeta casi-negro no se leía) → hoy este faro NFC.
-> Si alguien pide "la Tierra otra vez", es partir de cero: ese componente ya no
-> existe.
+> Historia: `NfcRings` (punto parpadeante) → globo terrestre al amanecer
+> (`EarthHorizon`, **descartado**) → faro NFC (`NfcBeacon`, **eliminado**
+> 2026-09-03: el cliente pidió una animación tipo graphify) → hoy este grafo.
+> Si alguien pide "el NFC otra vez" o "la Tierra", es partir de cero: esos
+> componentes ya no existen (con ellos se borraron los keyframes `nfc-*`).
 
-- **Muy tenue a propósito.** No debe pelear con las letras blancas del título:
-  el glifo late entre `opacity` 0.22 y 0.07 y las ondas nunca pasan de 0.16.
-  Fondo negro, sin caja: es atmósfera, no contenido (`aria-hidden`).
-- **CSS puro sobre SVG, nunca JS.** Animación permanente y siempre en pantalla;
-  mismo criterio que el `Marquee` y el glitch del logo (§6, §9). Keyframes en
-  `tailwind.config.js`: `nfc-beacon` (parpadeo del glifo) y `nfc-wave` (la onda
-  que crece y se apaga). Solo `opacity` y `transform` (GPU). Cero canvas/rAF.
-- **El glifo es el mismo trazo que `NfcIcon`** (`icons.tsx`), escalado ×15 y
-  centrado sobre un viewBox 400 (`coord' = coord*15 + 20`). El punto de toque
-  queda a la derecha (290,200) y las ondas abren a la izquierda, como el símbolo
-  real. Si se cambia `NfcIcon`, este glifo NO se actualiza solo (está copiado a
-  mano para poder escalarlo); actualizar ambos si hace falta.
+- **Muy tenue a propósito.** No debe pelear con el titular: enlaces a
+  `strokeOpacity` 0.08–0.13, nodos hoja a `fillOpacity` 0.26 y hubs a 0.42
+  (estos parpadean suave con `pulse-glow`). Una **máscara radial** lo desvanece
+  hacia los bordes (denso al centro, aire en las orillas). Fondo negro, sin caja:
+  atmósfera, no contenido (`aria-hidden`).
+- **CSS puro sobre SVG, nunca JS para animar.** Animación permanente y siempre en
+  pantalla; mismo criterio que el `Marquee` y el glitch del logo (§6, §9).
+  Keyframes en `tailwind.config.js`: `graph-a/b/c` (tres derivas con direcciones
+  distintas). Solo `transform` y `opacity` (GPU). Cero canvas/rAF por frame.
+- **Cada cúmulo es un `<g>` que deriva por su cuenta**: se reparte una de las 3
+  animaciones por índice (`c % 3`) y un `animationDelay` negativo inline las
+  desfasa → la red no se mueve en bloque. Necesita `transformBox: fill-box` +
+  `transformOrigin: center` inline para derivar sobre su propio centro.
+- **Los enlaces largos entre hubs van en una capa ESTÁTICA** (no derivan con
+  ningún cúmulo, para no despegarse). La amplitud de deriva es chica (≤11px en
+  unidades de viewBox), así que el ligero desfase con los hubs no se nota a esta
+  opacidad.
+- **Layout determinista**: se construye UNA vez al cargar el módulo con un PRNG
+  `mulberry32` de semilla fija (`20260903`). Misma semilla ⇒ mismo grafo entre
+  recargas (cero saltos). Cambiar la semilla = otra disposición.
 - **`prefers-reduced-motion` no necesita código**: la regla global de `index.css`
-  colapsa la duración y cada keyframe aterriza en un frame **100%** decente
-  (glifo quieto y tenue, ondas invisibles). Igual que el glitch del logo.
-- **Ondas**: `<circle>` con `transform-box: fill-box` + `transform-origin: center`
-  (inline) para que el `scale` gire sobre su propio centro; el delay va inline
-  (`animationDelay` negativo) para escalonarlas.
-- **Paleta**: solo negro + `#ff6600` (§2), sin tintes.
+  colapsa la duración y el frame `0%` de cada keyframe es el reposo (deriva 0),
+  así que el grafo queda quieto y tenue. Igual que el glitch del logo.
+- **viewBox 1000×700 con `preserveAspectRatio="xMidYMid slice"`** para cubrir el
+  Hero completo (el contenedor es `absolute inset-0`).
+- **Paleta**: solo negro + `#ff6600` (§2), sin tintes. Nada de multicolor tipo
+  graphify original: la marca no lo permite (decisión del cliente 2026-09-03).
 
 ---
 

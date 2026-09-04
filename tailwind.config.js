@@ -94,23 +94,22 @@ export default {
           '91%, 100%': { opacity: '0', transform: 'translate3d(0,0,0)' },
         },
 
-        // ── Faro NFC del Hero (fx/NfcBeacon.tsx) ───────────────────────────
-        // GPU-safe: solo `opacity` y `transform`. Muy tenue a propósito (no debe
-        // pelear con el título). El frame 100% es un estado estático decente:
-        // con prefers-reduced-motion el navegador aterriza ahí (glifo quieto y
-        // tenue, ondas invisibles). Mismo criterio que el glitch del logo (§9).
-
-        // Parpadeo del icono NFC. Reposo (0%/100%) = tenue visible.
-        'nfc-beacon': {
-          '0%, 100%': { opacity: '0.22' },
-          '50%': { opacity: '0.07' },
+        // ── Grafo de fondo del Hero (fx/GraphField.tsx) ────────────────────
+        // Deriva lenta de cada cúmulo: solo `transform` (GPU). 0% = reposo, así
+        // que con prefers-reduced-motion el grafo queda quieto. Tres variantes
+        // con direcciones distintas para que la red no se mueva en bloque.
+        'graph-a': {
+          '0%, 100%': { transform: 'translate3d(0,0,0)' },
+          '50%': { transform: 'translate3d(11px,-9px,0)' },
         },
-        // Onda que emana del centro y se apaga. 100% opacity 0 (invisible en
-        // reduced-motion, queda solo el glifo).
-        'nfc-wave': {
-          '0%': { transform: 'scale(0.35)', opacity: '0' },
-          '12%': { opacity: '0.16' },
-          '100%': { transform: 'scale(1.6)', opacity: '0' },
+        'graph-b': {
+          '0%, 100%': { transform: 'translate3d(0,0,0)' },
+          '50%': { transform: 'translate3d(-10px,8px,0)' },
+        },
+        'graph-c': {
+          '0%, 100%': { transform: 'translate3d(0,0,0)' },
+          '33%': { transform: 'translate3d(8px,7px,0)' },
+          '66%': { transform: 'translate3d(-7px,-6px,0)' },
         },
       },
       animation: {
@@ -122,9 +121,10 @@ export default {
         // desfasan nunca.
         'glitch-word': 'glitch-word 12s step-end infinite',
         'glitch-yautja': 'glitch-yautja 12s step-end infinite',
-        // Escena del horizonte terrestre (el delay por-elemento va inline).
-        'nfc-beacon': 'nfc-beacon 3.4s ease-in-out infinite',
-        'nfc-wave': 'nfc-wave 4.8s ease-out infinite',
+        // Deriva del grafo del Hero — larga y desfasada por cúmulo (delay inline).
+        'graph-a': 'graph-a 22s ease-in-out infinite',
+        'graph-b': 'graph-b 28s ease-in-out infinite',
+        'graph-c': 'graph-c 25s ease-in-out infinite',
       },
     },
   },
