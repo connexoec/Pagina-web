@@ -163,6 +163,21 @@
   filter: grayscale(1) !important;
 }
 
+/* ── Fuente para dislexia (espaciado cognitivo) ───────────────────────────────
+   Enfoque recomendado por las guías reales (British Dyslexia Association,
+   WebAIM, W3C): NO cambia a una tipografía "de dislexia" de eficacia dudosa,
+   sino que fuerza una sans muy legible + más espacio entre letras, palabras y
+   líneas, y quita las itálicas (que dificultan la lectura). Cero peso extra.
+   Aplica a todo el texto; los iconos SVG y las imágenes no se ven afectados. */
+.a11y-dyslexia,
+.a11y-dyslexia * {
+  font-family: Verdana, Tahoma, 'Trebuchet MS', Arial, system-ui, sans-serif !important;
+  font-style: normal !important; /* neutraliza el italic de .font-heading (Tomorrow) */
+  letter-spacing: 0.06em !important;
+  word-spacing: 0.16em !important;
+  line-height: 1.6 !important;
+}
+
 /* ── Resaltar interacciones (naranja de marca) ────────────────────────────── */
 .a11y-highlight a,
 .a11y-highlight button,

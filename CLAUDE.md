@@ -1,7 +1,13 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-09-03**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-09-21**
+> (**Sistema de Accesibilidad: nuevo control "Fuente para dislexia"** (8.º del
+> panel). No usa OpenDyslexic —eficacia dudosa— sino el enfoque recomendado por
+> BDA/WebAIM/W3C: clase `a11y-dyslexia` que fuerza una sans muy legible
+> (Verdana/Tahoma/Arial) + más letter/word-spacing + line-height 1.6 y quita las
+> itálicas. Cero peso extra. Ver §13. Se irán sumando más botones de a uno.)
+> Hito previo: **2026-09-03**
 > (**Fondo del Hero cambiado: faro NFC → grafo de conocimiento "graphify"**.
 > El `NfcBeacon` se eliminó y en su lugar `fx/GraphField.tsx` dibuja una red de
 > nodos conectados —cúmulos con hub central + enlaces largos— que deriva lento,
@@ -154,7 +160,7 @@ ConnexoWeb/
 │     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
 │     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon,
 │     │                       #   EyeIcon, AccessibilityIcon, CloseIcon)
-│     ├─ AccessibilityPanel.tsx # Panel modal de 7 controles (§13); lo abre el Navbar
+│     ├─ AccessibilityPanel.tsx # Panel modal de 8 controles (§13); lo abre el Navbar
 │     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial + botones a11y
 │     ├─ Hero.tsx             #  2. Hero (NfcBeacon + decode headline + slogan)
 │     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
@@ -605,13 +611,13 @@ provider envuelve toda la app.
 | Pieza | Archivo | Rol |
 |-------|---------|-----|
 | `AccessibilityProvider` / `useAccessibility` | `context/AccessibilityContext.tsx` | Estado global + persistencia (`localStorage['accessibility-settings']`) + aplicación de clases al `<html>`. |
-| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 7 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
+| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 8 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
 | Botones disparadores | `components/Navbar.tsx` (`A11yButtons`) | "Modo Visual Total" (ojo) + "Abrir panel" (figura). Visibles en móvil y escritorio. |
 | Clases `a11y-*` | `src/index.css` | El CSS real de cada modo + `:focus-visible` global. |
 
 ### Modelo de estado (`A11ySettings`)
-`fontSize` (1·1.25·1.5) · `lineSpacing` (1·1.5·2) · `highContrast` · `grayscale`
-· `highlightInteractions` · `reducedMotion` · `visualAccessibilityMode`.
+`fontSize` (1·1.25·1.5) · `lineSpacing` (1·1.5·2) · `dyslexiaFont` · `highContrast`
+· `grayscale` · `highlightInteractions` · `reducedMotion` · `visualAccessibilityMode`.
 
 - **Concepto clave**: el estado NO aplica estilos inline salvo `fontSize` /
   `lineHeight`. Todo lo demás es CSS puro activado por una clase en el `<html>`
@@ -634,6 +640,14 @@ provider envuelve toda la app.
   `#edb729`): el modo suave debe seguir sintiéndose Connexo. El Modo Visual Total
   sí mantiene amarillo `#ff0` sobre negro — ahí manda la función (contraste WCAG
   máximo), no la marca.
+- **`a11y-dyslexia` (2026-09-21) NO carga OpenDyslexic.** Se evaluó y se descartó:
+  su eficacia está debatida en los estudios y añade ~150KB de asset. En su lugar,
+  el enfoque **recomendado por BDA/WebAIM/W3C**: `font-family` a una sans muy
+  legible (Verdana/Tahoma/Arial/system-ui) + `letter-spacing: 0.06em` +
+  `word-spacing: 0.16em` + `line-height: 1.6` + `font-style: normal` (quita el
+  italic de `.font-heading`), todo `!important` sobre `.a11y-dyslexia *`. Cero
+  peso extra. Si el cliente pide la tipografía OpenDyslexic concreta, es sumar un
+  woff2 self-host (nunca CDN) — decisión explícita.
 - **`.glass` se neutraliza a mano** en `a11y-high-contrast` / `a11y-visual-total`:
   el navbar usa `backdrop-filter` (no la utilidad `backdrop-blur-*`), así que el
   CSS del modo lo pone `#000` + `backdrop-filter: none`.

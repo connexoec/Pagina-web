@@ -23,6 +23,7 @@ type Option = RangeOption | ToggleOption
 const OPTIONS: Option[] = [
   { label: 'Tamaño de texto', key: 'fontSize', type: 'range', min: 1, max: 1.5, step: 0.25, desc: 'Aumenta el tamaño de la fuente para mejor legibilidad.' },
   { label: 'Espaciado de línea', key: 'lineSpacing', type: 'range', min: 1, max: 2, step: 0.5, desc: 'Aumenta el espacio entre líneas de texto.' },
+  { label: 'Fuente para dislexia', key: 'dyslexiaFont', type: 'toggle', desc: 'Tipografía más legible y más espacio entre letras, palabras y líneas.' },
   { label: 'Alto contraste', key: 'highContrast', type: 'toggle', desc: 'Negro y blanco puro, máximo contraste.' },
   { label: 'Blanco y negro', key: 'grayscale', type: 'toggle', desc: 'Elimina el color para evitar distracciones.' },
   { label: 'Resaltar enlaces', key: 'highlightInteractions', type: 'toggle', desc: 'Bordes y subrayado en todo lo que se puede tocar.' },
