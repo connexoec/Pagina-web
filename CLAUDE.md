@@ -11,10 +11,12 @@
 > `pointer-events:none` (no bloquea toques/scroll). (3) "Cursor grande": clase
 > `a11y-big-cursor` con PNG 48×48 de alto contraste (`public/cursor-big.png`
 > flecha + `cursor-pointer-big.png` mano; PNG, no SVG, por Safari). (4) "Lector
-> de voz" (TTS): componente `SpeechReader.tsx` (Web Speech API nativa); al
-> seleccionar texto lo lee, con barra flotante Pausar/Reanudar/Detener, voz `es`
-> y troceo por frases. **Con esto se completaron los 4 botones pedidos.** Panel:
-> **11 controles**. Ver §13.)
+> de voz" (TTS): componente `SpeechReader.tsx` (Web Speech API nativa). En
+> escritorio se lee la selección; en **móvil se explora con el dedo** (el bloque
+> bajo el dedo se **resalta** y se lee). Voz `es` de la mejor calidad disponible
+> (Google/natural/Latinoamérica) y ritmo 0.95 para que suene fluido, no robótico.
+> Barra flotante Pausar/Reanudar/Detener. **Con esto se completaron los 4 botones
+> pedidos.** Panel: **11 controles**. Ver §13.)
 > Hito previo: **2026-09-03**
 > (**Fondo del Hero cambiado: faro NFC → grafo de conocimiento "graphify"**.
 > El `NfcBeacon` se eliminó y en su lugar `fx/GraphField.tsx` dibuja una red de
@@ -662,15 +664,27 @@ provider envuelve toda la app.
   sí mantiene amarillo `#ff0` sobre negro — ahí manda la función (contraste WCAG
   máximo), no la marca.
 - **Lector de voz / TTS (2026-09-21) — `SpeechReader.tsx`.** Web Speech API nativa
-  (`window.speechSynthesis`), sin librerías. Al **seleccionar texto** se lee solo;
-  el disparo va en `pointerup`/`keyup` (un **gesto real**, requisito de iOS/Safari
-  para poder hablar), no en `selectionchange`. Barra flotante (`data-a11y-ui`,
-  `z-[55]`) con Pausar/Reanudar/Detener — imprescindible en teléfono y señal de
-  que el modo está activo. Voz `es-*` si existe (`getVoices`); el texto se **trocea
-  por frases (~180 chars)** para esquivar el bug de Chrome que corta lecturas
-  largas (>~15 s). Ignora selecciones dentro de cualquier `[data-a11y-ui]` (barra
-  + panel). Al apagar el modo o desmontar, `speechSynthesis.cancel()`. Si el
-  navegador no soporta TTS, la barra lo avisa en vez de romperse.
+  (`window.speechSynthesis`), sin librerías. **Dos disparos según el puntero
+  (pedido del cliente):**
+  - **Escritorio (mouse/lápiz):** seleccionar texto lo lee (en `pointerup`, gesto).
+  - **Móvil (táctil):** **explorar con el dedo** — al deslizar, el bloque bajo el
+    dedo (`document.elementFromPoint` → `closest` de tags de texto) se **resalta**
+    con la clase `.a11y-tts-reading` (contorno naranja) para que una persona con
+    baja visión sepa QUÉ se va a leer, y se lee. La 1.ª lectura sale dentro del
+    `pointerdown` (gesto real → **desbloquea la voz en iOS**); las siguientes tras
+    un `DWELL` de 160 ms al posarse en un bloque nuevo. En táctil NO se usa la vía
+    de selección (evita doble lectura). No hace `preventDefault` → el scroll sigue.
+  - **Calidad de voz (feedback "suena defectuosa"):** `scoreVoice` elige la MEJOR
+    voz `es` disponible priorizando **Google / natural / neural / premium / online
+    y Latinoamérica** (Ecuador) sobre la SAPI robótica por defecto; `rate 0.95`
+    (más pausado/"chill"). El salto de calidad real depende de las voces del
+    dispositivo (Android/iOS traen buenas; Windows con solo SAPI queda limitado —
+    no hay más que hacer client-side sin un TTS externo, descartado por privacidad).
+  - Barra flotante (`data-a11y-ui`, `z-[55]`) Pausar/Reanudar/Detener; el texto
+    idle cambia según `(pointer: coarse)`. Troceo por frases (~220 chars) contra el
+    corte de lecturas largas de Chrome. Ignora selecciones/toques dentro de
+    `[data-a11y-ui]`. Al apagar/desmontar: `cancel()` + quita el resalte. Si no hay
+    soporte, la barra lo avisa.
 - **Cursor grande (2026-09-21) — clase `a11y-big-cursor`.** Usa **PNG 48×48**, no
   cursores SVG: **Safari de escritorio no soporta cursores SVG**. Dos archivos en
   `public/`: `cursor-big.png` (flecha, hotspot `6 4`) para todo y
