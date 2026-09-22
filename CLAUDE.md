@@ -8,8 +8,10 @@
 > (2) "Guía de lectura" (Focus Ruler): componente `ReadingRuler.tsx` montado en
 > `App.tsx`; una franja clara sigue el puntero (`pointermove` → sirve en PC y
 > teléfono) y oscurece el resto con una sombra de gran extensión;
-> `pointer-events:none` (no bloquea toques/scroll). Panel: **9 controles**. Ver
-> §13. Siguen faltando: cursor grande y lector de voz (TTS).)
+> `pointer-events:none` (no bloquea toques/scroll). (3) "Cursor grande": clase
+> `a11y-big-cursor` con PNG 48×48 de alto contraste (`public/cursor-big.png`
+> flecha + `cursor-pointer-big.png` mano; PNG, no SVG, por Safari). Panel:
+> **10 controles**. Ver §13. Falta el último: lector de voz (TTS).)
 > Hito previo: **2026-09-03**
 > (**Fondo del Hero cambiado: faro NFC → grafo de conocimiento "graphify"**.
 > El `NfcBeacon` se eliminó y en su lugar `fx/GraphField.tsx` dibuja una red de
@@ -135,6 +137,8 @@ ConnexoWeb/
 │  ├─ connexo-yautja.png      # "CONNEXO" en alfabeto yautja (glitch del logo, §9)
 │  ├─ connexo-logo.jpg        # Isotipo cuadrado sobre negro (origen del favicon)
 │  ├─ favicon-32/180/512.png  # Derivados del isotipo
+│  ├─ cursor-big.png          # Cursor grande de accesibilidad: flecha (§13)
+│  ├─ cursor-pointer-big.png  # Cursor grande: mano para enlaces/botones (§13)
 │  └─ perfiles/               # capturas del carrusel (ver §5)
 ├─ src/
 │  ├─ main.tsx                # entry → <App/>
@@ -163,7 +167,7 @@ ConnexoWeb/
 │     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
 │     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon,
 │     │                       #   EyeIcon, AccessibilityIcon, CloseIcon)
-│     ├─ AccessibilityPanel.tsx # Panel modal de 9 controles (§13); lo abre el Navbar
+│     ├─ AccessibilityPanel.tsx # Panel modal de 10 controles (§13); lo abre el Navbar
 │     ├─ ReadingRuler.tsx      # Guía de lectura (Focus Ruler, §13); montado en App.tsx
 │     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial + botones a11y
 │     ├─ Hero.tsx             #  2. Hero (NfcBeacon + decode headline + slogan)
@@ -615,15 +619,15 @@ provider envuelve toda la app.
 | Pieza | Archivo | Rol |
 |-------|---------|-----|
 | `AccessibilityProvider` / `useAccessibility` | `context/AccessibilityContext.tsx` | Estado global + persistencia (`localStorage['accessibility-settings']`) + aplicación de clases al `<html>`. |
-| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 9 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
+| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 10 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
 | `ReadingRuler` | `components/ReadingRuler.tsx` | Guía de lectura (Focus Ruler): franja clara que sigue el puntero/dedo y atenúa el resto. Montado global en `App.tsx`. Comportamiento JS (no clase CSS). |
 | Botones disparadores | `components/Navbar.tsx` (`A11yButtons`) | "Modo Visual Total" (ojo) + "Abrir panel" (figura). Visibles en móvil y escritorio. |
 | Clases `a11y-*` | `src/index.css` | El CSS real de cada modo + `:focus-visible` global. |
 
 ### Modelo de estado (`A11ySettings`)
 `fontSize` (1·1.25·1.5) · `lineSpacing` (1·1.5·2) · `dyslexiaFont` · `highContrast`
-· `grayscale` · `highlightInteractions` · `readingRuler` · `reducedMotion` ·
-`visualAccessibilityMode`.
+· `grayscale` · `highlightInteractions` · `readingRuler` · `bigCursor` ·
+`reducedMotion` · `visualAccessibilityMode`.
 
 > ⚠️ **No todo control es una clase CSS en `<html>`.** Los "modos" visuales sí
 > (`a11y-*`), pero los de **comportamiento** viven en su propio componente y solo
@@ -651,6 +655,16 @@ provider envuelve toda la app.
   `#edb729`): el modo suave debe seguir sintiéndose Connexo. El Modo Visual Total
   sí mantiene amarillo `#ff0` sobre negro — ahí manda la función (contraste WCAG
   máximo), no la marca.
+- **Cursor grande (2026-09-21) — clase `a11y-big-cursor`.** Usa **PNG 48×48**, no
+  cursores SVG: **Safari de escritorio no soporta cursores SVG**. Dos archivos en
+  `public/`: `cursor-big.png` (flecha, hotspot `6 4`) para todo y
+  `cursor-pointer-big.png` (mano, hotspot `18 4`) para enlaces/botones/`[role]`/
+  `[tabindex]`. Alto contraste: blanco + borde negro + guiño naranja. Respaldo
+  `auto`: si el navegador ignora el cursor, cae al normal, nunca se rompe. En
+  móvil no hay puntero → no afecta al táctil. **Los PNG se generan con
+  `@resvg/resvg-js`** desde SVG (script en el scratchpad, dependencia de
+  build-time, NO se instala en el repo). ⚠️ No rasterizar copiando base64 a mano:
+  se corrompió una vez; usar el rasterizador.
 - **Guía de lectura / Focus Ruler (2026-09-21) — `ReadingRuler.tsx`.** Regla de
   oro del cliente: **todos los controles deben servir en teléfono**. Por eso usa
   `pointermove` (unifica ratón, dedo y lápiz) en vez de `mousemove`: en PC sigue

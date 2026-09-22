@@ -23,6 +23,7 @@ export interface A11ySettings {
   grayscale: boolean // Escala de grises total
   highlightInteractions: boolean // Resalta enlaces y botones
   readingRuler: boolean // Guía de lectura que sigue el cursor/dedo (§13)
+  bigCursor: boolean // Cursor grande de alto contraste (§13)
   reducedMotion: boolean // Desactiva animaciones
   dyslexiaFont: boolean // Fuente legible + espaciado cognitivo (dislexia)
   visualAccessibilityMode: boolean // MODO VISUAL TOTAL (negro / amarillo)
@@ -37,6 +38,7 @@ const DEFAULTS: A11ySettings = {
   grayscale: false,
   highlightInteractions: false,
   readingRuler: false,
+  bigCursor: false,
   reducedMotion: false,
   dyslexiaFont: false,
   visualAccessibilityMode: false,
@@ -86,6 +88,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     root.classList.toggle('a11y-highlight', settings.highlightInteractions)
     root.classList.toggle('a11y-reduced-motion', settings.reducedMotion)
     root.classList.toggle('a11y-dyslexia', settings.dyslexiaFont)
+    root.classList.toggle('a11y-big-cursor', settings.bigCursor)
 
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))

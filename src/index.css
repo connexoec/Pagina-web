@@ -178,6 +178,27 @@
   line-height: 1.6 !important;
 }
 
+/* ── Cursor grande (alto contraste) ───────────────────────────────────────────
+   Puntero XL blanco con borde negro + guiño naranja. Se usan PNG (no cursores
+   SVG: Safari de escritorio no los soporta) generados a 48×48; el hotspot va en
+   la punta. `auto` de respaldo: si el navegador ignora el cursor, cae al normal,
+   nunca se rompe. En móvil no hay puntero, así que este modo no afecta al táctil.
+   Archivos: public/cursor-big.png (flecha) · public/cursor-pointer-big.png (mano). */
+.a11y-big-cursor,
+.a11y-big-cursor * {
+  cursor: url('/cursor-big.png') 6 4, auto !important;
+}
+.a11y-big-cursor a,
+.a11y-big-cursor button,
+.a11y-big-cursor [role='button'],
+.a11y-big-cursor [role='link'],
+.a11y-big-cursor label[for],
+.a11y-big-cursor select,
+.a11y-big-cursor summary,
+.a11y-big-cursor [tabindex]:not([tabindex='-1']) {
+  cursor: url('/cursor-pointer-big.png') 18 4, auto !important;
+}
+
 /* ── Resaltar interacciones (naranja de marca) ────────────────────────────── */
 .a11y-highlight a,
 .a11y-highlight button,

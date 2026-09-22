@@ -28,6 +28,7 @@ const OPTIONS: Option[] = [
   { label: 'Blanco y negro', key: 'grayscale', type: 'toggle', desc: 'Elimina el color para evitar distracciones.' },
   { label: 'Resaltar enlaces', key: 'highlightInteractions', type: 'toggle', desc: 'Bordes y subrayado en todo lo que se puede tocar.' },
   { label: 'Guía de lectura', key: 'readingRuler', type: 'toggle', desc: 'Una franja clara sigue el cursor o el dedo y atenúa el resto.' },
+  { label: 'Cursor grande', key: 'bigCursor', type: 'toggle', desc: 'Puntero extra grande y de alto contraste (solo en computador).' },
   { label: 'Desactivar animaciones', key: 'reducedMotion', type: 'toggle', desc: 'Elimina el movimiento de la página.' },
   { label: 'Modo Visual Total', key: 'visualAccessibilityMode', type: 'toggle', desc: 'Máximo contraste y simplificación: fondo negro, texto amarillo.' },
 ]
