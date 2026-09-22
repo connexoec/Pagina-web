@@ -2,11 +2,14 @@
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
 > No repetir errores ya resueltos aquí. Última actualización: **2026-09-21**
-> (**Sistema de Accesibilidad: nuevo control "Fuente para dislexia"** (8.º del
-> panel). No usa OpenDyslexic —eficacia dudosa— sino el enfoque recomendado por
-> BDA/WebAIM/W3C: clase `a11y-dyslexia` que fuerza una sans muy legible
-> (Verdana/Tahoma/Arial) + más letter/word-spacing + line-height 1.6 y quita las
-> itálicas. Cero peso extra. Ver §13. Se irán sumando más botones de a uno.)
+> (**Sistema de Accesibilidad: nuevos controles, de a uno.** (1) "Fuente para
+> dislexia" (clase `a11y-dyslexia`: sans legible + más letter/word-spacing +
+> line-height 1.6, sin itálicas; enfoque BDA/WebAIM/W3C, NO OpenDyslexic).
+> (2) "Guía de lectura" (Focus Ruler): componente `ReadingRuler.tsx` montado en
+> `App.tsx`; una franja clara sigue el puntero (`pointermove` → sirve en PC y
+> teléfono) y oscurece el resto con una sombra de gran extensión;
+> `pointer-events:none` (no bloquea toques/scroll). Panel: **9 controles**. Ver
+> §13. Siguen faltando: cursor grande y lector de voz (TTS).)
 > Hito previo: **2026-09-03**
 > (**Fondo del Hero cambiado: faro NFC → grafo de conocimiento "graphify"**.
 > El `NfcBeacon` se eliminó y en su lugar `fx/GraphField.tsx` dibuja una red de
@@ -160,7 +163,8 @@ ConnexoWeb/
 │     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
 │     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon,
 │     │                       #   EyeIcon, AccessibilityIcon, CloseIcon)
-│     ├─ AccessibilityPanel.tsx # Panel modal de 8 controles (§13); lo abre el Navbar
+│     ├─ AccessibilityPanel.tsx # Panel modal de 9 controles (§13); lo abre el Navbar
+│     ├─ ReadingRuler.tsx      # Guía de lectura (Focus Ruler, §13); montado en App.tsx
 │     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial + botones a11y
 │     ├─ Hero.tsx             #  2. Hero (NfcBeacon + decode headline + slogan)
 │     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
@@ -611,13 +615,20 @@ provider envuelve toda la app.
 | Pieza | Archivo | Rol |
 |-------|---------|-----|
 | `AccessibilityProvider` / `useAccessibility` | `context/AccessibilityContext.tsx` | Estado global + persistencia (`localStorage['accessibility-settings']`) + aplicación de clases al `<html>`. |
-| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 8 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
+| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 9 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
+| `ReadingRuler` | `components/ReadingRuler.tsx` | Guía de lectura (Focus Ruler): franja clara que sigue el puntero/dedo y atenúa el resto. Montado global en `App.tsx`. Comportamiento JS (no clase CSS). |
 | Botones disparadores | `components/Navbar.tsx` (`A11yButtons`) | "Modo Visual Total" (ojo) + "Abrir panel" (figura). Visibles en móvil y escritorio. |
 | Clases `a11y-*` | `src/index.css` | El CSS real de cada modo + `:focus-visible` global. |
 
 ### Modelo de estado (`A11ySettings`)
 `fontSize` (1·1.25·1.5) · `lineSpacing` (1·1.5·2) · `dyslexiaFont` · `highContrast`
-· `grayscale` · `highlightInteractions` · `reducedMotion` · `visualAccessibilityMode`.
+· `grayscale` · `highlightInteractions` · `readingRuler` · `reducedMotion` ·
+`visualAccessibilityMode`.
+
+> ⚠️ **No todo control es una clase CSS en `<html>`.** Los "modos" visuales sí
+> (`a11y-*`), pero los de **comportamiento** viven en su propio componente y solo
+> leen `settings`: `readingRuler` → `ReadingRuler.tsx` (montado en `App.tsx`).
+> Al sumar un control, decidir cuál de los dos patrones aplica.
 
 - **Concepto clave**: el estado NO aplica estilos inline salvo `fontSize` /
   `lineHeight`. Todo lo demás es CSS puro activado por una clase en el `<html>`
@@ -640,6 +651,16 @@ provider envuelve toda la app.
   `#edb729`): el modo suave debe seguir sintiéndose Connexo. El Modo Visual Total
   sí mantiene amarillo `#ff0` sobre negro — ahí manda la función (contraste WCAG
   máximo), no la marca.
+- **Guía de lectura / Focus Ruler (2026-09-21) — `ReadingRuler.tsx`.** Regla de
+  oro del cliente: **todos los controles deben servir en teléfono**. Por eso usa
+  `pointermove` (unifica ratón, dedo y lápiz) en vez de `mousemove`: en PC sigue
+  el cursor, en móvil sigue el dedo al arrastrar/scrollear. El overlay es
+  `pointer-events:none` → NUNCA bloquea toques ni scroll. La franja se mueve solo
+  con `transform: translate3d` agrupado en `requestAnimationFrame` (§6); el
+  oscurecido es una **sombra de gran extensión estática** (`box-shadow 0 0 0
+  100vmax rgba(0,0,0,.5)`), no se anima. `z-[45]`: sobre el contenido, bajo el
+  navbar (`z-50`) y bajo el panel (`z-[60]/[70]`), así configurarlo no queda
+  atenuado. Solo monta cuando está activo.
 - **`a11y-dyslexia` (2026-09-21) NO carga OpenDyslexic.** Se evaluó y se descartó:
   su eficacia está debatida en los estudios y añade ~150KB de asset. En su lugar,
   el enfoque **recomendado por BDA/WebAIM/W3C**: `font-family` a una sans muy

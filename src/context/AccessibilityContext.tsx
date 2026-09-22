@@ -22,6 +22,7 @@ export interface A11ySettings {
   highContrast: boolean // Alto contraste (negro/blanco puro)
   grayscale: boolean // Escala de grises total
   highlightInteractions: boolean // Resalta enlaces y botones
+  readingRuler: boolean // Guía de lectura que sigue el cursor/dedo (§13)
   reducedMotion: boolean // Desactiva animaciones
   dyslexiaFont: boolean // Fuente legible + espaciado cognitivo (dislexia)
   visualAccessibilityMode: boolean // MODO VISUAL TOTAL (negro / amarillo)
@@ -35,6 +36,7 @@ const DEFAULTS: A11ySettings = {
   highContrast: false,
   grayscale: false,
   highlightInteractions: false,
+  readingRuler: false,
   reducedMotion: false,
   dyslexiaFont: false,
   visualAccessibilityMode: false,
