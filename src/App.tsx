@@ -3,6 +3,7 @@ import { RouterProvider, useRouter } from './router'
 import Landing from './Landing'
 import { FilmGrain, Spotlight } from './components/fx/Ambient'
 import ReadingRuler from './components/ReadingRuler'
+import SpeechReader from './components/SpeechReader'
 
 // La RED CONNEXO es una página aparte: su código no viaja con la portada.
 const RedPage = lazy(() => import('./pages/RedPage'))
@@ -51,8 +52,9 @@ export default function App() {
           en cada navegación (el grano parpadearía). */}
       <FilmGrain />
       <Spotlight />
-      {/* Guía de lectura de accesibilidad — global, sobre todas las rutas (§13). */}
+      {/* Accesibilidad global, sobre todas las rutas (§13). */}
       <ReadingRuler />
+      <SpeechReader />
       <Routes />
     </RouterProvider>
   )

@@ -24,6 +24,7 @@ export interface A11ySettings {
   highlightInteractions: boolean // Resalta enlaces y botones
   readingRuler: boolean // Guía de lectura que sigue el cursor/dedo (§13)
   bigCursor: boolean // Cursor grande de alto contraste (§13)
+  speech: boolean // Lector de voz: lee el texto seleccionado (TTS, §13)
   reducedMotion: boolean // Desactiva animaciones
   dyslexiaFont: boolean // Fuente legible + espaciado cognitivo (dislexia)
   visualAccessibilityMode: boolean // MODO VISUAL TOTAL (negro / amarillo)
@@ -39,6 +40,7 @@ const DEFAULTS: A11ySettings = {
   highlightInteractions: false,
   readingRuler: false,
   bigCursor: false,
+  speech: false,
   reducedMotion: false,
   dyslexiaFont: false,
   visualAccessibilityMode: false,

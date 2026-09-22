@@ -10,8 +10,11 @@
 > teléfono) y oscurece el resto con una sombra de gran extensión;
 > `pointer-events:none` (no bloquea toques/scroll). (3) "Cursor grande": clase
 > `a11y-big-cursor` con PNG 48×48 de alto contraste (`public/cursor-big.png`
-> flecha + `cursor-pointer-big.png` mano; PNG, no SVG, por Safari). Panel:
-> **10 controles**. Ver §13. Falta el último: lector de voz (TTS).)
+> flecha + `cursor-pointer-big.png` mano; PNG, no SVG, por Safari). (4) "Lector
+> de voz" (TTS): componente `SpeechReader.tsx` (Web Speech API nativa); al
+> seleccionar texto lo lee, con barra flotante Pausar/Reanudar/Detener, voz `es`
+> y troceo por frases. **Con esto se completaron los 4 botones pedidos.** Panel:
+> **11 controles**. Ver §13.)
 > Hito previo: **2026-09-03**
 > (**Fondo del Hero cambiado: faro NFC → grafo de conocimiento "graphify"**.
 > El `NfcBeacon` se eliminó y en su lugar `fx/GraphField.tsx` dibuja una red de
@@ -167,8 +170,9 @@ ConnexoWeb/
 │     │                       #   BeamDivider · (NfcRings/Marquee: sin uso hoy)
 │     ├─ icons.tsx            # iconos SVG inline (incl. SignalIcon, WhatsappIcon,
 │     │                       #   EyeIcon, AccessibilityIcon, CloseIcon)
-│     ├─ AccessibilityPanel.tsx # Panel modal de 10 controles (§13); lo abre el Navbar
+│     ├─ AccessibilityPanel.tsx # Panel modal de 11 controles (§13); lo abre el Navbar
 │     ├─ ReadingRuler.tsx      # Guía de lectura (Focus Ruler, §13); montado en App.tsx
+│     ├─ SpeechReader.tsx      # Lector de voz (TTS, §13); barra flotante; montado en App.tsx
 │     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial + botones a11y
 │     ├─ Hero.tsx             #  2. Hero (NfcBeacon + decode headline + slogan)
 │     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
@@ -619,20 +623,22 @@ provider envuelve toda la app.
 | Pieza | Archivo | Rol |
 |-------|---------|-----|
 | `AccessibilityProvider` / `useAccessibility` | `context/AccessibilityContext.tsx` | Estado global + persistencia (`localStorage['accessibility-settings']`) + aplicación de clases al `<html>`. |
-| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 10 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
+| `AccessibilityPanel` | `components/AccessibilityPanel.tsx` | Panel modal lateral con los 11 controles; trampa de foco, cierre con ESC, auto-foco, backdrop clicable. |
 | `ReadingRuler` | `components/ReadingRuler.tsx` | Guía de lectura (Focus Ruler): franja clara que sigue el puntero/dedo y atenúa el resto. Montado global en `App.tsx`. Comportamiento JS (no clase CSS). |
+| `SpeechReader` | `components/SpeechReader.tsx` | Lector de voz (TTS, Web Speech API): lee el texto seleccionado + barra flotante Pausar/Reanudar/Detener. Montado global en `App.tsx`. Comportamiento JS (no clase CSS). |
 | Botones disparadores | `components/Navbar.tsx` (`A11yButtons`) | "Modo Visual Total" (ojo) + "Abrir panel" (figura). Visibles en móvil y escritorio. |
 | Clases `a11y-*` | `src/index.css` | El CSS real de cada modo + `:focus-visible` global. |
 
 ### Modelo de estado (`A11ySettings`)
 `fontSize` (1·1.25·1.5) · `lineSpacing` (1·1.5·2) · `dyslexiaFont` · `highContrast`
-· `grayscale` · `highlightInteractions` · `readingRuler` · `bigCursor` ·
-`reducedMotion` · `visualAccessibilityMode`.
+· `grayscale` · `highlightInteractions` · `readingRuler` · `bigCursor` · `speech`
+· `reducedMotion` · `visualAccessibilityMode`.
 
 > ⚠️ **No todo control es una clase CSS en `<html>`.** Los "modos" visuales sí
 > (`a11y-*`), pero los de **comportamiento** viven en su propio componente y solo
-> leen `settings`: `readingRuler` → `ReadingRuler.tsx` (montado en `App.tsx`).
-> Al sumar un control, decidir cuál de los dos patrones aplica.
+> leen `settings`: `readingRuler` → `ReadingRuler.tsx`, `speech` →
+> `SpeechReader.tsx` (ambos montados en `App.tsx`). Al sumar un control, decidir
+> cuál de los dos patrones aplica.
 
 - **Concepto clave**: el estado NO aplica estilos inline salvo `fontSize` /
   `lineHeight`. Todo lo demás es CSS puro activado por una clase en el `<html>`
@@ -655,6 +661,16 @@ provider envuelve toda la app.
   `#edb729`): el modo suave debe seguir sintiéndose Connexo. El Modo Visual Total
   sí mantiene amarillo `#ff0` sobre negro — ahí manda la función (contraste WCAG
   máximo), no la marca.
+- **Lector de voz / TTS (2026-09-21) — `SpeechReader.tsx`.** Web Speech API nativa
+  (`window.speechSynthesis`), sin librerías. Al **seleccionar texto** se lee solo;
+  el disparo va en `pointerup`/`keyup` (un **gesto real**, requisito de iOS/Safari
+  para poder hablar), no en `selectionchange`. Barra flotante (`data-a11y-ui`,
+  `z-[55]`) con Pausar/Reanudar/Detener — imprescindible en teléfono y señal de
+  que el modo está activo. Voz `es-*` si existe (`getVoices`); el texto se **trocea
+  por frases (~180 chars)** para esquivar el bug de Chrome que corta lecturas
+  largas (>~15 s). Ignora selecciones dentro de cualquier `[data-a11y-ui]` (barra
+  + panel). Al apagar el modo o desmontar, `speechSynthesis.cancel()`. Si el
+  navegador no soporta TTS, la barra lo avisa en vez de romperse.
 - **Cursor grande (2026-09-21) — clase `a11y-big-cursor`.** Usa **PNG 48×48**, no
   cursores SVG: **Safari de escritorio no soporta cursores SVG**. Dos archivos en
   `public/`: `cursor-big.png` (flecha, hotspot `6 4`) para todo y

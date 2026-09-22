@@ -231,6 +231,36 @@ export const SpinnerIcon = (p: IconProps) => (
   </svg>
 )
 
+// Altavoz con ondas — lector de voz (TTS, §13).
+export const SpeakerIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M4 9v6h3.5L13 19V5L7.5 9H4Z" />
+    <path d="M16.5 8.8a4.5 4.5 0 0 1 0 6.4" />
+    <path d="M19 6.5a8 8 0 0 1 0 11" />
+  </svg>
+)
+
+// Pausa — control del lector de voz.
+export const PauseIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M9 5v14M15 5v14" strokeWidth={2} />
+  </svg>
+)
+
+// Reanudar (play) — control del lector de voz.
+export const PlayIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M7 5.5 19 12 7 18.5Z" />
+  </svg>
+)
+
+// Detener (stop) — control del lector de voz.
+export const StopIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <rect x="6" y="6" width="12" height="12" rx="1.5" />
+  </svg>
+)
+
 // Ojo — dispara el "Modo Visual Total" (accesibilidad, §Navbar).
 export const EyeIcon = (p: IconProps) => (
   <svg {...base} {...p}>

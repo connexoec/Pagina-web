@@ -29,6 +29,7 @@ const OPTIONS: Option[] = [
   { label: 'Resaltar enlaces', key: 'highlightInteractions', type: 'toggle', desc: 'Bordes y subrayado en todo lo que se puede tocar.' },
   { label: 'Guía de lectura', key: 'readingRuler', type: 'toggle', desc: 'Una franja clara sigue el cursor o el dedo y atenúa el resto.' },
   { label: 'Cursor grande', key: 'bigCursor', type: 'toggle', desc: 'Puntero extra grande y de alto contraste (solo en computador).' },
+  { label: 'Lector de voz', key: 'speech', type: 'toggle', desc: 'Selecciona un texto y la página lo lee en voz alta.' },
   { label: 'Desactivar animaciones', key: 'reducedMotion', type: 'toggle', desc: 'Elimina el movimiento de la página.' },
   { label: 'Modo Visual Total', key: 'visualAccessibilityMode', type: 'toggle', desc: 'Máximo contraste y simplificación: fondo negro, texto amarillo.' },
 ]
@@ -94,6 +95,7 @@ export default function AccessibilityPanel({ isOpen, onClose }: { isOpen: boolea
           {/* Panel */}
           <motion.div
             ref={panelRef}
+            data-a11y-ui
             initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 60 }}
