@@ -25,3 +25,6 @@ connexo-dev-screenshot.png
 # scripts SQL de Supabase y el flujo de credenciales de pasarela de pago.
 /Documentos/
 *.docx
+
+# Material fuente de las tarjetas (PDF); se despliegan los PNG de public/tarjetas/
+/Tarjetas Connexo/

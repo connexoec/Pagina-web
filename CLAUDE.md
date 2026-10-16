@@ -1,7 +1,13 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-09-21**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-10-16**
+> (**Tarjetas Connexo en la portada (`CardsShowcase`).** Sección nueva justo
+> después de "Bajo el toque": las tarjetas físicas (portada + reverso) flotando
+> sobre neón naranja, con selector entre los 4 diseños reales (Connexo, Quantum
+> Code, Fundación Arupo, Arupo CTI). Imágenes en `public/tarjetas/`, datos en
+> `data/cards.ts`. Ver §15.)
+> Hito previo: **2026-09-21**
 > (**Sistema de Accesibilidad: nuevos controles, de a uno.** (1) "Fuente para
 > dislexia" (clase `a11y-dyslexia`: sans legible + más letter/word-spacing +
 > line-height 1.6, sin itálicas; enfoque BDA/WebAIM/W3C, NO OpenDyslexic).
@@ -144,6 +150,7 @@ ConnexoWeb/
 │  ├─ favicon-32/180/512.png  # Derivados del isotipo
 │  ├─ cursor-big.png          # Cursor grande de accesibilidad: flecha (§13)
 │  ├─ cursor-pointer-big.png  # Cursor grande: mano para enlaces/botones (§13)
+│  ├─ tarjetas/               # 8 PNG de las tarjetas físicas, portada+reverso (§15)
 │  └─ perfiles/               # capturas del carrusel (ver §5)
 ├─ src/
 │  ├─ main.tsx                # entry → <App/>
@@ -161,6 +168,7 @@ ConnexoWeb/
 │  │  └─ campaign.ts          # toggle ON/OFF del banner de campaña
 │  ├─ data/
 │  │  ├─ ecosystems.ts        # las 9 plantillas reales del carrusel
+│  │  ├─ cards.ts             # los 4 diseños de tarjeta de CardsShowcase (§15)
 │  │  ├─ directory.ts         # miembros de la RED CONNEXO (§10)
 │  │  └─ pricing.ts           # planes + tabla comparativa (`comparison`)
 │  └─ components/
@@ -178,6 +186,7 @@ ConnexoWeb/
 │     ├─ Navbar.tsx           #  1. Nav glass fija + logo oficial + botones a11y
 │     ├─ Hero.tsx             #  2. Hero (NfcBeacon + decode headline + slogan)
 │     ├─ Mechanism.tsx        #  3. Bajo el toque (3 pasos)
+│     ├─ CardsShowcase.tsx    #  3b. Las tarjetas físicas flotando sobre neón (§15)
 │     ├─ EcosystemsCarousel.tsx #  4. Carrusel 3D Cover Flow (CRÍTICO, §6)
 │     ├─ Platform.tsx         #  5. PWA · push · 8 idiomas · tour guiado
 │     ├─ Operations.tsx       #  6. Pipeline de pedido con sticky-scroll
@@ -208,6 +217,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 | 1 | Navbar | ✅ | Glass al scroll; **logo oficial**; links Ecosistemas/Cómo opera/Planes/**Causa**/RED CONNEXO. El logo glitchea en bucle a alfabeto yautja (§9). **Sin botón "INICIAR SESIÓN"** (quitado 2026-08-19: no hay dónde iniciar sesión desde la landing). **2 botones de accesibilidad** (ojo → Modo Visual Total; figura → abre panel), visibles en móvil y escritorio (§13). |
 | 2 | Hero | ✅ | H1 (Tomorrow italic 600) con `DecodeText` en la 2.ª frase; **fondo `GraphField`** (grafo de conocimiento "graphify": cúmulos de nodos que derivan, tenue, §12); subtítulo = **slogan de Connexo** ("…compartir quién eres" + "Conecta·Comparte·Crece"); CTA magnético → WhatsApp + botón **RED CONNEXO** → `/red`. **Sin** badge de Ecuador, línea de prueba gratis ni trust strip (quitados 2026-08-19). |
 | 3 | Mecanismo | ✅ | Kicker "bajo el toque"; 3 pasos (El objeto / El instante / La huella). |
+| 3b | Tarjetas | ✅ | **`CardsShowcase`**: portada + reverso flotando sobre neón naranja, selector de 4 diseños reales y CTA a WhatsApp (§15). |
 | 4 | Ecosistemas | ✅ | **Carrusel 3D Cover Flow** con las **9 plantillas reales** (ver §6). Marco con la proporción exacta de la captura → sin recorte. |
 | 5 | Plataforma | ✅ | PWA instalable, avisos con la app cerrada, 8 idiomas, tour guiado. Manual §6, §7, §21. |
 | 6 | Cómo opera | ✅ | Pipeline del pedido con **sticky-scroll** (5 estados). Manual §24.6, §25.5, §30.5. |
@@ -804,3 +814,69 @@ en el Navbar (badge "Únete") y el Footer.
   coordenadas** del clic con esta página (navbar `fixed` + animaciones CSS
   permanentes). El DOM es correcto. Para verificar interacciones, conviene manejar
   por `.click()`/estado y leer el DOM, no depender del screenshot/clic por pixel.
+
+---
+
+## 15. Tarjetas Connexo — `CardsShowcase` (2026-10-16)
+
+El cliente notó que **en ningún lado de la web se veían las tarjetas físicas**.
+Sección nueva en la portada, **justo después de `Mechanism`** ("Acercas. Y ya
+está.": ahí se nombra el objeto, aquí se ve). Titular: "Parece una tarjeta.
+Trabaja como un vendedor." (sin kicker, §9).
+
+### Piezas
+| Pieza | Archivo | Rol |
+|-------|---------|-----|
+| Sección | `components/CardsShowcase.tsx` | Escenario con neón, par portada/reverso, selector, CTA. Lazy en `Landing.tsx`. |
+| Datos | `data/cards.ts` | `cardDesigns`: id, nombre del selector, una línea de descripción, `front`/`back` (src + alt). |
+| Imágenes | `public/tarjetas/<id>-portada.png` / `<id>-reverso.png` | 8 PNG 1200×758, esquinas transparentes. |
+| Neón | `tailwind.config.js` | `boxShadow.neon` / `neon-soft`, keyframes `card-float` y `neon-flicker`. |
+| Mensaje | `config/site.ts` → `waMsg.cards` | Texto prellenado del CTA. |
+
+### Diseños (los 4 son tarjetas REALES de negocios en la RED)
+`connexo` (negra) · `quantum-code` (negra) · `fundacion-arupo` (blanca) ·
+`arupo-cti` (blanca). Cada reverso lleva el **QR de un perfil real**
+(`connexoapp.com/<usuario>`, verificado decodificando los QR) y el nombre/cargo
+de una persona real. Si un cliente retira su permiso, se quita su entrada de
+`cards.ts` y sus dos PNG.
+
+### Cómo se regeneran las imágenes
+Origen: `Tarjetas Connexo/*.pdf` (carpeta **ignorada en git**, como `/Perfiles/`).
+Cada PDF es de **una página, 242×153 pt** (CR80). Se rasterizan a 1200 px de
+ancho con **PyMuPDF** (`pymupdf.Page.get_pixmap`, `alpha=True`) instalado en el
+scratchpad, NO en el repo. No hay `pdftoppm`/ImageMagick/Ghostscript en la
+máquina. Para sumar un diseño: dos PNG con el nombre de la convención + una
+entrada en `cards.ts`.
+
+### Decisiones de diseño (NO revertir sin motivo)
+- **Neón = tubos desfasados por detrás de cada tarjeta**, no un borde pegado: un
+  rectángulo con `border-2` naranja + `shadow-neon` rotado/desplazado unos grados
+  (asoma como un letrero), otro más fino en sentido contrario, un resplandor
+  difuso (`blur-3xl`) y un **aro neón circular** de fondo común. Sobre los dos
+  diseños oscuros el neón además *dibuja* la tarjeta (negro sobre negro puro).
+- **Solo `transform`/`opacity` se animan** (§6): `blur` y `box-shadow` son
+  estáticos. La flotación es CSS puro (`animate-card-float`, 7 s, desfasada con
+  `animationDelay` negativo entre las dos caras) y **se pausa fuera de pantalla**
+  (`useInView` → `animationPlayState`). Tres capas de transform anidadas por
+  tarjeta (inclinación fija / flotación / hover de Framer) para que ninguna
+  pise a la otra.
+- **`neon-flicker` es suave a propósito**: dos bajones a 0.78–0.82 de opacidad
+  cada 9 s. Nada de estroboscopio (accesibilidad, §13).
+- **Esquinas**: los PNG traen el redondeo transparente (40 px de 1200×758).
+  `CORNER = rounded-[3.33%/5.28%]` solo existe para que el aro y los tubos
+  calcen con él. `width`/`height` en el `<img>` reservan el espacio (cero CLS).
+- **Etiquetas "Portada" / "Reverso"** a caballo del borde inferior, donde ningún
+  diseño tiene arte (§7.4: ningún rótulo encima del arte).
+- Portada al frente (`z-20`), reverso detrás (`z-10`); con 52 % de ancho cada una
+  el reverso **no tapa el QR** ni el símbolo NFC. Si se cambia el ancho, volver a
+  comprobarlo.
+- **Precarga**: al acercarse la sección se precargan en idle los otros 3 diseños
+  (y al pasar el ratón/foco por un botón), así el selector no "carga".
+- `TiltCard` (max 4°) inclina el par con el ratón; en táctil queda plano.
+- **Copy honesto** (§0): solo afirma lo que el manual y las tarjetas muestran —
+  NFC por aproximación y QR como plan B. "Ni QR borrosos" de `Mechanism` sigue
+  vigente: el QR se presenta como respaldo, no como el camino principal.
+- CTA a WhatsApp (`waMsg.cards`), **nunca a un formulario de registro**.
+- ⚠️ **Verificación en el preview**: el pane pinta negro en cuanto `scrollY > 0`.
+  Truco que funciona: `resize_window` a un alto enorme (p. ej. 1280×2300 o
+  390×2700) con `scrollY = 0` y ahí sí se ve la sección entera.

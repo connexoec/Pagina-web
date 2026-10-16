@@ -39,6 +39,11 @@ export default {
         glow: '0 0 0 1px rgba(255,102,0,0.5), 0 0 40px -8px rgba(255,102,0,0.55)',
         'glow-lg': '0 0 0 1px rgba(255,102,0,0.6), 0 0 80px -10px rgba(255,102,0,0.65)',
         card: '0 20px 60px -20px rgba(0,0,0,0.9)',
+        // Tubo de neón (CardsShowcase): halo cercano + difuso + resplandor interno.
+        // Estático: lo único que se anima es la `opacity` del elemento que lo lleva.
+        neon: '0 0 10px #ff6600, 0 0 34px rgba(255,102,0,0.6), inset 0 0 12px rgba(255,102,0,0.4)',
+        'neon-soft':
+          '0 0 8px rgba(255,102,0,0.7), 0 0 26px rgba(255,102,0,0.35), inset 0 0 8px rgba(255,102,0,0.25)',
       },
       backgroundImage: {
         'radial-fade':
@@ -55,6 +60,21 @@ export default {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-8px)' },
         },
+        // ── Tarjetas flotando (CardsShowcase) ──────────────────────────────
+        // Solo `transform`/`opacity`. 0% = reposo, así que con
+        // prefers-reduced-motion las tarjetas quedan quietas y el neón fijo.
+        'card-float': {
+          '0%, 100%': { transform: 'translate3d(0,0,0)' },
+          '50%': { transform: 'translate3d(0,-16px,0)' },
+        },
+        // Parpadeo suave de tubo de neón: dos bajones leves, NUNCA un
+        // estroboscopio (mínimo 0.78 de opacidad, lejos de 3 destellos/seg).
+        'neon-flicker': {
+          '0%, 17%, 22%, 54%, 58%, 100%': { opacity: '1' },
+          '19%': { opacity: '0.78' },
+          '56%': { opacity: '0.82' },
+        },
+
         // Cinta infinita — translate3d puro, se resuelve en GPU.
         marquee: {
           from: { transform: 'translate3d(0,0,0)' },
@@ -116,6 +136,8 @@ export default {
         'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
         float: 'float 6s ease-in-out infinite',
         marquee: 'marquee 32s linear infinite',
+        'card-float': 'card-float 7s ease-in-out infinite',
+        'neon-flicker': 'neon-flicker 9s linear infinite',
         // `step-end`: cortes secos entre keyframes. Las dos comparten duración
         // y arrancan juntas (se montan en el mismo paint), así que no se
         // desfasan nunca.

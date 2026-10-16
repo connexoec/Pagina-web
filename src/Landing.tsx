@@ -4,6 +4,7 @@ import Hero from './components/Hero'
 import Mechanism from './components/Mechanism'
 
 // Below-the-fold sections are code-split → smaller initial bundle, faster paint.
+const CardsShowcase = lazy(() => import('./components/CardsShowcase'))
 const EcosystemsCarousel = lazy(() => import('./components/EcosystemsCarousel'))
 const Platform = lazy(() => import('./components/Platform'))
 const Operations = lazy(() => import('./components/Operations'))
@@ -30,6 +31,7 @@ export default function Landing() {
         <Hero />
         <Mechanism />
         <Suspense fallback={<SectionFallback />}>
+          <CardsShowcase />
           <EcosystemsCarousel />
           <Platform />
           <Operations />
