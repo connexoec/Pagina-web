@@ -6,7 +6,8 @@
 //  `image` apunta a /perfiles/*.png (public/perfiles). Las capturas son
 //  pantallas de teléfono (ratio ≈ 0.512) y el carrusel las muestra dentro de
 //  un marco con esa misma proporción → se ven completas, nunca recortadas.
-//  `reserved: true` → tarjeta placeholder (aún sin captura).
+//  Las 9 son perfiles de DEMOSTRACIÓN (negocios ficticios), no clientes reales.
+//  `reserved: true` → tarjeta placeholder, solo para una plantilla futura sin captura.
 // ─────────────────────────────────────────────────────────────
 export interface Ecosystem {
   id: string
@@ -76,15 +77,13 @@ export const ecosystems: Ecosystem[] = [
     name: 'Artista',
     tagline: 'Músicos, bandas, productores y DJ.',
     edge: 'Fan Base con campañas: sabes si ese seguidor llegó por el flyer o por la bio de Instagram.',
-    // Falta la captura. Sube /perfiles/artistas.png y quita `reserved`.
-    reserved: true,
+    image: '/perfiles/artistas.png',
   },
   {
     id: 'sublimados',
     name: 'Sublimados',
     tagline: 'Bordado, estampado, DTF y uniformes por volumen.',
     edge: 'Tramos de precio: el mayorista se cotiza solo y llega al pedido ya decidido.',
-    // Falta la captura. Sube /perfiles/sublimados.png y quita `reserved`.
-    reserved: true,
+    image: '/perfiles/sublimados.png',
   },
 ]

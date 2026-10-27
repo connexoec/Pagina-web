@@ -1,7 +1,13 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-10-27**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-10-27 (b)**
+> (**Carrusel "Ecosistemas": las 9 plantillas con captura nueva y real.** Se
+> reemplazaron los 7 PNG de `public/perfiles/` y se sumaron `artistas.png` y
+> `sublimados.png` (500×977, mismo ratio 0.512 → sin tocar el layout). Salen de
+> cuentas demo **ficticias**, una por plantilla; no son clientes. Ya no queda la
+> tarjeta "Captura en camino". Ver §5.)
+> Hito previo: **2026-10-27 (a)**
 > (**Sección de tarjetas y pulseras RETIRADA de la portada.** El cliente: "no me
 > gustó cómo quedó". Se borraron `ProductsMosaic`, `data/products.ts`, los WebP de
 > `public/tarjetas` y `public/pulseras`, `waMsg.cards` y las animaciones/neón de
@@ -233,26 +239,36 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 
 ## 5. Assets de perfiles (`public/perfiles/`) — IMPORTANTE
 
-Las imágenes reales entregadas estaban en `Perfiles/` (raíz) y se normalizaron a
-`public/perfiles/*.png` (minúsculas, sin tildes) para servirlas desde `/perfiles/`.
+Desde **2026-10-27** las 9 capturas son de **cuentas demo ficticias** (una por
+plantilla) creadas en la app de clientes (ConnexoClients) y fotografiadas en vista
+móvil (390×762 CSS px) desde `www.connexoapp.com`. Las fuentes viven en
+`Perfiles/demo-2026-10/` (ignorada por git, como todo `/Perfiles/`): `500x977/`
+es el juego que se sirve y `hd/` (780×1524, 0,4–1,1 MB c/u) queda de reserva por
+si algún día se ven borrosas en retina. Los 7 PNG anteriores están en
+`Perfiles/respaldo-previo/` (y en el historial de git).
 
-Mapeo actual — **las 9 plantillas del manual**, 7 con captura real:
+Mapeo actual — **las 9 plantillas del manual, las 9 con captura**:
 
-| # | Plantilla (id) | Imagen |
-|---|----------------|--------|
-| 1 | Estándar (`estandar`) | `profesional.png` |
-| 2 | Barbería (`barberia`) | `barber.png` |
-| 3 | Gastronomía (`gastronomia`) | `gastro.png` |
-| 4 | E-Commerce (`ecommerce`) | `ecommerce.png` |
-| 5 | Petcare (`petcare`) | `veterinaria.png` |
-| 6 | Salud (`medico`) | `medico.png` |
-| 7 | Inmobiliaria (`inmobiliaria`) | `inmobiliaria.png` |
-| 8 | Artista (`artista`) | ⚠️ FALTA `artistas.png` |
-| 9 | Sublimados (`sublimados`) | ⚠️ FALTA `sublimados.png` |
+| # | Plantilla (id) | Imagen | Demo (perfil en connexoapp.com) |
+|---|----------------|--------|---------------------------------|
+| 1 | Estándar (`estandar`) | `profesional.png` | `mateo-villacis` |
+| 2 | Barbería (`barberia`) | `barber.png` | `navaja-y-cuero` |
+| 3 | Gastronomía (`gastronomia`) | `gastro.png` | `brasa-y-mar` |
+| 4 | E-Commerce (`ecommerce`) | `ecommerce.png` | `cumbre-cafe` |
+| 5 | Petcare (`petcare`) | `veterinaria.png` | `huellitas-vet` |
+| 6 | Salud (`medico`) | `medico.png` | `centro-medico-vitalis` |
+| 7 | Inmobiliaria (`inmobiliaria`) | `inmobiliaria.png` | `cimientos-inmobiliaria` |
+| 8 | Artista (`artista`) | `artistas.png` | `los-desvelados` |
+| 9 | Sublimados (`sublimados`) | `sublimados.png` | `estampa-total` |
 
-**TODO assets**: subir `artistas.png` y `sublimados.png` a `public/perfiles/`,
-quitar `reserved: true` y añadir `image` en `src/data/ecosystems.ts`. La cara
-placeholder ("Captura en camino") aparece sola mientras no haya imagen.
+🔴 **Son negocios inventados de demostración.** Nunca presentarlos como clientes
+reales en ningún texto (alt, copy, RED CONNEXO): vale la misma regla de §10
+("solo negocios reales"). Por eso el `alt` del carrusel dice "Perfil {plantilla}
+en Connexo" y no nombra al negocio. Tampoco entran a `data/directory.ts`.
+
+Ya no queda ninguna tarjeta placeholder: `reserved` y `ReservedFace`
+("Captura en camino") se conservan en el código solo como respaldo para una
+plantilla futura sin captura.
 
 ⚠️ **Las capturas nuevas deben mantener la proporción ≈ 0.512** (pantalla de
 teléfono, p. ej. 500×977). El marco del carrusel usa esa constante (`SHOT_RATIO`)
