@@ -1,13 +1,14 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-10-16**
-> (**Mosaico "Estos son nuestros productos" (`ProductsMosaic`).** Sección
-> compacta de tarjetas y pulseras justo DESPUÉS de la matriz de planes ("Lo que
-> entra en cada plan, sin letra chica"). Damero de 4 teselas: pulsera + cinta de
-> portadas / cinta de reversos + pulsera, con neón naranja y animación discreta.
-> Sin nombres: solo imágenes. Una 1.ª versión grande con selector
-> (`CardsShowcase`, tras "Bajo el toque") se descartó: "están gigantes". Ver §15.)
+> No repetir errores ya resueltos aquí. Última actualización: **2026-10-27**
+> (**Sección de tarjetas y pulseras RETIRADA de la portada.** El cliente: "no me
+> gustó cómo quedó". Se borraron `ProductsMosaic`, `data/products.ts`, los WebP de
+> `public/tarjetas` y `public/pulseras`, `waMsg.cards` y las animaciones/neón de
+> `tailwind.config.js` que solo usaba ese mosaico. Es "por ahora": si vuelve,
+> rediseñarla, no restaurarla tal cual. Ver §15 para qué recuperar y cómo.)
+> Hito previo: **2026-10-16**
+> (Mosaico "Estos son nuestros productos" — el que se retiró arriba.)
 > Hito previo: **2026-09-21**
 > (**Sistema de Accesibilidad: nuevos controles, de a uno.** (1) "Fuente para
 > dislexia" (clase `a11y-dyslexia`: sans legible + más letter/word-spacing +
@@ -151,8 +152,6 @@ ConnexoWeb/
 │  ├─ favicon-32/180/512.png  # Derivados del isotipo
 │  ├─ cursor-big.png          # Cursor grande de accesibilidad: flecha (§13)
 │  ├─ cursor-pointer-big.png  # Cursor grande: mano para enlaces/botones (§13)
-│  ├─ tarjetas/               # 8 WebP 640×404 de las tarjetas, portada+reverso (§15)
-│  ├─ pulseras/               # 2 WebP transparentes de la pulsera (§15)
 │  └─ perfiles/               # capturas del carrusel (ver §5)
 ├─ src/
 │  ├─ main.tsx                # entry → <App/>
@@ -170,7 +169,6 @@ ConnexoWeb/
 │  │  └─ campaign.ts          # toggle ON/OFF del banner de campaña
 │  ├─ data/
 │  │  ├─ ecosystems.ts        # las 9 plantillas reales del carrusel
-│  │  ├─ products.ts          # imágenes de tarjetas y pulseras del mosaico (§15)
 │  │  ├─ directory.ts         # miembros de la RED CONNEXO (§10)
 │  │  └─ pricing.ts           # planes + tabla comparativa (`comparison`)
 │  └─ components/
@@ -198,7 +196,6 @@ ConnexoWeb/
 │     ├─ DirectoryCard.tsx    #     MemberCard + OpenSlotCard (los usa RedPage)
 │     ├─ Pricing.tsx          # 11. Planes + chip 10% Arupo
 │     ├─ PlanMatrix.tsx       #     └─ comparador de 3 planes (dentro de Pricing)
-│     ├─ ProductsMosaic.tsx   # 11b. Mosaico de tarjetas y pulseras, tras los planes (§15)
 │     ├─ Arupo.tsx            # 12. Responsabilidad social · Fundación Arupo (§9)
 │     ├─ CampaignBanner.tsx   # 13. Módulo de campañas (dinámico)
 │     └─ Footer.tsx           # 14. Footer (+ WhatsApp, correo, 10% Arupo)
@@ -227,7 +224,7 @@ Todas construidas, compiladas sin errores TS y verificadas en preview ("cero lag
 | 9 | Analíticas | ✅ | Contadores + mapa de calor 7×12 + conclusiones automáticas. Manual §15. |
 | 10 | RED CONNEXO | ✅ | En la portada solo va `RedTeaser` (banda + CTA). **El directorio vive en su propia página `/red`** (§10). |
 | 11 | Planes | ✅ | CONECTA sin precio ("Prueba gratis"); PRO/ULTRA → tienda; toggle Mensual/Anual; chip "10% Arupo"; **comparador `PlanMatrix`**. |
-| 11b | Productos | ✅ | **`ProductsMosaic`**: "Estos son nuestros productos". Damero compacto de tarjetas + pulseras con neón y animación discreta (§15). Va **justo después de la matriz de planes**. |
+| 11b | Productos | ⛔ retirada | Mosaico de tarjetas y pulseras quitado el 2026-10-27 (no gustó). Ya no hay sección de productos físicos en la portada (§15). |
 | 12 | Fundación Arupo | ✅ | Responsabilidad social: 10% de cada plan. Cifra ancla "10%" + manifiesto + CTA externo a fundacionarupo.org. |
 | 13 | Campañas | ✅ | Banner dinámico ON/OFF vía `config/campaign.ts`. |
 | 14 | Footer | ✅ | Logo oficial, legales, 10% Arupo, WhatsApp y `connexoec@gmail.com`. |
@@ -819,95 +816,60 @@ en el Navbar (badge "Únete") y el Footer.
 
 ---
 
-## 15. Productos físicos — `ProductsMosaic` (2026-10-16)
+## 15. Productos físicos — sección RETIRADA (2026-10-27)
 
-El cliente notó que **en ningún lado de la web se veían las tarjetas** (ni las
-pulseras). Sección nueva en la portada, **justo después de la matriz de planes**
-("Lo que entra en cada plan, sin letra chica"), antes de `Arupo`. Titular:
-"Estos son nuestros productos." (sin kicker, §9). Es un lazy aparte en
-`Landing.tsx`: **no se tocó `Pricing` ni `PlanMatrix`**.
+**Estado: no hay sección de tarjetas ni pulseras en la portada.** El cliente
+tras ver el `ProductsMosaic` en producción: "no me gustó cómo quedó… quitemos por
+ahora la sección". Se quitó de `Landing.tsx` y se borró **todo lo que solo ese
+mosaico usaba**: `components/ProductsMosaic.tsx`, `data/products.ts`,
+`public/tarjetas/` (8 WebP), `public/pulseras/` (2 WebP), `waMsg.cards` en
+`config/site.ts` y, en `tailwind.config.js`, los keyframes/animaciones
+`product-float`, `product-sway`, `nfc-wave`, `neon-flicker` y las sombras
+`neon` / `neon-soft`. (`marquee` se queda: ya existía antes.)
 
-> ⚠️ **Historia (no repetir):** la 1.ª versión, `CardsShowcase`, ponía el par
-> portada/reverso GRANDE tras "Bajo el toque" con un selector por nombre de
-> diseño. El cliente: "están gigantes… es para que vean", "sin nombres, solo las
-> imágenes", y "un mosaico brutal con alguna animación, **que no ocupe tanto
-> espacio, la página ya es larga**". Se borró. Lección: en la landing los
-> productos son un **vistazo**, no una sección-héroe.
+> ⚠️ **"Por ahora" ≠ restaurar tal cual.** Si el cliente pide volver a mostrar los
+> productos, **no revivir este mosaico**: fue rechazado. Preguntar qué no gustó
+> y rediseñar. Las piezas siguen en git para reaprovechar lo que sirva:
+> `git show 097fd98:src/components/ProductsMosaic.tsx` (y `…:src/data/products.ts`);
+> los WebP: `git checkout 097fd98 -- public/tarjetas public/pulseras`.
 
-### Piezas
-| Pieza | Archivo | Rol |
-|-------|---------|-----|
-| Sección | `components/ProductsMosaic.tsx` | Damero de 4 teselas + CTA. Lazy en `Landing.tsx`. |
-| Datos | `data/products.ts` | `cardFronts`, `cardBacks`, `braceletRing`, `braceletPair` (src, alt, ancho, alto). |
-| Tarjetas | `public/tarjetas/<id>-portada.webp` / `-reverso.webp` | 8 WebP 640×404, esquinas transparentes (~12–19 KB c/u). |
-| Pulseras | `public/pulseras/pulsera-aro.webp`, `pulsera-par.webp` | WebP transparente recortado (~45–55 KB). |
-| Animación | `tailwind.config.js` | Keyframes `product-float`, `product-sway`, `nfc-wave`, `neon-flicker` + `boxShadow.neon(-soft)`. |
-| Mensaje | `config/site.ts` → `waMsg.cards` | Texto prellenado del CTA a WhatsApp. |
+### Historia (qué se probó y qué dijo el cliente — no repetir)
+1. **`CardsShowcase`** (commit `0c4c577`): par portada/reverso GRANDE tras "Bajo el
+   toque" con selector por nombre de diseño. Cliente: "están gigantes… es para
+   que vean", "sin nombres, solo las imágenes", "**que no ocupe tanto espacio, la
+   página ya es larga**". Se borró.
+2. **`ProductsMosaic`** (commit `097fd98`): damero compacto 2×2 (pulsera cerrada +
+   cinta de portadas / cinta de reversos + pulsera aro) con neón y ondas NFC,
+   justo tras `PlanMatrix`. Cliente: "no me gustó cómo quedó". Se borró.
 
-### Composición
-Damero 2×2 en `lg` (12 columnas, ~400 px de alto en total); en móvil las dos
-pulseras van lado a lado y las cintas a todo el ancho (~380 px).
-- Fila 1: **pulsera cerrada** (5 col.) + **cinta de portadas** (7 col.)
-- Fila 2: **cinta de reversos** (7 col.) + **pulsera aro+extendida** (5 col.)
-- **Sin nombres ni rótulos**: solo imágenes (pedido del cliente). Los `alt` sí
-  son descriptivos; las copias duplicadas de la cinta llevan `alt=""` +
-  `aria-hidden`.
+Lección: dos intentos seguidos fallaron por **cómo se muestran**, no por tener
+las imágenes. Antes de un tercero, mostrar una propuesta/boceto y acordar el
+formato; no publicar a ciegas.
 
-### Los 4 diseños de tarjeta son REALES
-Connexo (negra), Quantum Code (negra), Fundación Arupo (blanca), Arupo CTI
-(blanca): negocios de la RED. Cada reverso lleva el **QR de un perfil real**
-(`connexoapp.com/<usuario>`, verificado decodificando los QR) y el nombre/cargo
-de una persona. Si un cliente retira su permiso → quitar su entrada de
-`products.ts` y sus 2 WebP.
-
-### De dónde salen las imágenes (no están en el repo las fuentes)
-`Tarjetas Connexo/` (ignorada en git, como `/Perfiles/`) trae 8 PDF de las
-tarjetas y `Pulseras/` 3 SVG de Canva con imágenes embebidas y máscaras
-(`feColorMatrix`).
-- **PDF → PNG**: PyMuPDF (`get_pixmap(alpha=True)`) instalado en el scratchpad,
-  NO en el repo. No hay `pdftoppm`/ImageMagick/Ghostscript en la máquina.
-- **SVG → WebP: NO usar PyMuPDF** (no aplica las máscaras y deja un rectángulo
-  negro opaco). **Se renderizan en Chrome**: una página local que dibuja el SVG
-  en un `<canvas>` 2000×2000, recorta al bbox no transparente y exporta
+### Notas técnicas que sí valen si vuelven las imágenes
+Las fuentes NO están en el repo: `Tarjetas Connexo/` (8 PDF) y `Pulseras/`
+(3 SVG de Canva) están ignoradas en git, como `/Perfiles/`. Siguen en la
+máquina del cliente.
+- **PDF → PNG**: PyMuPDF (`get_pixmap(alpha=True)`), instalado en el scratchpad,
+  NO en el repo. No hay `pdftoppm`/ImageMagick/Ghostscript.
+- **SVG → WebP: NO usar PyMuPDF** (no aplica las máscaras `feColorMatrix` y deja
+  un rectángulo negro opaco). **Renderizar en Chrome**: página local que dibuja el
+  SVG en un `<canvas>` 2000×2000, recorta al bbox no transparente y exporta
   `toDataURL('image/webp')` a un servidor local de scratchpad que lo guarda.
-  Las tarjetas se re-exportan igual (PNG 1200 → WebP 640) para bajar peso.
-- De los 3 SVG se usaron 2: `p1` (aro + extendida) y la pulsera cerrada de `p2`.
-  `p3` (vista plana con cotas "240mm / 17mm / 13mm") se dejó fuera: el texto de
-  las cotas es azul marino y no se lee sobre negro, y esas medidas no están en
-  el manual. El macro del broche de `p2` también se descartó (borde cian).
-
-### Decisiones de animación (NO exagerar)
-- **Solo `transform`/`opacity`** (§6): resplandores, aro de neón y sombras son
-  estáticos. Todo es CSS puro y **se pausa fuera de pantalla** (`useInView` →
-  `animationPlayState`); las cintas además se **detienen al pasar el ratón**.
-- **Cintas**: `animate-marquee` en dos direcciones (34 s portadas, 40 s
-  reversos, desfasadas). **3 copias** por cinta: con 2, en anchos medios
-  (~1000 px) el bucle deja un hueco a la derecha; basta con `ancho_copia ≥
-  ancho_contenedor / 2`.
-- **Pulsera cerrada**: flota 7 px y se ladea 1.2° (7 s) + **3 ondas de toque
-  NFC** (`nfc-wave`, 4.8 s, desfase 1.6 s, opacidad máx. 0.5) que nacen del óvalo
-  de lectura, por detrás de la imagen. Base sin animación = invisible.
-- **Pulsera aro+extendida**: vaivén ±1.8° (9 s). Distinta fase y distinto
-  movimiento para que no se vean sincronizadas.
-- **`neon-flicker` suave a propósito**: bajones a 0.78–0.82 cada 9 s. Nada de
-  estroboscopio (§13).
-- Las ondas se centran con un `<span>` estático (`-translate-*`) que envuelve al
-  animado: la animación pisa todo el `transform`, así que el centrado nunca va
-  en el mismo elemento que la animación.
-- `prefers-reduced-motion` no necesita código: el estado base de cada keyframe es
-  el reposo (§12).
-- Esquinas: `rounded-[3.33%/5.28%]` calza con el redondeo del arte (40 px de
-  1200×758).
-
-### Copy honesto (§0)
-Solo afirma lo que el manual/Mechanism ya dicen: "un toque abre tu perfil" con
-tarjeta o accesorio. CTA a WhatsApp (`waMsg.cards`), **nunca a un formulario de
-registro**.
+- De los 3 SVG se habían usado 2 (`p1` aro + extendida; la cerrada de `p2`).
+  `p3` (cotas "240mm / 17mm / 13mm") se dejó fuera: texto azul marino ilegible
+  sobre negro y esas medidas no están en el manual.
+- **Los 4 diseños de tarjeta son REALES** (Connexo, Quantum Code, Fundación
+  Arupo, Arupo CTI): cada reverso llevaba el QR de un perfil real y el nombre de
+  una persona. Si un cliente retira su permiso, quitar su diseño.
+- **Copy honesto (§0)**: solo "un toque abre tu perfil" con tarjeta o accesorio;
+  CTA a WhatsApp, **nunca a un formulario de registro**.
+- Animación (§6): solo `transform`/`opacity`, CSS puro, pausada fuera de pantalla;
+  nada de estroboscopio (§13). Esquinas de tarjeta: `rounded-[3.33%/5.28%]`.
 
 ### ⚠️ Verificación en el preview
 - El pane pinta negro en cuanto `scrollY > 0`. Truco: `display:none` a los demás
   hijos de `<main>` y `scrollTo(0,0)`, o un `resize_window` altísimo.
 - **El dev server NO recarga `tailwind.config.js`**: tras añadir keyframes o
-  `animation`, hay que reiniciar `preview_start`, o las clases `animate-*`
-  nuevas quedan en `animation-name: none` aunque el build de producción sí las
-  tenga.
+  `animation`, reiniciar `preview_start`, o las clases `animate-*` nuevas quedan
+  en `animation-name: none` aunque el build de producción sí las tenga.

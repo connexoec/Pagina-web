@@ -39,11 +39,6 @@ export default {
         glow: '0 0 0 1px rgba(255,102,0,0.5), 0 0 40px -8px rgba(255,102,0,0.55)',
         'glow-lg': '0 0 0 1px rgba(255,102,0,0.6), 0 0 80px -10px rgba(255,102,0,0.65)',
         card: '0 20px 60px -20px rgba(0,0,0,0.9)',
-        // Tubo de neón (ProductsMosaic): halo cercano + difuso + resplandor interno.
-        // Estático: lo único que se anima es la `opacity` del elemento que lo lleva.
-        neon: '0 0 10px #ff6600, 0 0 34px rgba(255,102,0,0.6), inset 0 0 12px rgba(255,102,0,0.4)',
-        'neon-soft':
-          '0 0 8px rgba(255,102,0,0.7), 0 0 26px rgba(255,102,0,0.35), inset 0 0 8px rgba(255,102,0,0.25)',
       },
       backgroundImage: {
         'radial-fade':
@@ -60,34 +55,6 @@ export default {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-8px)' },
         },
-        // ── Mosaico de productos (ProductsMosaic) ──────────────────────────
-        // Solo `transform`/`opacity`. 0% = reposo, así que con
-        // prefers-reduced-motion todo queda quieto (y las ondas, ocultas).
-        // Flotación de la pulsera: sube unos px y se ladea un grado, nada más.
-        'product-float': {
-          '0%, 100%': { transform: 'translate3d(0,0,0) rotate(0deg)' },
-          '50%': { transform: 'translate3d(0,-7px,0) rotate(-1.2deg)' },
-        },
-        // Vaivén lento de la segunda pulsera: se mece ±2° sobre su centro.
-        'product-sway': {
-          '0%, 100%': { transform: 'translate3d(0,0,0) rotate(0deg)' },
-          '25%': { transform: 'translate3d(0,-4px,0) rotate(1.8deg)' },
-          '75%': { transform: 'translate3d(0,-4px,0) rotate(-1.8deg)' },
-        },
-        // Onda de toque NFC: un aro que nace en la zona de lectura y se
-        // desvanece al crecer. Estado base (sin animación) = invisible.
-        'nfc-wave': {
-          '0%': { transform: 'scale(0.55)', opacity: '0.5' },
-          '100%': { transform: 'scale(1.9)', opacity: '0' },
-        },
-        // Parpadeo suave de tubo de neón: dos bajones leves, NUNCA un
-        // estroboscopio (mínimo 0.78 de opacidad, lejos de 3 destellos/seg).
-        'neon-flicker': {
-          '0%, 17%, 22%, 54%, 58%, 100%': { opacity: '1' },
-          '19%': { opacity: '0.78' },
-          '56%': { opacity: '0.82' },
-        },
-
         // Cinta infinita — translate3d puro, se resuelve en GPU.
         marquee: {
           from: { transform: 'translate3d(0,0,0)' },
@@ -149,10 +116,6 @@ export default {
         'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
         float: 'float 6s ease-in-out infinite',
         marquee: 'marquee 32s linear infinite',
-        'product-float': 'product-float 7s ease-in-out infinite',
-        'product-sway': 'product-sway 9s ease-in-out infinite',
-        'nfc-wave': 'nfc-wave 4.8s ease-out infinite',
-        'neon-flicker': 'neon-flicker 9s linear infinite',
         // `step-end`: cortes secos entre keyframes. Las dos comparten duración
         // y arrancan juntas (se montan en el mismo paint), así que no se
         // desfasan nunca.

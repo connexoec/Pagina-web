@@ -36,8 +36,6 @@ export const waMsg = {
   ecosystem: (name: string) =>
     `Hola Connexo, quiero un perfil de ${name}. ¿Cómo empiezo?`,
   red: 'Hola Connexo, quiero que mi negocio esté en la RED CONNEXO. ¿Cómo entro?',
-  cards:
-    'Hola Connexo, vi las tarjetas y las pulseras en la web y quiero pedir la mía. ¿Cómo hago?',
   ngo: 'Hola Connexo, represento a una organización y quiero conocer el convenio para activar perfiles a nuestros emprendedores.',
   general: 'Hola Connexo, quiero información sobre los perfiles digitales.',
   // "Trabaja con nosotros" (/trabaja): respaldo por si el envío a Discord falla.

@@ -13,8 +13,6 @@ const Analytics = lazy(() => import('./components/Analytics'))
 // Solo la banda que invita: el directorio vive en su propia página (/red).
 const RedTeaser = lazy(() => import('./components/RedTeaser'))
 const Pricing = lazy(() => import('./components/Pricing'))
-// Mosaico de tarjetas y pulseras: va justo después de la matriz de planes.
-const ProductsMosaic = lazy(() => import('./components/ProductsMosaic'))
 const Arupo = lazy(() => import('./components/Arupo'))
 const CampaignBanner = lazy(() => import('./components/CampaignBanner'))
 const Footer = lazy(() => import('./components/Footer'))
@@ -40,7 +38,6 @@ export default function Landing() {
           <Analytics />
           <RedTeaser />
           <Pricing />
-          <ProductsMosaic />
           <Arupo />
           <CampaignBanner />
         </Suspense>
