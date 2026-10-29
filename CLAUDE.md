@@ -1,7 +1,15 @@
 # CLAUDE.md — Connexo Web · Única Fuente de Verdad (SSOT)
 
 > Documento vivo. Se actualiza al cerrar cada hito ("cero lag" confirmado).
-> No repetir errores ya resueltos aquí. Última actualización: **2026-10-27 (b)**
+> No repetir errores ya resueltos aquí. Última actualización: **2026-10-29**
+> (**Verificación de dominio de Meta.** `index.html` lleva
+> `<meta name="facebook-domain-verification" …>` (pedida por Meta al configurar la
+> API de WhatsApp Business / Business Manager). Es estática en el `<head>`, así que
+> sale en todas las rutas. **No borrarla**: si se quita, Meta pierde la verificación
+> del dominio. Ojo: Meta la lee en el **host exacto que se verifica** — la landing
+> vive en `web.connexoapp.com`, y el apex `connexoapp.com` no resuelve (ver
+> memoria `dns-hosting-topology`). Ver §16.)
+> Hito previo: **2026-10-27 (b)**
 > (**Carrusel "Ecosistemas": las 9 plantillas con captura nueva y real.** Se
 > reemplazaron los 7 PNG de `public/perfiles/` y se sumaron `artistas.png` y
 > `sublimados.png` (500×977, mismo ratio 0.512 → sin tocar el layout). Salen de
@@ -889,3 +897,27 @@ máquina del cliente.
 - **El dev server NO recarga `tailwind.config.js`**: tras añadir keyframes o
   `animation`, reiniciar `preview_start`, o las clases `animate-*` nuevas quedan
   en `animation-name: none` aunque el build de producción sí las tenga.
+
+---
+
+## 16. Verificación de dominio de Meta (2026-10-29)
+
+`index.html` incluye, en el `<head>`:
+
+```html
+<meta name="facebook-domain-verification" content="0c5cfvqh06tf6h1ezcvwycrea676pf" />
+```
+
+- **Para qué**: Meta exige demostrar que el dominio es de quien configura la
+  cuenta de **WhatsApp Business API** / Business Manager (Brand Safety → Dominios).
+  Meta busca ese `<meta>` en la página de inicio del dominio.
+- **Está en `index.html` (no en un componente React)** a propósito: Meta lee el
+  HTML crudo sin ejecutar JS, y una SPA solo sirve eso. Vite lo copia tal cual a
+  `dist/index.html` (verificado).
+- **No borrarla ni "limpiar" el head**: sin ella, Meta puede quitar la
+  verificación del dominio y bloquear la API de WhatsApp / anuncios / eventos.
+- **Host a verificar**: la landing responde en `web.connexoapp.com`. El apex
+  `connexoapp.com` no tiene registro `@` (memoria `dns-hosting-topology`), así que
+  en Meta hay que verificar `web.connexoapp.com` (o `connexoapp.com` solo si antes
+  se le crea el registro y apunta a este proyecto). El token es del Business
+  Manager: si cambia de cuenta, Meta emite otro y se reemplaza el `content`.
